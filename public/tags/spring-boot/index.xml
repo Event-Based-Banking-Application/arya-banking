@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Spring-Boot on Arya Banking Docs</title>
+    <link>http://localhost:1313/tags/spring-boot/</link>
+    <description>Recent content in Spring-Boot on Arya Banking Docs</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 20 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/spring-boot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Platform Overview</title>
+      <link>http://localhost:1313/docs/platform-overview/</link>
+      <pubDate>Sat, 01 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/platform-overview/</guid>
+      <description>&lt;h2 id=&#34;platform-summary&#34;&gt;Platform Summary &lt;a href=&#34;#platform-summary&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Arya Banking&lt;/strong&gt; is an event-driven microservices platform modelling the core backend of a digital banking application. It is built around a service mesh of independently deployable Spring Boot services coordinated through Spring Cloud infrastructure (Eureka + Config Server), secured via Keycloak OAuth2/JWT, secrets-managed through HashiCorp Vault, and event-driven via Apache Kafka with Avro schemas.&lt;/p&gt;&#xA;&#xA;&lt;div class=&#34;alert alert-info d-flex&#34; role=&#34;alert&#34;&gt;&#xA;  &lt;div class=&#34;flex-shrink-1 alert-icon&#34;&gt;&#xA;  &#xA;  &lt;span class=&#34;material-icons size-20 me-2&#34;&gt;&#xA;  info&#xA;  &lt;/span&gt;&lt;/div&gt;&#xA;  &#xA;  &lt;div class=&#34;w-100&#34;&gt;Stack: Spring Boot 3.5.4 · Spring Cloud 2025.0.0 · Java 17 · MongoDB · Kafka · Keycloak · HashiCorp Vault · Eureka&lt;/div&gt;&#xA;  &lt;/div&gt;&#xA;&lt;p&gt;The platform currently has &lt;strong&gt;9 repositories&lt;/strong&gt;, each with a distinct responsibility:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Entry Point &amp; Annotations</title>
+      <link>http://localhost:1313/docs/admin-service/entry-point/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/admin-service/entry-point/</guid>
+      <description>&lt;h2 id=&#34;application-entry-point&#34;&gt;Application Entry Point &lt;a href=&#34;#application-entry-point&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;File:&lt;/strong&gt; &lt;code&gt;org.arya.banking.admin.AryaBankingAdminServiceApplication&lt;/code&gt;&lt;/p&gt;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;  &#xA;      &lt;div class=&#34;prism-shortcode&#34;&gt;&#xA;      &lt;pre id=&#34;534f167&#34; class=&#34;language-java line-numbers linkable-line-numbers&#34;&#xA;        &gt;&lt;code class=&#34;language-java&#34;&#xA;        &gt;@SpringBootApplication(exclude = {&#xA;    DataSourceAutoConfiguration.class,&#xA;    DataSourceTransactionManagerAutoConfiguration.class,&#xA;    HibernateJpaAutoConfiguration.class&#xA;})&#xA;@ComponentScan(basePackages = {&#xA;    &amp;#34;org.arya.banking.admin&amp;#34;,&#xA;    &amp;#34;org.arya.banking.common&amp;#34;&#xA;})&#xA;@EnableMongoAuditing&#xA;@EnableDiscoveryClient&#xA;public class AryaBankingAdminServiceApplication {&#xA;&#xA;    public static void main(String[] args) {&#xA;        SpringApplication.run(AryaBankingAdminServiceApplication.class, args);&#xA;    }&#xA;}&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;      &lt;/div&gt;&#xA;  &#xA;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;annotation-breakdown&#34;&gt;Annotation Breakdown &lt;a href=&#34;#annotation-breakdown&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3 id=&#34;springbootapplicationexclude--&#34;&gt;&lt;code&gt;@SpringBootApplication(exclude = ...)&lt;/code&gt; &lt;a href=&#34;#springbootapplicationexclude--&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The admin-service is &lt;strong&gt;MongoDB-only&lt;/strong&gt; — it has no relational database. The three excluded auto-configurations prevent Spring Boot from attempting to set up a DataSource (JDBC), a transaction manager backed by a DataSource, and Hibernate JPA. Without these exclusions, the application would fail on startup because no &lt;code&gt;javax.sql.DataSource&lt;/code&gt; bean is present on the classpath.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Roles on Arya Banking Docs</title>
+    <link>http://localhost:1313/tags/roles/</link>
+    <description>Recent content in Roles on Arya Banking Docs</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 20 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/roles/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Keycloak Integration</title>
+      <link>http://localhost:1313/docs/admin-service/keycloak-integration/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/admin-service/keycloak-integration/</guid>
+      <description>&lt;h2 id=&#34;overview&#34;&gt;Overview &lt;a href=&#34;#overview&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The admin-service uses the &lt;strong&gt;Keycloak Admin Client&lt;/strong&gt; (&lt;code&gt;keycloak-admin-client:26.0.4&lt;/code&gt;) to programmatically manage the &lt;code&gt;event-based-banking-service&lt;/code&gt; realm. It is the only service in the platform that holds admin-level Keycloak credentials.&lt;/p&gt;&#xA;&lt;p&gt;The integration covers:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Creating confidential OAuth2 clients for new microservices (service accounts flow)&lt;/li&gt;&#xA;&lt;li&gt;Listing and creating realm-level roles&lt;/li&gt;&#xA;&lt;li&gt;Assigning roles to the service account of a newly provisioned client&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;keycloakmanager&#34;&gt;KeyCloakManager &lt;a href=&#34;#keycloakmanager&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;KeyCloakManager&lt;/code&gt; is a &lt;code&gt;@Component&lt;/code&gt; that acts as a factory and accessor for the Keycloak Admin API. It initialises the client on startup via &lt;code&gt;@PostConstruct&lt;/code&gt; using the &lt;code&gt;client_credentials&lt;/code&gt; grant type.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

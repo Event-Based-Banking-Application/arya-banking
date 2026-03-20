@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Github-Actions on Arya Banking Docs</title>
+    <link>http://localhost:1313/tags/github-actions/</link>
+    <description>Recent content in Github-Actions on Arya Banking Docs</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 20 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/github-actions/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CI/CD &amp; Build</title>
+      <link>http://localhost:1313/docs/admin-service/management/cicd/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/admin-service/management/cicd/</guid>
+      <description>&lt;h2 id=&#34;github-actions-workflows&#34;&gt;GitHub Actions Workflows &lt;a href=&#34;#github-actions-workflows&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Three workflows are defined under &lt;code&gt;.github/workflows/&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;deployyml--build--release&#34;&gt;deploy.yml — Build &amp;amp; Release &lt;a href=&#34;#deployyml--build--release&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Trigger:&lt;/strong&gt; Push to &lt;code&gt;master&lt;/code&gt; branch, or manual &lt;code&gt;workflow_dispatch&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;pre class=&#34;mermaid&#34;&gt;flowchart LR&#xA;    T[&amp;#34;Push to master&amp;#34;] --&amp;gt; A[&amp;#34;Checkout source&amp;#34;]&#xA;    A --&amp;gt; B[&amp;#34;Setup Java 17 (Temurin)&amp;#34;]&#xA;    B --&amp;gt; C[&amp;#34;Cache ~/.m2/repository&amp;#34;]&#xA;    C --&amp;gt; D[&amp;#34;mvn clean deploy\n(-s settings.xml)&amp;#34;]&#xA;    D --&amp;gt; E[&amp;#34;Extract version\nfrom pom.xml&amp;#34;]&#xA;    E --&amp;gt; F[&amp;#34;Create &amp;#43; push\ngit tag vX.Y.Z&amp;#34;]&#xA;&lt;/pre&gt;&#xA;&lt;p&gt;&lt;strong&gt;Key details:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Publishes the JAR to &lt;strong&gt;GitHub Packages&lt;/strong&gt; using the &lt;code&gt;GH_PAT&lt;/code&gt; secret.&lt;/li&gt;&#xA;&lt;li&gt;Automatically tags the commit with the version from &lt;code&gt;pom.xml&lt;/code&gt; (e.g., &lt;code&gt;v1.0.0&lt;/code&gt;).&lt;/li&gt;&#xA;&lt;li&gt;The &lt;code&gt;settings.xml&lt;/code&gt; at the repo root wires GitHub Packages authentication using &lt;code&gt;GITHUB_ACTOR&lt;/code&gt; and &lt;code&gt;GH_PAT&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;sonar-reportyaml--code-quality&#34;&gt;sonar-report.yaml — Code Quality &lt;a href=&#34;#sonar-reportyaml--code-quality&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Trigger:&lt;/strong&gt; Push to any branch, or pull request.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

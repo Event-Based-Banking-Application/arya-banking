@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Api on Arya Banking Docs</title>
+    <link>http://localhost:1313/tags/api/</link>
+    <description>Recent content in Api on Arya Banking Docs</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 20 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/api/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>API Reference</title>
+      <link>http://localhost:1313/docs/admin-service/api-reference/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/admin-service/api-reference/</guid>
+      <description>&lt;h2 id=&#34;authentication&#34;&gt;Authentication &lt;a href=&#34;#authentication&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;All endpoints require a valid Keycloak-issued JWT passed as a Bearer token. Obtain a token from the Keycloak token endpoint before making requests.&lt;/p&gt;&#xA;&#xA;&#xA;&#xA;  &#xA;  &#xA;  &#xA;&#xA;  &#xA;  &#xA;  &#xA;    &#xA;  &#xA;    &#xA;  &#xA;  &#xA;&#xA;   &#xA;  &#xA;  &#xA;&#xA;  &lt;div class=&#34;prism-codeblock  anchorlinenos linenos&#34;&gt;&#xA;  &lt;pre id=&#34;c7f0dd8&#34; class=&#34;language-bash  line-numbers linkable-line-numbers&#34;&gt;&#xA;  &lt;code&gt;# Get a token (client credentials flow)&#xA;curl -X POST http://localhost:5433/realms/event-based-banking-service/protocol/openid-connect/token \&#xA;  -d &amp;#34;grant_type=client_credentials&amp;#34; \&#xA;  -d &amp;#34;client_id=admin-service-client&amp;#34; \&#xA;  -d &amp;#34;client_secret=&amp;lt;secret&amp;gt;&amp;#34;&lt;/code&gt;&#xA;  &lt;/pre&gt;&#xA;  &lt;/div&gt;&#xA;&#xA;&lt;div class=&#34;alert alert-info d-flex&#34; role=&#34;alert&#34;&gt;&#xA;  &lt;div class=&#34;flex-shrink-1 alert-icon&#34;&gt;&#xA;  &#xA;  &lt;span class=&#34;material-icons size-20 me-2&#34;&gt;&#xA;  info&#xA;  &lt;/span&gt;&lt;/div&gt;&#xA;  &#xA;  &lt;div class=&#34;w-100&#34;&gt;All admin endpoints additionally require the ROLE_ADMIN realm role to be present in the JWT&amp;rsquo;s realm_access.roles claim. The /internal/** paths require ROLE_INTERNAL_SERVICE instead.&lt;/div&gt;&#xA;  &lt;/div&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;swagger-ui&#34;&gt;Swagger UI &lt;a href=&#34;#swagger-ui&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The interactive API documentation is available at:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

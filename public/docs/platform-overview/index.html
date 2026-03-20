@@ -1,0 +1,2387 @@
+<!DOCTYPE html>
+
+
+
+
+
+    
+        
+    
+
+    
+
+    
+
+    
+
+    
+
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8" />
+    <title>Platform Overview | Event Based Banking Application</title>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete architecture overview of the Arya Banking event-driven microservices platform — repositories, infrastructure, security, and inter-service communication.">
+    <meta name="keywords" content="Documentation, Hugo, Hugo Theme, Bootstrap" />
+    <meta name="author" content="Colin Wilson - Lotus Labs" />
+    <meta name="email" content="support@aigis.uk" />
+    <meta name="website" content="https://lotusdocs.dev" />
+    <meta name="Version" content="v0.1.0" />
+    
+    <link rel="icon" href="http://localhost:1313/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="http://localhost:1313/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="manifest" crossorigin="use-credentials" href="http://localhost:1313/site.webmanifest">
+<meta property="og:title" content="Platform Overview" />
+<meta property="og:description" content="Complete architecture overview of the Arya Banking event-driven microservices platform — repositories, infrastructure, security, and inter-service communication." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/docs/platform-overview/" /><meta property="og:image" content="http://localhost:1313/opengraph/card-base-2_hu_2e19385e7777fd9f.png"/><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2025-03-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2026-03-20T00:00:00+00:00" /><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://localhost:1313/opengraph/card-base-2_hu_2e19385e7777fd9f.png"/>
+<meta name="twitter:title" content="Platform Overview"/>
+<meta name="twitter:description" content="Complete architecture overview of the Arya Banking event-driven microservices platform — repositories, infrastructure, security, and inter-service communication."/>
+
+    
+        <link rel="alternate" type="application/atom+xml" title="Atom feed for Arya Banking Docs" href="/index.xml" />
+    
+    <script>(()=>{var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,e=localStorage.getItem("theme");t&&e===null&&(localStorage.setItem("theme","dark"),document.documentElement.setAttribute("data-dark-mode","")),t&&e==="dark"&&document.documentElement.setAttribute("data-dark-mode",""),e==="dark"&&document.documentElement.setAttribute("data-dark-mode","")})()</script>
+    
+    
+            
+                <script type="text/javascript" src="http://localhost:1313/docs/js/flexsearch.bundle.js"></script>
+            
+        
+    
+    
+    
+    
+        
+        
+        
+        
+    
+        
+        
+        
+        
+    
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,600,700|Fira+Code:500,700&display=block" rel="stylesheet">
+
+    <link rel="stylesheet" href="/docs/scss/style.css" crossorigin="anonymous">
+    
+    
+    </head>
+<body>
+        <div class="content">
+            <div class="page-wrapper toggled">
+<nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-brand">
+        <a href='/' aria-label="HomePage" alt="HomePage" style="display: flex; align-items: center; gap: 10px;">
+            
+                <?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+  <!-- Pediment (triangle roof) -->
+  <polygon points="30,2 50,20 10,20" fill="#0066ff"/>
+  <!-- Top bar -->
+  <rect x="8" y="20" width="44" height="5" rx="2" fill="#0066ff"/>
+  <!-- Left column -->
+  <rect x="13" y="28" width="6" height="22" rx="1.5" fill="#0066ff"/>
+  <!-- Center column -->
+  <rect x="27" y="28" width="6" height="22" rx="1.5" fill="#0066ff"/>
+  <!-- Right column -->
+  <rect x="41" y="28" width="6" height="22" rx="1.5" fill="#0066ff"/>
+  <!-- Base platform -->
+  <rect x="6" y="52" width="48" height="6" rx="2" fill="#0066ff"/>
+  <!-- Coin circle -->
+  <circle cx="30" cy="13" r="5" fill="none" stroke="white" stroke-width="2"/>
+</svg>
+
+            
+            <span style="font-size: 15px; font-weight: 700; text-transform: none; letter-spacing: -0.3px; line-height: 1.2; color: var(--sidebar-text-color);">Event Based Banking Application</span>
+        </a>
+    </div>
+    <div class="sidebar-content" style="height: calc(100% - 131px);">
+        <ul class="sidebar-menu">
+            
+                
+                
+                    
+                        
+                        <li class="current">
+                            <a class="sidebar-root-link" href="http://localhost:1313/docs/platform-overview/">
+                                <i class="material-icons me-2">info</i>
+                                
+                                Platform Overview
+                            </a>
+                        </li>
+                    
+                
+                    
+                    
+                        <li class="sidebar-dropdown  ">
+                            <a href="http://localhost:1313/docs/admin-service/" class="btn sidebar-section-link">
+                                <i class="material-icons me-2">manage_accounts</i>
+                                Admin Service
+                            </a>
+                            <div class="sidebar-submenu ">
+                                <ul>
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/overview/">Overview</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/entry-point/">Entry Point &amp; Annotations</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/architecture/">Architecture</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/getting-started/">Getting Started</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/configuration/">Configuration Reference</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/api-reference/">API Reference</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/services-deep-dive/">Services Deep-Dive</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/mappers/">Mappers</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/security/">Security</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/vault-integration/">Vault Integration</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/keycloak-integration/">Keycloak Integration</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/management/data-models/">Data Models &amp; Common Library</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/management/cicd/">CI/CD &amp; Build</a></li>
+                                        
+                                    
+                                        
+                                        
+                                            <li class=" "><a class="sidebar-nested-link" href="http://localhost:1313/docs/admin-service/management/roadmap/">Roadmap &amp; Known Issues</a></li>
+                                        
+                                    
+                                </ul>
+                            </div>
+                        </li>
+                    
+                
+            
+        </ul>
+        
+    </div>
+    
+        <ul class="sidebar-footer list-unstyled mb-0">
+            
+        </ul>
+    
+</nav>
+
+
+                    <main class="page-content bg-transparent">
+                        
+<div id="top-header" class="top-header d-print-none">
+    <div class="header-bar d-flex justify-content-between">
+        <div class="d-flex align-items-center">
+            <a href='/' class="logo-icon me-3" aria-label="HomePage" alt="HomePage">
+                <div class="small">
+                    
+                            <?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250"><path d="m143,39.5c-18,0-18,18-18,18,0,0,0-18-18-18H22c-2.76,0-5,2.24-5,5v143c0,2.76,2.24,5,5,5h76c7.2,0,8.64,11.52,8.93,16.13.07,1.05.95,1.87,2,1.87h32.14c1.06,0,1.94-.82,2-1.87.29-4.61,1.73-16.13,8.93-16.13h76c2.76,0,5-2.24,5-5V44.5c0-2.76-2.24-5-5-5h-85Zm63,123.5c0,1.38-1.12,2.5-2.5,2.5h-60.5c-18,0-18,18-18,18,0,0,0-18-18-18h-60.5c-1.38,0-2.5-1.12-2.5-2.5v-94c0-1.38,1.12-2.5,2.5-2.5h51.5c7.2,0,8.64,11.52,8.93,16.13.07,1.05.95,1.87,2,1.87h32.14c1.06,0,1.94-.82,2-1.87.29-4.61,1.73-16.13,8.93-16.13h51.5c1.38,0,2.5,1.12,2.5,2.5v94Z" style="fill:#06f;"/></svg>
+                    
+                </div>
+                <div class="big">
+                    
+                            <?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+  <!-- Pediment (triangle roof) -->
+  <polygon points="30,2 50,20 10,20" fill="#0066ff"/>
+  <!-- Top bar -->
+  <rect x="8" y="20" width="44" height="5" rx="2" fill="#0066ff"/>
+  <!-- Left column -->
+  <rect x="13" y="28" width="6" height="22" rx="1.5" fill="#0066ff"/>
+  <!-- Center column -->
+  <rect x="27" y="28" width="6" height="22" rx="1.5" fill="#0066ff"/>
+  <!-- Right column -->
+  <rect x="41" y="28" width="6" height="22" rx="1.5" fill="#0066ff"/>
+  <!-- Base platform -->
+  <rect x="6" y="52" width="48" height="6" rx="2" fill="#0066ff"/>
+  <!-- Coin circle -->
+  <circle cx="30" cy="13" r="5" fill="none" stroke="white" stroke-width="2"/>
+</svg>
+
+                    
+                </div>
+            </a>
+            <button id="close-sidebar" class="btn btn-icon btn-soft">
+                <span class="material-icons size-20 menu-icon align-middle">menu</span>
+            </button>
+            
+            
+                    
+                    <button id="flexsearch-button" class="ms-3 btn btn-soft" data-bs-toggle="collapse" data-bs-target="#FlexSearchCollapse" aria-expanded="false" aria-controls="FlexSearchCollapse">
+                        <span class="material-icons size-20 menu-icon align-middle">search</span>
+                        <span class="flexsearch-button-placeholder ms-1 me-2 d-none d-sm-block">Search</span>
+                        <div class="d-none d-sm-block">
+                            <span class="flexsearch-button-keys">
+                                <kbd class="flexsearch-button-cmd-key">
+                                    <svg width="44" height="15"><path d="M2.118,11.5A1.519,1.519,0,0,1,1,11.042,1.583,1.583,0,0,1,1,8.815a1.519,1.519,0,0,1,1.113-.458h.715V6.643H2.118A1.519,1.519,0,0,1,1,6.185,1.519,1.519,0,0,1,.547,5.071,1.519,1.519,0,0,1,1,3.958,1.519,1.519,0,0,1,2.118,3.5a1.519,1.519,0,0,1,1.114.458A1.519,1.519,0,0,1,3.69,5.071v.715H5.4V5.071A1.564,1.564,0,0,1,6.976,3.5,1.564,1.564,0,0,1,8.547,5.071,1.564,1.564,0,0,1,6.976,6.643H6.261V8.357h.715a1.575,1.575,0,0,1,1.113,2.685,1.583,1.583,0,0,1-2.227,0A1.519,1.519,0,0,1,5.4,9.929V9.214H3.69v.715a1.519,1.519,0,0,1-.458,1.113A1.519,1.519,0,0,1,2.118,11.5Zm0-.857a.714.714,0,0,0,.715-.714V9.214H2.118a.715.715,0,1,0,0,1.429Zm4.858,0a.715.715,0,1,0,0-1.429H6.261v.715a.714.714,0,0,0,.715.714ZM3.69,8.357H5.4V6.643H3.69ZM2.118,5.786h.715V5.071a.714.714,0,0,0-.715-.714.715.715,0,0,0-.5,1.22A.686.686,0,0,0,2.118,5.786Zm4.143,0h.715a.715.715,0,0,0,.5-1.22.715.715,0,0,0-1.22.5Z" fill="currentColor"></path><path d="M12.4,11.475H11.344l3.879-7.95h1.056Z" fill="currentColor"></path><path d="M25.073,5.384l-.864.576a2.121,2.121,0,0,0-1.786-.923,2.207,2.207,0,0,0-2.266,2.326,2.206,2.206,0,0,0,2.266,2.325,2.1,2.1,0,0,0,1.782-.918l.84.617a3.108,3.108,0,0,1-2.622,1.293,3.217,3.217,0,0,1-3.349-3.317,3.217,3.217,0,0,1,3.349-3.317A3.046,3.046,0,0,1,25.073,5.384Z" fill="currentColor"></path><path d="M30.993,5.142h-2.07v5.419H27.891V5.142h-2.07V4.164h5.172Z" fill="currentColor"></path><path d="M34.67,4.164c1.471,0,2.266.658,2.266,1.851,0,1.087-.832,1.809-2.134,1.855l2.107,2.691h-1.28L33.591,7.87H33.07v2.691H32.038v-6.4Zm-1.6.969v1.8h1.572c.832,0,1.22-.3,1.22-.918s-.411-.882-1.22-.882Z" fill="currentColor"></path><path d="M42.883,10.561H38.31v-6.4h1.033V9.583h3.54Z" fill="currentColor"></path></svg>
+                                </kbd>
+                                <kbd class="flexsearch-button-key">
+                                    <svg width="15" height="15"><path d="M5.926,12.279H4.41L9.073,2.721H10.59Z" fill="currentColor"/></svg>
+                                </kbd>
+                            </span>
+                        </div>
+                    </button>
+                
+            </div>
+
+        <div class="d-flex align-items-center">
+            <ul class="list-unstyled mb-0">
+                
+                
+                    
+                    <li class="list-inline-item mb-0">
+                        <a href=" https://github.com/Event-Based-Banking-Application " alt="github" rel="noopener noreferrer" target="_blank">
+                            <div class="btn btn-icon btn-default border-0">
+                                
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>GitHub</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                
+                            </div>
+                        </a>
+                    </li>
+                    
+                
+            </ul>
+            <button id="mode" class="btn btn-icon btn-default ms-2" type="button" aria-label="Toggle user interface mode">
+                <span class="toggle-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="30" width="30" viewBox="0 0 48 48" fill="currentColor">
+                        <title>Enable dark mode</title>
+                        <path d="M24 42q-7.5 0-12.75-5.25T6 24q0-7.5 5.25-12.75T24 6q.4 0 .85.025.45.025 1.15.075-1.8 1.6-2.8 3.95-1 2.35-1 4.95 0 4.5 3.15 7.65Q28.5 25.8 33 25.8q2.6 0 4.95-.925T41.9 22.3q.05.6.075.975Q42 23.65 42 24q0 7.5-5.25 12.75T24 42Zm0-3q5.45 0 9.5-3.375t5.05-7.925q-1.25.55-2.675.825Q34.45 28.8 33 28.8q-5.75 0-9.775-4.025T19.2 15q0-1.2.25-2.575.25-1.375.9-3.125-4.9 1.35-8.125 5.475Q9 18.9 9 24q0 6.25 4.375 10.625T24 39Zm-.2-14.85Z"/>
+                    </svg>
+                </span>
+                <span class="toggle-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="30" width="30" viewBox="0 0 48 48" fill="currentColor">
+                        <title>Enable light mode</title>
+                        <path d="M24 31q2.9 0 4.95-2.05Q31 26.9 31 24q0-2.9-2.05-4.95Q26.9 17 24 17q-2.9 0-4.95 2.05Q17 21.1 17 24q0 2.9 2.05 4.95Q21.1 31 24 31Zm0 3q-4.15 0-7.075-2.925T14 24q0-4.15 2.925-7.075T24 14q4.15 0 7.075 2.925T34 24q0 4.15-2.925 7.075T24 34ZM3.5 25.5q-.65 0-1.075-.425Q2 24.65 2 24q0-.65.425-1.075Q2.85 22.5 3.5 22.5h5q.65 0 1.075.425Q10 23.35 10 24q0 .65-.425 1.075-.425.425-1.075.425Zm36 0q-.65 0-1.075-.425Q38 24.65 38 24q0-.65.425-1.075.425-.425 1.075-.425h5q.65 0 1.075.425Q46 23.35 46 24q0 .65-.425 1.075-.425.425-1.075.425ZM24 10q-.65 0-1.075-.425Q22.5 9.15 22.5 8.5v-5q0-.65.425-1.075Q23.35 2 24 2q.65 0 1.075.425.425.425.425 1.075v5q0 .65-.425 1.075Q24.65 10 24 10Zm0 36q-.65 0-1.075-.425-.425-.425-.425-1.075v-5q0-.65.425-1.075Q23.35 38 24 38q.65 0 1.075.425.425.425.425 1.075v5q0 .65-.425 1.075Q24.65 46 24 46ZM12 14.1l-2.85-2.8q-.45-.45-.425-1.075.025-.625.425-1.075.45-.45 1.075-.45t1.075.45L14.1 12q.4.45.4 1.05 0 .6-.4 1-.4.45-1.025.45-.625 0-1.075-.4Zm24.7 24.75L33.9 36q-.4-.45-.4-1.075t.45-1.025q.4-.45 1-.45t1.05.45l2.85 2.8q.45.45.425 1.075-.025.625-.425 1.075-.45.45-1.075.45t-1.075-.45ZM33.9 14.1q-.45-.45-.45-1.05 0-.6.45-1.05l2.8-2.85q.45-.45 1.075-.425.625.025 1.075.425.45.45.45 1.075t-.45 1.075L36 14.1q-.4.4-1.025.4-.625 0-1.075-.4ZM9.15 38.85q-.45-.45-.45-1.075t.45-1.075L12 33.9q.45-.45 1.05-.45.6 0 1.05.45.45.45.45 1.05 0 .6-.45 1.05l-2.8 2.85q-.45.45-1.075.425-.625-.025-1.075-.425ZM24 24Z"/>
+                    </svg>
+                </span>
+            </button>
+            
+        </div>
+    </div>
+    
+    
+            <div class="collapse" id="FlexSearchCollapse">
+                <div class="flexsearch-container">
+                    <div class="flexsearch-keymap">
+                        <li>
+                            <kbd class="flexsearch-button-cmd-key"><svg width="15" height="15" aria-label="Arrow down" role="img"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"><path d="M7.5 3.5v8M10.5 8.5l-3 3-3-3"></path></g></svg></kbd>
+                            <kbd class="flexsearch-button-cmd-key"><svg width="15" height="15" aria-label="Arrow up" role="img"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"><path d="M7.5 11.5v-8M10.5 6.5l-3-3-3 3"></path></g></svg></kbd>
+                            <span class="flexsearch-key-label">to navigate</span>
+                        </li>
+                        <li>
+                            <kbd class="flexsearch-button-cmd-key"><svg width="15" height="15" aria-label="Enter key" role="img"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"><path d="M12 3.53088v3c0 1-1 2-2 2H4M7 11.53088l-3-3 3-3"></path></g></svg></kbd>
+                            <span class="flexsearch-key-label">to select</span>
+                        </li>
+                        <li>
+                            <kbd class="flexsearch-button-cmd-key"><svg width="15" height="15" aria-label="Escape key" role="img"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"><path d="M13.6167 8.936c-.1065.3583-.6883.962-1.4875.962-.7993 0-1.653-.9165-1.653-2.1258v-.5678c0-1.2548.7896-2.1016 1.653-2.1016.8634 0 1.3601.4778 1.4875 1.0724M9 6c-.1352-.4735-.7506-.9219-1.46-.8972-.7092.0246-1.344.57-1.344 1.2166s.4198.8812 1.3445.9805C8.465 7.3992 8.968 7.9337 9 8.5c.032.5663-.454 1.398-1.4595 1.398C6.6593 9.898 6 9 5.963 8.4851m-1.4748.5368c-.2635.5941-.8099.876-1.5443.876s-1.7073-.6248-1.7073-2.204v-.4603c0-1.0416.721-2.131 1.7073-2.131.9864 0 1.6425 1.031 1.5443 2.2492h-2.956"></path></g></svg></kbd>
+                            <span class="flexsearch-key-label">to close</span>
+                        </li>
+                    </div>
+                    <form class="flexsearch position-relative flex-grow-1 ms-2 me-2">
+                        <div class="d-flex flex-row">
+                            <input id="flexsearch" class="form-control" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
+                            <button id="hideFlexsearch" type="button" class="ms-2 btn btn-soft">
+                                cancel
+                            </button>
+                        </div>
+                        <div id="suggestions" class="shadow rounded-1 d-none"></div>
+                    </form>
+                </div>
+            </div>
+        
+    
+    
+</div>
+
+
+                            <div class="container-fluid">
+                                <div class="layout-spacing">
+                                    
+                                        <div class="d-md-flex justify-content-between align-items-center"><nav aria-label="breadcrumb" class="d-inline-block pb-2 mt-1 mt-sm-0">
+    <ul id="breadcrumbs" class="breadcrumb bg-transparent mb-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+        
+            
+                <li class="breadcrumb-item text-capitalize active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a itemprop="item" href="/docs/">
+                        <i class="material-icons size-20 align-text-bottom" itemprop="name">Home</i>
+                    </a>
+                    <meta itemprop="position" content='1' />
+                </li>
+            
+        
+            <li class="breadcrumb-item text-capitalize active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">Platform Overview</span>
+                <meta itemprop="position" content='2' />
+            </li>
+        
+    </ul>
+</nav></div>
+                                    
+                                    <div class="row flex-xl-nowrap">
+                                        
+                                        <div class="docs-toc col-xl-3    d-xl-block"><toc>
+    <div class="fw-bold text-uppercase mb-2">On this page</div>
+    <nav id="toc">
+  <ul>
+    <li><a href="#platform-summary">Platform Summary</a></li>
+    <li><a href="#explore-the-service-documentation">Explore the Service Documentation</a></li>
+    <li><a href="#repository-map">Repository Map</a></li>
+    <li><a href="#system-architecture">System Architecture</a></li>
+    <li><a href="#service-port-reference">Service Port Reference</a></li>
+    <li><a href="#how-the-repos-fit-together">How the Repos Fit Together</a>
+      <ul>
+        <li><a href="#startup-order">Startup Order</a></li>
+        <li><a href="#config-resolution-chain">Config Resolution Chain</a></li>
+        <li><a href="#shared-library-chain">Shared Library Chain</a></li>
+      </ul>
+    </li>
+    <li><a href="#request-lifecycle--end-to-end">Request Lifecycle — End to End</a>
+      <ul>
+        <li><a href="#example-user-login">Example: User Login</a></li>
+        <li><a href="#example-get-user-by-id-authenticated">Example: Get User by ID (Authenticated)</a></li>
+      </ul>
+    </li>
+    <li><a href="#secrets--configuration-flow">Secrets &amp; Configuration Flow</a>
+      <ul>
+        <li><a href="#vault-secret-paths">Vault Secret Paths</a></li>
+        <li><a href="#approle-credentials">AppRole Credentials</a></li>
+        <li><a href="#how-mongopassword-reaches-mongodb">How MONGO.PASSWORD Reaches MongoDB</a></li>
+      </ul>
+    </li>
+    <li><a href="#authentication--authorization-model">Authentication &amp; Authorization Model</a>
+      <ul>
+        <li><a href="#keycloak-realm">Keycloak Realm</a></li>
+        <li><a href="#jwt-role-extraction">JWT Role Extraction</a></li>
+        <li><a href="#security-rules-by-service">Security Rules by Service</a></li>
+      </ul>
+    </li>
+    <li><a href="#event-driven-flow-kafka">Event-Driven Flow (Kafka)</a>
+      <ul>
+        <li><a href="#topics">Topics</a></li>
+        <li><a href="#usercreateevent-schema">UserCreateEvent Schema</a></li>
+        <li><a href="#when-events-are-published">When Events Are Published</a></li>
+      </ul>
+    </li>
+    <li><a href="#inter-service-communication-feign--oauth2">Inter-Service Communication (Feign + OAuth2)</a>
+      <ul>
+        <li><a href="#service-to-service-calls">Service-to-Service Calls</a></li>
+        <li><a href="#oauth2-feign-interceptor-pattern">OAuth2 Feign Interceptor Pattern</a></li>
+      </ul>
+    </li>
+    <li><a href="#infrastructure-stack">Infrastructure Stack</a>
+      <ul>
+        <li><a href="#makefile-targets">Makefile Targets</a></li>
+      </ul>
+    </li>
+    <li><a href="#user-registration-flow-multi-step">User Registration Flow (Multi-Step)</a>
+      <ul>
+        <li><a href="#userid-generation">userId Generation</a></li>
+      </ul>
+    </li>
+    <li><a href="#common-library-role">Common Library Role</a></li>
+    <li><a href="#dependency-version-matrix">Dependency Version Matrix</a></li>
+    <li><a href="#cicd-pipeline-overview">CI/CD Pipeline Overview</a>
+      <ul>
+        <li><a href="#per-repository-workflows">Per-Repository Workflows</a></li>
+        <li><a href="#deploy-flow">Deploy Flow</a></li>
+        <li><a href="#required-secrets">Required Secrets</a></li>
+      </ul>
+    </li>
+    <li><a href="#platform-wide-observations--gaps">Platform-Wide Observations &amp; Gaps</a>
+      <ul>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#missing-implementations">Missing Implementations</a></li>
+        <li><a href="#architectural-strengths">Architectural Strengths</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </toc></div>
+                                        
+                                        
+                                        <div class="docs-toc-mobile    d-print-none d-xl-none">
+                                            <button class="btn btn-sm w-100 d-flex align-items-center justify-content-between" style="background: var(--sidebar-bg); border: 1px solid var(--sidebar-border-color); border-radius: 6px; padding: 8px 14px; color: var(--sidebar-text-color); font-size: 14px; font-weight: 600;" type="button" data-bs-toggle="collapse" data-bs-target="#toc-collapse" aria-expanded="false" aria-controls="toc-collapse">
+                                                <span><i class="material-icons align-middle me-1" style="font-size: 18px;">toc</i> On this page</span>
+                                                <i class="material-icons align-middle toc-chevron" style="font-size: 20px; transition: transform 0.2s ease;">expand_more</i>
+                                            </button>
+                                            <div class="collapse" id="toc-collapse" style="border: 1px solid var(--sidebar-border-color); border-top: none; border-radius: 0 0 6px 6px; padding: 8px 12px; background: var(--sidebar-bg);">
+<nav id="toc-mobile">
+  <ul class="toc-mobile-list">
+    <li><a href="#platform-summary">Platform Summary</a></li>
+    <li><a href="#explore-the-service-documentation">Explore the Service Documentation</a></li>
+    <li><a href="#repository-map">Repository Map</a></li>
+    <li><a href="#system-architecture">System Architecture</a></li>
+    <li><a href="#service-port-reference">Service Port Reference</a></li>
+    <li><a href="#how-the-repos-fit-together">How the Repos Fit Together</a>
+      <ul>
+        <li><a href="#startup-order">Startup Order</a></li>
+        <li><a href="#config-resolution-chain">Config Resolution Chain</a></li>
+        <li><a href="#shared-library-chain">Shared Library Chain</a></li>
+      </ul>
+    </li>
+    <li><a href="#request-lifecycle--end-to-end">Request Lifecycle — End to End</a>
+      <ul>
+        <li><a href="#example-user-login">Example: User Login</a></li>
+        <li><a href="#example-get-user-by-id-authenticated">Example: Get User by ID (Authenticated)</a></li>
+      </ul>
+    </li>
+    <li><a href="#secrets--configuration-flow">Secrets &amp; Configuration Flow</a>
+      <ul>
+        <li><a href="#vault-secret-paths">Vault Secret Paths</a></li>
+        <li><a href="#approle-credentials">AppRole Credentials</a></li>
+        <li><a href="#how-mongopassword-reaches-mongodb">How MONGO.PASSWORD Reaches MongoDB</a></li>
+      </ul>
+    </li>
+    <li><a href="#authentication--authorization-model">Authentication &amp; Authorization Model</a>
+      <ul>
+        <li><a href="#keycloak-realm">Keycloak Realm</a></li>
+        <li><a href="#jwt-role-extraction">JWT Role Extraction</a></li>
+        <li><a href="#security-rules-by-service">Security Rules by Service</a></li>
+      </ul>
+    </li>
+    <li><a href="#event-driven-flow-kafka">Event-Driven Flow (Kafka)</a>
+      <ul>
+        <li><a href="#topics">Topics</a></li>
+        <li><a href="#usercreateevent-schema">UserCreateEvent Schema</a></li>
+        <li><a href="#when-events-are-published">When Events Are Published</a></li>
+      </ul>
+    </li>
+    <li><a href="#inter-service-communication-feign--oauth2">Inter-Service Communication (Feign + OAuth2)</a>
+      <ul>
+        <li><a href="#service-to-service-calls">Service-to-Service Calls</a></li>
+        <li><a href="#oauth2-feign-interceptor-pattern">OAuth2 Feign Interceptor Pattern</a></li>
+      </ul>
+    </li>
+    <li><a href="#infrastructure-stack">Infrastructure Stack</a>
+      <ul>
+        <li><a href="#makefile-targets">Makefile Targets</a></li>
+      </ul>
+    </li>
+    <li><a href="#user-registration-flow-multi-step">User Registration Flow (Multi-Step)</a>
+      <ul>
+        <li><a href="#userid-generation">userId Generation</a></li>
+      </ul>
+    </li>
+    <li><a href="#common-library-role">Common Library Role</a></li>
+    <li><a href="#dependency-version-matrix">Dependency Version Matrix</a></li>
+    <li><a href="#cicd-pipeline-overview">CI/CD Pipeline Overview</a>
+      <ul>
+        <li><a href="#per-repository-workflows">Per-Repository Workflows</a></li>
+        <li><a href="#deploy-flow">Deploy Flow</a></li>
+        <li><a href="#required-secrets">Required Secrets</a></li>
+      </ul>
+    </li>
+    <li><a href="#platform-wide-observations--gaps">Platform-Wide Observations &amp; Gaps</a>
+      <ul>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#missing-implementations">Missing Implementations</a></li>
+        <li><a href="#architectural-strengths">Architectural Strengths</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</div>
+                                        </div>
+                                        <style>
+                                            .toc-chevron { transform: rotate(0deg); }
+                                            [aria-expanded="true"] .toc-chevron { transform: rotate(180deg); }
+                                            #toc-collapse.collapsing { transition: height 0.1s ease !important; }
+                                        </style>
+
+                                        <div class="docs-content col-12 col-xl-9 mt-0">
+                                            <div class="mb-0 d-flex">
+                                                
+                                                <i class="material-icons title-icon me-2">info</i>
+                                                
+                                                <h1 class="content-title mb-0">
+                                                    Platform Overview
+                                                    
+                                                </h1>
+                                            </div>
+                                            
+                                                <p class="lead mb-3">Complete architecture overview of the Arya Banking event-driven microservices platform — repositories, infrastructure, security, and inter-service communication.</p>
+                                            
+                                            <div id="content" class="main-content" data-bs-spy="scroll" data-bs-root-margin="0px 0px -65%" data-bs-target="#toc-mobile">
+                                                
+    
+    <div data-prismjs-copy="" data-prismjs-copy-success="" data-prismjs-copy-error="">
+        <h2 id="platform-summary">Platform Summary <a href="#platform-summary" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><p><strong>Arya Banking</strong> is an event-driven microservices platform modelling the core backend of a digital banking application. It is built around a service mesh of independently deployable Spring Boot services coordinated through Spring Cloud infrastructure (Eureka + Config Server), secured via Keycloak OAuth2/JWT, secrets-managed through HashiCorp Vault, and event-driven via Apache Kafka with Avro schemas.</p>
+
+<div class="alert alert-info d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  info
+  </span></div>
+  
+  <div class="w-100">Stack: Spring Boot 3.5.4 · Spring Cloud 2025.0.0 · Java 17 · MongoDB · Kafka · Keycloak · HashiCorp Vault · Eureka</div>
+  </div>
+<p>The platform currently has <strong>9 repositories</strong>, each with a distinct responsibility:</p>
+
+
+
+
+
+
+
+<table class="table table-striped table-hover table-sm">
+  <thead>
+      <tr>
+          <th>Repository</th>
+          <th>Role</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>arya-banking-common</code></td>
+          <td>Shared library: domain models, exceptions, Kafka config, Avro, utilities</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-admin-service</code></td>
+          <td>Infrastructure admin: Vault CRUD, Keycloak roles/clients, HCL policies</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-auth-service</code></td>
+          <td>Authentication: Keycloak user lifecycle, login, JWT issuance</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-user-service</code></td>
+          <td>User domain: registration, profile, security details</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-api-gateway</code></td>
+          <td>Single entry point: routing, JWT validation, public/private path rules</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-service-registry</code></td>
+          <td>Eureka server: service discovery</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-config-server</code></td>
+          <td>Spring Cloud Config Server: centralized properties from Git</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-configs</code></td>
+          <td>Git-backed config files consumed by Config Server</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-infra</code></td>
+          <td>Docker Compose infrastructure: Kafka, Keycloak, Vault, Platform</td>
+      </tr>
+  </tbody>
+</table>
+
+<hr>
+<h2 id="explore-the-service-documentation">Explore the Service Documentation <a href="#explore-the-service-documentation" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><p>Dive deeper into individual service documentation:</p>
+
+
+
+
+
+
+
+<table class="table table-hover">
+  <thead>
+      <tr>
+          <th>Service</th>
+          <th>Description</th>
+          <th>Docs</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Admin Service</strong></td>
+          <td>Infrastructure administration — Vault CRUD, Keycloak roles/clients, HCL policies</td>
+          <td><a href="http://localhost:1313/docs/admin-service/" rel="external" target="_blank">View Admin Service Docs →<svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M14 5c-.552 0-1-.448-1-1s.448-1 1-1h6c.552 0 1 .448 1 1v6c0 .552-.448 1-1 1s-1-.448-1-1v-3.586l-7.293 7.293c-.391.39-1.024.39-1.414 0-.391-.391-.391-1.024 0-1.414l7.293-7.293h-3.586zm-9 2c-.552 0-1 .448-1 1v11c0 .552.448 1 1 1h11c.552 0 1-.448 1-1v-4.563c0-.552.448-1 1-1s1 .448 1 1v4.563c0 1.657-1.343 3-3 3h-11c-1.657 0-3-1.343-3-3v-11c0-1.657 1.343-3 3-3h4.563c.552 0 1 .448 1 1s-.448 1-1 1h-4.563z"/></svg></a></td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="alert alert-info d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  info
+  </span></div>
+  
+  <div class="w-100">More service documentation (auth-service, user-service, api-gateway, etc.) will be added as the platform evolves.</div>
+  </div>
+<hr>
+<h2 id="repository-map">Repository Map <a href="#repository-map" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2>
+
+
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+
+  <div class="prism-codeblock ">
+  <pre id="fbe8938" class="language-text ">
+  <code>Event-Based-Banking-Application/
+│
+├── arya-banking-infra/                  ← Docker Compose infra (run first)
+│   ├── compose/
+│   │   ├── kafka.yml                    ← Kafka KRaft &#43; Schema Registry &#43; Connect
+│   │   ├── keycloak.yml                 ← Keycloak 26 &#43; PostgreSQL 15
+│   │   ├── platform.yml                 ← Eureka (service-registry) &#43; Config Server
+│   │   └── vault.yml                    ← HashiCorp Vault 1.21
+│   └── Makefile                         ← make up / make kafka / make keycloak etc.
+│
+├── arya-banking-configs/                ← Git config repo (read by config-server)
+│   └── application.yml                  ← Shared: Eureka URL, Kafka, MongoDB URI, Gateway routes
+│
+├── arya-banking-service-registry/       ← Eureka Server (port 8761)
+├── arya-banking-config-server/          ← Spring Cloud Config Server (port 8090)
+│
+├── arya-banking-api-gateway/            ← Spring Cloud Gateway (port 8085)
+│
+├── arya-banking-auth-service/           ← Auth service (port 8087)
+├── arya-banking-user-service/           ← User service (port 8086)
+├── arya-banking-admin-service/          ← Admin service (port 8089)
+│
+└── arya-banking-common/                 ← Shared library (GitHub Packages, v1.1.9)</code>
+  </pre>
+  </div>
+<hr>
+<h2 id="system-architecture">System Architecture <a href="#system-architecture" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><pre class="mermaid">flowchart TD
+    CLIENT[&#34;Client (Browser / Mobile / Postman)&#34;] --&gt;|HTTP| GW
+
+    GW[&#34;API Gateway :8085&lt;br/&gt;Spring Cloud Gateway (WebFlux)&#34;] --&gt; US[&#34;User Service :8086&#34;]
+    GW --&gt; AU[&#34;Auth Service :8087&#34;]
+    GW --&gt; AS[&#34;Admin Service :8089&#34;]
+
+    AU --&gt;|&#34;Feign (OAuth2)&#34;| US
+    US --&gt;|&#34;Feign (OAuth2)&#34;| AU
+
+    US --&gt;|&#34;user.create.event&#34;| KF[&#34;Apache Kafka :9092&lt;br/&gt;Schema Registry :8081&#34;]
+    US --&gt; MG[(&#34;MongoDB Atlas&#34;)]
+    AS --&gt; MG
+
+    US &amp; AU &amp; AS --&gt; KC[&#34;Keycloak :5433&lt;br/&gt;PostgreSQL :5432&#34;]
+    AS --&gt; VT[&#34;HashiCorp Vault :8091&#34;]
+
+    SR[&#34;Eureka :8761&#34;] -.-&gt;|&#34;Service Discovery&#34;| GW &amp; US &amp; AU &amp; AS
+    CS[&#34;Config Server :8090&#34;] -.-&gt;|&#34;Centralized Config&#34;| GW &amp; US &amp; AU &amp; AS
+</pre>
+
+<div class="alert alert-info d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  info
+  </span></div>
+  
+  <div class="w-100">All services register with Eureka for dynamic service discovery. Configuration is centralized via Spring Cloud Config Server backed by a Git repository.</div>
+  </div>
+<hr>
+<h2 id="service-port-reference">Service Port Reference <a href="#service-port-reference" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2>
+
+
+
+
+
+
+<table class="table table-striped table-hover table-sm">
+  <thead>
+      <tr>
+          <th>Service</th>
+          <th>Port</th>
+          <th>Protocol</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>arya-banking-api-gateway</code></td>
+          <td><strong>8085</strong></td>
+          <td>HTTP (Reactive/WebFlux)</td>
+          <td>Single entry point for all clients</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-user-service</code></td>
+          <td><strong>8086</strong></td>
+          <td>HTTP (Servlet/MVC)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-auth-service</code></td>
+          <td><strong>8087</strong></td>
+          <td>HTTP (Servlet/MVC)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-admin-service</code></td>
+          <td><strong>8089</strong></td>
+          <td>HTTP (Servlet/MVC)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-config-server</code></td>
+          <td><strong>8090</strong></td>
+          <td>HTTP</td>
+          <td>Config Server</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-service-registry</code></td>
+          <td><strong>8761</strong></td>
+          <td>HTTP</td>
+          <td>Eureka Dashboard</td>
+      </tr>
+      <tr>
+          <td>HashiCorp Vault</td>
+          <td><strong>8091</strong></td>
+          <td>HTTP (→ 8200 inside Docker)</td>
+          <td>TLS disabled (dev mode)</td>
+      </tr>
+      <tr>
+          <td>Kafka</td>
+          <td><strong>9092</strong></td>
+          <td>PLAINTEXT</td>
+          <td>External; 29092 internal Docker</td>
+      </tr>
+      <tr>
+          <td>Schema Registry</td>
+          <td><strong>8081</strong></td>
+          <td>HTTP</td>
+          <td>Avro schema management</td>
+      </tr>
+      <tr>
+          <td>Kafka Connect</td>
+          <td><strong>8082</strong></td>
+          <td>HTTP</td>
+          <td>Connector REST API</td>
+      </tr>
+      <tr>
+          <td>Keycloak</td>
+          <td><strong>5433</strong></td>
+          <td>HTTP (→ 8080 inside Docker)</td>
+          <td>Admin console + token endpoint</td>
+      </tr>
+      <tr>
+          <td>PostgreSQL (Keycloak DB)</td>
+          <td><strong>5432</strong></td>
+          <td>TCP</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+
+<hr>
+<h2 id="how-the-repos-fit-together">How the Repos Fit Together <a href="#how-the-repos-fit-together" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><h3 id="startup-order">Startup Order <a href="#startup-order" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+
+  <div class="prism-codeblock ">
+  <pre id="7851358" class="language-text ">
+  <code>1. arya-banking-infra  (make up)
+   ├── Kafka &#43; Schema Registry
+   ├── Keycloak &#43; PostgreSQL
+   ├── HashiCorp Vault       ← unseal manually after first boot
+   └── service-registry &#43; config-server
+
+2. arya-banking-admin-service  (first microservice up)
+   └── Used to provision Vault secrets &#43; AppRoles &#43; Keycloak clients
+
+3. arya-banking-auth-service
+4. arya-banking-user-service
+5. arya-banking-api-gateway</code>
+  </pre>
+  </div>
+<h3 id="config-resolution-chain">Config Resolution Chain <a href="#config-resolution-chain" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><pre class="mermaid">flowchart LR
+    SVC[&#34;Microservice Startup&#34;] --&gt; BT[&#34;bootstrap.yml&#34;]
+    BT --&gt;|&#34;AppRole Auth&#34;| VT[&#34;Vault&lt;br/&gt;secret/arya-banking/{service}/dev&#34;]
+    SVC --&gt; AY[&#34;application.yaml&#34;]
+    AY --&gt;|&#34;import&#34;| CS[&#34;Config Server :8090&#34;]
+    CS --&gt;|&#34;fetches&#34;| GIT[&#34;arya-banking-configs&lt;br/&gt;application.yml&#34;]
+</pre>
+
+<div class="alert alert-info d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  info
+  </span></div>
+  
+  <div class="w-100">Each microservice loads secrets from Vault (via bootstrap.yml) and shared config from the Config Server (via application.yaml import).</div>
+  </div>
+<h3 id="shared-library-chain">Shared Library Chain <a href="#shared-library-chain" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><pre class="mermaid">flowchart TD
+    CMN[&#34;arya-banking-common v1.1.9&lt;br/&gt;(GitHub Packages)&#34;] --&gt; AS[&#34;admin-service&#34;]
+    CMN --&gt; AU[&#34;auth-service&#34;]
+    CMN --&gt; US[&#34;user-service&#34;]
+
+    CMN -.-&gt;|&#34;NOT used by&#34;| GW[&#34;api-gateway&#34;]
+    CMN -.-&gt;|&#34;NOT used by&#34;| SR[&#34;service-registry&#34;]
+    CMN -.-&gt;|&#34;NOT used by&#34;| CS[&#34;config-server&#34;]
+</pre>
+<p>The common library provides:</p>
+<ul>
+<li><strong>Domain Models</strong> — <code>User</code>, <code>SecurityDetails</code>, <code>RegistrationProgress</code>, <code>Role</code>, <code>Audit</code></li>
+<li><strong>Exception Hierarchy</strong> — <code>GlobalExceptionHandler</code> scanned via <code>@ComponentScan</code></li>
+<li><strong>Kafka Config</strong> — <code>KafkaConfiguration</code> bean (conditional on bootstrap servers)</li>
+<li><strong>OAuth2 Client Config</strong> — <code>OAuth2AuthorizedClientManager</code> for Feign interceptors</li>
+<li><strong>Feign Configuration</strong> — error decoder wired into all Feign clients</li>
+<li><strong>Avro Classes</strong> — <code>UserCreateEvent</code>, <code>AuditEvent</code> generated from <code>.avsc</code> schemas</li>
+<li><strong>Utilities</strong> — <code>CommonUtils</code> (isEmpty, SHA256), <code>MetaDataUtils</code> (versioning)</li>
+</ul>
+<hr>
+<h2 id="request-lifecycle--end-to-end">Request Lifecycle — End to End <a href="#request-lifecycle--end-to-end" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><h3 id="example-user-login">Example: User Login <a href="#example-user-login" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><pre class="mermaid">sequenceDiagram
+    participant C as Client
+    participant GW as API Gateway
+    participant AU as Auth Service
+    participant KC as Keycloak
+    participant US as User Service
+
+    C-&gt;&gt;GW: POST /api/auth/authenticate?username=X&amp;password=Y
+    Note over GW: Path permitted without JWT
+    GW-&gt;&gt;AU: Route to auth-service:8087
+    AU-&gt;&gt;KC: POST token endpoint (grant_type=password)
+    alt Login Success
+        KC--&gt;&gt;AU: JWT access_token
+        AU--&gt;&gt;GW: Return JWT to client
+    else Login Failure (401)
+        KC--&gt;&gt;AU: 401 Unauthorized
+        AU-&gt;&gt;US: Feign PUT /internal/api/security-details/{username}?loginFailed=true
+        US-&gt;&gt;US: Increment loginFailedAttempts
+        Note over US: If ≥5 attempts: disable Keycloak user &#43; set BLOCKED
+    end
+</pre>
+<h3 id="example-get-user-by-id-authenticated">Example: Get User by ID (Authenticated) <a href="#example-get-user-by-id-authenticated" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><pre class="mermaid">sequenceDiagram
+    participant C as Client
+    participant GW as API Gateway
+    participant US as User Service
+    participant MG as MongoDB
+
+    C-&gt;&gt;GW: GET /api/users/{userId} &#43; Bearer JWT
+    GW-&gt;&gt;GW: Validate JWT via Keycloak JWK Set
+    GW-&gt;&gt;US: Route to user-service:8086
+    US-&gt;&gt;US: Resource server validates JWT
+    US-&gt;&gt;MG: findByUserId(userId)
+    MG--&gt;&gt;US: User document
+    US--&gt;&gt;GW: 200 OK &#43; User
+    GW--&gt;&gt;C: Response
+</pre>
+<hr>
+<h2 id="secrets--configuration-flow">Secrets &amp; Configuration Flow <a href="#secrets--configuration-flow" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><h3 id="vault-secret-paths">Vault Secret Paths <a href="#vault-secret-paths" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Service</th>
+          <th>Vault Path</th>
+          <th>What&rsquo;s Stored</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>admin-service</code></td>
+          <td><code>secret/arya-banking/admin-service/dev</code></td>
+          <td><code>keycloak.client-secret</code>, etc.</td>
+      </tr>
+      <tr>
+          <td><code>auth-service</code></td>
+          <td><code>secret/arya-banking/auth-service/dev</code></td>
+          <td><code>AUTH.SERVICE.CLIENT.SECRET</code>, <code>ARYA.BANKING.AUTH.CLIENT.SECRET</code></td>
+      </tr>
+      <tr>
+          <td><code>user-service</code></td>
+          <td><code>secret/arya-banking/user-service/dev</code></td>
+          <td><code>MONGO.PASSWORD</code>, <code>USER.SERVICE.CLIENT.SECRET</code></td>
+      </tr>
+  </tbody>
+</table>
+
+<h3 id="approle-credentials">AppRole Credentials <a href="#approle-credentials" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><p>Each service has its own Vault AppRole. The <code>role-id</code> and <code>secret-id</code> are currently stored directly in <code>bootstrap.yml</code>.</p>
+
+<div class="alert alert-warning d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  warning
+  </span></div>
+  
+  <div class="w-100">AppRole credentials are hardcoded in bootstrap.yml — a dev-time convenience that must be externalized for production.</div>
+  </div>
+<h3 id="how-mongopassword-reaches-mongodb">How MONGO.PASSWORD Reaches MongoDB <a href="#how-mongopassword-reaches-mongodb" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><pre class="mermaid">flowchart LR
+    VT[&#34;Vault KV&lt;br/&gt;MONGO.PASSWORD&#34;] --&gt;|&#34;Spring Cloud Vault&#34;| SP[&#34;spring.application.mongo-password&#34;]
+    SP --&gt;|&#34;application.yaml placeholder&#34;| URI[&#34;spring.data.mongodb.uri&lt;br/&gt;mongodb&#43;srv://admin:${...}@cluster/...&#34;]
+</pre>
+<hr>
+<h2 id="authentication--authorization-model">Authentication &amp; Authorization Model <a href="#authentication--authorization-model" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><h3 id="keycloak-realm">Keycloak Realm <a href="#keycloak-realm" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+<div class="alert alert-info d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  info
+  </span></div>
+  
+  <div class="w-100">Realm: <code>event-based-banking-application</code></div>
+  </div>
+
+
+
+
+
+
+
+<table class="table table-striped table-hover table-sm">
+  <thead>
+      <tr>
+          <th>Client</th>
+          <th>Grant Type</th>
+          <th>Used By</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>banking-service-client</code></td>
+          <td><code>authorization_code</code></td>
+          <td>API Gateway</td>
+          <td>Browser-facing login flow</td>
+      </tr>
+      <tr>
+          <td><code>auth-service-client</code></td>
+          <td><code>client_credentials</code></td>
+          <td>auth-service</td>
+          <td>Feign inter-service calls</td>
+      </tr>
+      <tr>
+          <td><code>user-service-client</code></td>
+          <td><code>client_credentials</code></td>
+          <td>user-service</td>
+          <td>Feign inter-service calls</td>
+      </tr>
+      <tr>
+          <td><code>admin-service-client</code></td>
+          <td><code>client_credentials</code></td>
+          <td>admin-service</td>
+          <td>Keycloak Admin API</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-auth-client</code></td>
+          <td><code>password</code> (ROPC)</td>
+          <td>auth-service</td>
+          <td>Direct username/password login</td>
+      </tr>
+      <tr>
+          <td><code>INTERNAL_SERVICE</code></td>
+          <td><em>(Keycloak role)</em></td>
+          <td>All services</td>
+          <td>Service-to-service auth</td>
+      </tr>
+  </tbody>
+</table>
+
+<h3 id="jwt-role-extraction">JWT Role Extraction <a href="#jwt-role-extraction" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><p>All services share the same converter pattern — extract <code>realm_access.roles</code> from the Keycloak JWT and prefix with <code>ROLE_</code>:</p>
+
+
+
+  
+  
+  
+
+  
+  
+  
+    
+  
+    
+  
+  
+
+   
+  
+  
+
+  <div class="prism-codeblock  anchorlinenos linenos">
+  <pre id="aa6c136" class="language-java  line-numbers linkable-line-numbers">
+  <code>// Present in: admin-service, auth-service, user-service, api-gateway
+Map&lt;String, Object&gt; realmAccess = jwt.getClaim(&#34;realm_access&#34;);
+roles.stream().map(role -&gt; &#34;ROLE_&#34; &#43; role)</code>
+  </pre>
+  </div>
+<h3 id="security-rules-by-service">Security Rules by Service <a href="#security-rules-by-service" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Service</th>
+          <th>Public Paths</th>
+          <th>Internal Paths</th>
+          <th>Admin-only</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>api-gateway</code></td>
+          <td><code>/api/users/register</code>, <code>/api/auth/authenticate</code></td>
+          <td><code>/internal/**</code> → <code>ROLE_INTERNAL_SERVICE</code></td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td><code>auth-service</code></td>
+          <td><code>/api/auth/authenticate</code></td>
+          <td><code>/internal/**</code> → <code>ROLE_INTERNAL_SERVICE</code></td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td><code>user-service</code></td>
+          <td><code>/api/**</code> (currently all permitted)</td>
+          <td><code>/internal/**</code> → <code>ROLE_INTERNAL_SERVICE</code></td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td><code>admin-service</code></td>
+          <td>—</td>
+          <td><code>/internal/**</code> → <code>ROLE_INTERNAL_SERVICE</code></td>
+          <td>All <code>/api/admin/**</code> → <code>ROLE_ADMIN</code></td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="alert alert-warning d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  warning
+  </span></div>
+  
+  <div class="w-100"><code>user-service</code> has <code>.requestMatchers(&quot;/api/**&quot;).permitAll()</code> — all user APIs are currently unauthenticated. This is intentional during development but needs hardening for production.</div>
+  </div>
+<hr>
+<h2 id="event-driven-flow-kafka">Event-Driven Flow (Kafka) <a href="#event-driven-flow-kafka" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><h3 id="topics">Topics <a href="#topics" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Topic</th>
+          <th>Producer</th>
+          <th>Consumer (Planned)</th>
+          <th>Avro Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>user.create.event</code></td>
+          <td>user-service (<code>UserCreateProducer</code>)</td>
+          <td>TBD (notification, audit)</td>
+          <td><code>UserCreateEvent</code></td>
+      </tr>
+      <tr>
+          <td><code>audit.event</code></td>
+          <td>TBD</td>
+          <td>TBD</td>
+          <td><code>AuditEvent</code></td>
+      </tr>
+  </tbody>
+</table>
+
+<h3 id="usercreateevent-schema">UserCreateEvent Schema <a href="#usercreateevent-schema" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+  
+  
+  
+
+  
+  
+  
+    
+  
+    
+  
+  
+
+   
+  
+  
+
+  <div class="prism-codeblock  anchorlinenos linenos">
+  <pre id="9fe2569" class="language-json  line-numbers linkable-line-numbers">
+  <code>{
+  &#34;type&#34;: &#34;record&#34;,
+  &#34;name&#34;: &#34;UserCreateEvent&#34;,
+  &#34;fields&#34;: [
+    { &#34;name&#34;: &#34;userId&#34;,            &#34;type&#34;: &#34;string&#34; },
+    { &#34;name&#34;: &#34;status&#34;,            &#34;type&#34;: &#34;string&#34; },
+    { &#34;name&#34;: &#34;isEmailVerified&#34;,   &#34;type&#34;: &#34;boolean&#34;, &#34;default&#34;: false },
+    { &#34;name&#34;: &#34;isContactVerified&#34;, &#34;type&#34;: &#34;boolean&#34;, &#34;default&#34;: false }
+  ]
+}</code>
+  </pre>
+  </div>
+<h3 id="when-events-are-published">When Events Are Published <a href="#when-events-are-published" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Trigger</th>
+          <th>Status in Event</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Step 1 complete (basic details)</td>
+          <td><code>BASIC_DETAILS_ADDITION_COMPLETED</code></td>
+      </tr>
+      <tr>
+          <td>Step 2 complete (address added)</td>
+          <td><code>ADDRESS_ADDED</code></td>
+      </tr>
+      <tr>
+          <td>Step 3 complete (security questions)</td>
+          <td><code>SECURITY_CREDENTIALS_ADDED</code></td>
+      </tr>
+      <tr>
+          <td>User blocked (5 failed logins)</td>
+          <td><code>BLOCKED</code></td>
+      </tr>
+      <tr>
+          <td>Any user update</td>
+          <td>Current <code>user.status</code></td>
+      </tr>
+  </tbody>
+</table>
+
+<hr>
+<h2 id="inter-service-communication-feign--oauth2">Inter-Service Communication (Feign + OAuth2) <a href="#inter-service-communication-feign--oauth2" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><h3 id="service-to-service-calls">Service-to-Service Calls <a href="#service-to-service-calls" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><pre class="mermaid">flowchart LR
+    US[&#34;user-service&#34;] --&gt;|&#34;POST /internal/api/auth/register/users&lt;br/&gt;OAuth2 client_credentials&#34;| AU[&#34;auth-service&#34;]
+    AU --&gt;|&#34;PUT /internal/api/security-details/{userId}&lt;br/&gt;OAuth2 client_credentials&#34;| US
+</pre>
+<h3 id="oauth2-feign-interceptor-pattern">OAuth2 Feign Interceptor Pattern <a href="#oauth2-feign-interceptor-pattern" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><p>Both services use the same interceptor pattern for machine-to-machine JWT authentication:</p>
+
+
+
+  
+  
+  
+
+  
+  
+  
+    
+  
+    
+  
+  
+
+   
+  
+  
+
+  <div class="prism-codeblock  anchorlinenos linenos">
+  <pre id="404ff26" class="language-java  line-numbers linkable-line-numbers">
+  <code>// OAuth2FeignConfig (both auth-service and user-service)
+@Bean
+public RequestInterceptor oauth2RequestInterceptor() {
+    return requestTemplate -&gt; {
+        OAuth2AuthorizeRequest request = OAuth2AuthorizeRequest
+            .withClientRegistrationId(clientRegistrationId)
+            .principal(clientRegistrationId).build();
+        OAuth2AuthorizedClient client = authorizedClientManager.authorize(request);
+        requestTemplate.header(AUTHORIZATION,
+            &#34;Bearer &#34; &#43; client.getAccessToken().getTokenValue());
+    };
+}</code>
+  </pre>
+  </div>
+
+<div class="alert alert-info d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  info
+  </span></div>
+  
+  <div class="w-100">The outgoing Feign request carries a machine-to-machine JWT, accepted at the target service via <code>ROLE_INTERNAL_SERVICE</code> check. The <code>INTERNAL_SERVICE</code> Keycloak realm role is assigned to service account users.</div>
+  </div>
+<hr>
+<h2 id="infrastructure-stack">Infrastructure Stack <a href="#infrastructure-stack" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><p>All compose files share the external network <code>arya-banking-net</code>. The <code>Makefile</code> is the primary operator interface.</p>
+
+<nav>
+	<div class="nav nav-tabs" id="nav-tab" role="tablist">
+
+		
+		
+		
+		
+
+		
+
+		<a class="nav-link  active"
+		   id="cebdfaTab" data-bs-toggle="tab" data-bs-target="#cebdfa"
+		   type="button" role="tab" aria-controls="cebdfa" aria-selected="true">Kafka</a>
+
+		
+
+		<a class="nav-link "
+		   id="cafbdeTab" data-bs-toggle="tab" data-bs-target="#cafbde"
+		   type="button" role="tab" aria-controls="cafbde" aria-selected="true">Keycloak</a>
+
+		
+
+		<a class="nav-link "
+		   id="feacbdTab" data-bs-toggle="tab" data-bs-target="#feacbd"
+		   type="button" role="tab" aria-controls="feacbd" aria-selected="true">Platform</a>
+
+		
+
+		<a class="nav-link "
+		   id="dabcefTab" data-bs-toggle="tab" data-bs-target="#dabcef"
+		   type="button" role="tab" aria-controls="dabcef" aria-selected="true">Vault</a>
+
+		
+
+	</div>
+</nav>
+
+<div class="tab-content" id="nav-tab-content">
+
+	
+
+
+
+
+
+
+
+<div class="tab-pane fade show active" id="cebdfa" role="tabpanel" aria-labelledby="nav-1">
+
+	<p><strong><code>compose/kafka.yml</code></strong></p>
+<ul>
+<li>Kafka (KRaft mode, single broker+controller)</li>
+<li>Schema Registry (backward compatibility)</li>
+<li>Kafka Connect (REST API on 8082)</li>
+<li>Network: <code>arya-banking-net</code></li>
+</ul>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="tab-pane fade" id="cafbde" role="tabpanel" aria-labelledby="nav-1">
+
+	<p><strong><code>compose/keycloak.yml</code></strong></p>
+<ul>
+<li>PostgreSQL 15 (Keycloak persistence, port 5432)</li>
+<li>Keycloak 26.0.2 — <code>start-dev</code> mode, Argon2id password hashing</li>
+<li>Port mapping: <code>5433 → 8080</code></li>
+<li>Data persisted to <code>./keycloak-data</code></li>
+</ul>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="tab-pane fade" id="feacbd" role="tabpanel" aria-labelledby="nav-1">
+
+	<p><strong><code>compose/platform.yml</code></strong></p>
+<ul>
+<li><code>karthikulkarni/arya-banking-service-registry:latest</code> (port 8761)</li>
+<li><code>karthikulkarni/arya-banking-config-server:latest</code> (port 8090)</li>
+<li>Both on <code>arya-banking-net</code></li>
+</ul>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="tab-pane fade" id="dabcef" role="tabpanel" aria-labelledby="nav-1">
+
+	<p><strong><code>compose/vault.yml</code></strong></p>
+<ul>
+<li>HashiCorp Vault 1.21</li>
+<li>Port mapping: <code>8091 → 8200</code></li>
+<li>File storage backend at <code>/vault/data</code></li>
+<li>Config: <code>vault/config/vault.hcl</code> (UI enabled, TLS disabled)</li>
+</ul>
+
+
+</div>
+
+
+
+</div>
+<h3 id="makefile-targets">Makefile Targets <a href="#makefile-targets" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Target</th>
+          <th>Action</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>make up</code></td>
+          <td>Create network + start all stacks</td>
+      </tr>
+      <tr>
+          <td><code>make down</code></td>
+          <td>Stop all stacks</td>
+      </tr>
+      <tr>
+          <td><code>make kafka</code></td>
+          <td>Start Kafka stack only</td>
+      </tr>
+      <tr>
+          <td><code>make keycloak</code></td>
+          <td>Start Keycloak stack only</td>
+      </tr>
+      <tr>
+          <td><code>make platform</code></td>
+          <td>Start Eureka + Config Server only</td>
+      </tr>
+      <tr>
+          <td><code>make vault</code></td>
+          <td>Start Vault only</td>
+      </tr>
+      <tr>
+          <td><code>make clean</code></td>
+          <td>Down + remove volumes + orphans</td>
+      </tr>
+  </tbody>
+</table>
+
+<hr>
+<h2 id="user-registration-flow-multi-step">User Registration Flow (Multi-Step) <a href="#user-registration-flow-multi-step" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><p>The user-service implements a 3-step registration tracked via <code>RegistrationProgress</code> in MongoDB.</p>
+<pre class="mermaid">stateDiagram-v2
+    [*] --&gt; Step1: POST /api/users/register
+    Step1 --&gt; Step2: PUT /api/users/{userId}
+    Step2 --&gt; Step3: PUT /api/security-details/{userId}
+    Step3 --&gt; [*]
+
+    state Step1 {
+        [*] --&gt; ValidateNoDuplicates
+        ValidateNoDuplicates --&gt; CreateUserDoc
+        CreateUserDoc --&gt; FeignCallAuthService: POST /internal/api/auth/register/users
+        FeignCallAuthService --&gt; SaveRegistrationProgress: BASIC_DETAILS_ADDITION_COMPLETED
+        SaveRegistrationProgress --&gt; SaveSecurityDetails
+        SaveSecurityDetails --&gt; PublishKafkaEvent
+    }
+
+    state Step2 {
+        [*] --&gt; AddAddress
+        AddAddress --&gt; DetectLevel2
+        DetectLevel2 --&gt; UpdateProgress: ADDRESS_ADDED
+        UpdateProgress --&gt; PublishEvent2
+    }
+
+    state Step3 {
+        [*] --&gt; SetSecurityQuestions
+        SetSecurityQuestions --&gt; DetectLevel3
+        DetectLevel3 --&gt; CompleteRegistration: SECURITY_CREDENTIALS_ADDED
+        CompleteRegistration --&gt; PublishEvent3
+    }
+</pre>
+<h3 id="userid-generation">userId Generation <a href="#userid-generation" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+  
+  
+  
+
+  
+  
+  
+    
+  
+    
+  
+  
+
+   
+  
+  
+
+  <div class="prism-codeblock  anchorlinenos linenos">
+  <pre id="4c808f3" class="language-java  line-numbers linkable-line-numbers">
+  <code>&#34;ARYA&#34; &#43; SHA256(firstName &#43; lastName &#43; System.currentTimeMillis())
+    .substring(0, 6).toUpperCase()
+// e.g. ARYA3F9A12</code>
+  </pre>
+  </div>
+<hr>
+<h2 id="common-library-role">Common Library Role <a href="#common-library-role" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><p><code>arya-banking-common</code> is the <strong>single source of truth</strong> for everything shared across services. It is published to GitHub Packages and versioned independently.</p>
+<pre class="mermaid">flowchart TD
+    CMN[&#34;arya-banking-common v1.1.9&#34;] --&gt; DM[&#34;Domain Models&lt;br/&gt;User, SecurityDetails, RegistrationProgress, Role, Audit&#34;]
+    CMN --&gt; EX[&#34;Exception Hierarchy&lt;br/&gt;GlobalExceptionHandler via @ComponentScan&#34;]
+    CMN --&gt; KK[&#34;Kafka Config&lt;br/&gt;KafkaConfiguration (conditional)&#34;]
+    CMN --&gt; OA[&#34;OAuth2ClientConfig&lt;br/&gt;OAuth2AuthorizedClientManager for Feign&#34;]
+    CMN --&gt; FC[&#34;FeignConfiguration&lt;br/&gt;Error decoder for all Feign clients&#34;]
+    CMN --&gt; AV[&#34;Avro Classes&lt;br/&gt;UserCreateEvent, AuditEvent&#34;]
+    CMN --&gt; UT[&#34;Utilities&lt;br/&gt;CommonUtils, MetaDataUtils&#34;]
+</pre>
+
+<div class="alert alert-warning d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  warning
+  </span></div>
+  
+  <div class="w-100"><code>auth-service</code> and <code>user-service</code> use <code>arya-banking-common:1.1.7</code>, while <code>admin-service</code> uses <code>1.1.9</code>. There may be missing constants or types in the older version.</div>
+  </div>
+<hr>
+<h2 id="dependency-version-matrix">Dependency Version Matrix <a href="#dependency-version-matrix" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2>
+
+
+
+
+
+
+<table class="table table-striped table-hover table-sm">
+  <thead>
+      <tr>
+          <th>Component</th>
+          <th>Version</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Spring Boot</td>
+          <td><code>3.5.4</code></td>
+          <td>All services</td>
+      </tr>
+      <tr>
+          <td>Spring Cloud</td>
+          <td><code>2025.0.0</code></td>
+          <td>All services</td>
+      </tr>
+      <tr>
+          <td>Java</td>
+          <td><code>17</code></td>
+          <td>All services</td>
+      </tr>
+      <tr>
+          <td><code>arya-banking-common</code></td>
+          <td><code>1.1.9</code> (admin), <code>1.1.7</code> (auth, user)</td>
+          <td>Version drift</td>
+      </tr>
+      <tr>
+          <td>Keycloak Admin Client</td>
+          <td><code>26.0.4</code></td>
+          <td>admin-service, auth-service</td>
+      </tr>
+      <tr>
+          <td>Keycloak (Docker)</td>
+          <td><code>26.0.2</code></td>
+          <td>infra/keycloak.yml</td>
+      </tr>
+      <tr>
+          <td>HashiCorp Vault (Docker)</td>
+          <td><code>1.21</code></td>
+          <td>infra/vault.yml</td>
+      </tr>
+      <tr>
+          <td>MapStruct</td>
+          <td><code>1.5.5.Final</code></td>
+          <td>admin-service, user-service</td>
+      </tr>
+      <tr>
+          <td>Lombok</td>
+          <td><code>1.18.36</code></td>
+          <td>All services</td>
+      </tr>
+      <tr>
+          <td>Avro</td>
+          <td><code>1.11.4</code></td>
+          <td>common, admin-service, user-service</td>
+      </tr>
+      <tr>
+          <td>SpringDoc OpenAPI</td>
+          <td><code>2.8.9</code></td>
+          <td>admin-service, user-service</td>
+      </tr>
+      <tr>
+          <td>JaCoCo</td>
+          <td><code>0.8.13</code></td>
+          <td>All services</td>
+      </tr>
+      <tr>
+          <td>SpotBugs</td>
+          <td><code>4.8.6.1</code></td>
+          <td>Most services</td>
+      </tr>
+      <tr>
+          <td>Apache HttpClient5</td>
+          <td>(default)</td>
+          <td>auth-service RestTemplate pool</td>
+      </tr>
+      <tr>
+          <td>PostgreSQL (Docker)</td>
+          <td><code>15</code></td>
+          <td>infra/keycloak.yml</td>
+      </tr>
+      <tr>
+          <td>Confluent Kafka</td>
+          <td><code>latest</code></td>
+          <td>infra/kafka.yml</td>
+      </tr>
+  </tbody>
+</table>
+
+<hr>
+<h2 id="cicd-pipeline-overview">CI/CD Pipeline Overview <a href="#cicd-pipeline-overview" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><p>All microservice repos share the same 3-workflow structure, delegating to shared workflows in <code>arya-banking-workflows</code>.</p>
+<h3 id="per-repository-workflows">Per-Repository Workflows <a href="#per-repository-workflows" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+
+  <div class="prism-codeblock ">
+  <pre id="625a7b1" class="language-text ">
+  <code>.github/workflows/
+├── deploy.yml               ← Push to master → build &#43; deploy to GitHub Packages &#43; git tag
+├── sonar-report.yml         ← Push/PR → SonarCloud analysis
+└── auto-create-issues.yaml  ← Manual → create GitHub Issues from issues.json</code>
+  </pre>
+  </div>
+<h3 id="deploy-flow">Deploy Flow <a href="#deploy-flow" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><pre class="mermaid">flowchart LR
+    P[&#34;push to master&#34;] --&gt; J17[&#34;Setup Java 17 (Temurin)&#34;]
+    J17 --&gt; CACHE[&#34;Cache ~/.m2&#34;]
+    CACHE --&gt; MVN[&#34;mvn clean deploy&#34;]
+    MVN --&gt; VER[&#34;Extract version from pom.xml&#34;]
+    VER --&gt; TAG[&#34;git tag v{version} &#43; push&#34;]
+</pre>
+<h3 id="required-secrets">Required Secrets <a href="#required-secrets" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Secret</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>GH_PAT</code></td>
+          <td>Read <code>arya-banking-common</code> from GitHub Packages + push tags</td>
+      </tr>
+      <tr>
+          <td><code>SONAR_TOKEN</code></td>
+          <td>SonarCloud authentication</td>
+      </tr>
+      <tr>
+          <td><code>SONAR_PROJECT_KEY</code></td>
+          <td>SonarCloud project identifier</td>
+      </tr>
+      <tr>
+          <td><code>SONAR_ORG</code></td>
+          <td>SonarCloud organization key</td>
+      </tr>
+      <tr>
+          <td><code>ORG_ISSUE_TOKEN</code></td>
+          <td>Auto-create GitHub Issues</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="alert alert-info d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  info
+  </span></div>
+  
+  <div class="w-100"><code>user-service</code> additionally has <code>delete-all-issues.yaml</code> — a bulk delete workflow for all issues + milestones via GitHub API.</div>
+  </div>
+<hr>
+<h2 id="platform-wide-observations--gaps">Platform-Wide Observations &amp; Gaps <a href="#platform-wide-observations--gaps" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h2><h3 id="security">Security <a href="#security" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Gap</th>
+          <th>Location</th>
+          <th>Severity</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>DELETE /api/admin/vault-secrets</code> missing <code>@PreAuthorize</code></td>
+          <td>admin-service</td>
+          <td>High</td>
+      </tr>
+      <tr>
+          <td>All <code>/api/**</code> in user-service are <code>permitAll()</code></td>
+          <td>user-service SecurityConfig</td>
+          <td>High</td>
+      </tr>
+      <tr>
+          <td>AppRole credentials hardcoded in <code>bootstrap.yml</code></td>
+          <td>admin, auth, user service</td>
+          <td>Medium</td>
+      </tr>
+      <tr>
+          <td><code>banking-service-client</code> secret hardcoded in gateway <code>application.yaml</code></td>
+          <td>api-gateway</td>
+          <td>Medium</td>
+      </tr>
+      <tr>
+          <td><code>user-service</code> uses <code>arya-banking-common:1.1.7</code> not <code>1.1.9</code></td>
+          <td>user-service pom.xml</td>
+          <td>Low</td>
+      </tr>
+  </tbody>
+</table>
+
+<h3 id="missing-implementations">Missing Implementations <a href="#missing-implementations" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3>
+
+
+
+
+
+
+<table class="table table-striped table-sm">
+  <thead>
+      <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Kafka consumers</td>
+          <td>Not implemented</td>
+          <td>Producers exist in user-service; no consumers defined anywhere</td>
+      </tr>
+      <tr>
+          <td>Spring Batch jobs</td>
+          <td>Declared, not used</td>
+          <td>Dependency in admin, user, auth service pom.xml</td>
+      </tr>
+      <tr>
+          <td>Unit / integration tests</td>
+          <td>Stub only</td>
+          <td>All test files are empty context-load stubs</td>
+      </tr>
+      <tr>
+          <td>Audit event publishing</td>
+          <td>Schema defined</td>
+          <td><code>AuditEvent.avsc</code> exists but nothing publishes to <code>audit.event</code></td>
+      </tr>
+      <tr>
+          <td>Admin user management APIs</td>
+          <td>Planned</td>
+          <td>In <code>issues.json</code>: list users, block/unblock, stats</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="alert alert-danger d-flex" role="alert">
+  <div class="flex-shrink-1 alert-icon">
+  
+  <span class="material-icons size-20 me-2">
+  report
+  </span></div>
+  
+  <div class="w-100"><code>application.yaml</code> in <code>arya-banking-config-server</code> has a typo: <code>localhosat:8761</code> in Eureka URL — config server won&rsquo;t register with Eureka correctly.</div>
+  </div>
+<h3 id="architectural-strengths">Architectural Strengths <a href="#architectural-strengths" class="anchor" aria-hidden="true"><i class="material-icons align-middle">link</i></a></h3><ul>
+<li>Clean separation of concerns across all 9 repos</li>
+<li>Consistent patterns: same security config, same OAuth2 Feign interceptor, same Vault bootstrap in every service</li>
+<li><code>arya-banking-common</code> significantly reduces code duplication</li>
+<li>Operation-based RBAC (admin-service) makes role changes a config-only update</li>
+<li>Vault HCL policies as classpath resources — policy-as-code, version-controlled</li>
+<li><code>Makefile</code> for infra is clean and ergonomic</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+    <script src="/docs/js/mermaid.min.js" ></script>
+    <script>
+        const config = {
+            startOnLoad:true,
+            logLevel: "error",
+            align: "center",
+            theme:"null"
+        };
+        mermaid.initialize(config);
+    </script>
+    
+
+    
+                                            </div>
+                                            <div><hr class="doc-hr">
+<div id="doc-nav" class="d-print-none">
+</div>
+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+<footer class="shadow py-3 d-print-none">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="text-sm-start text-center mx-md-2">
+                    <p class="mb-0">
+                        
+                        © 2025 Arya Banking
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</main>
+            </div>
+        </div>
+
+        
+        
+        <button onclick="topFunction()" id="back-to-top" aria-label="Back to Top Button" class="back-to-top fs-5"><svg width="24" height="24"><path d="M12,10.224l-6.3,6.3L4.32,15.152,12,7.472l7.68,7.68L18.3,16.528Z" style="fill:#fff"/></svg></button>
+        
+        
+
+        
+        
+            <script>(()=>{var e=document.getElementById("mode");e!==null&&(window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{e.matches?(localStorage.setItem("theme","dark"),document.documentElement.setAttribute("data-dark-mode","")):(localStorage.setItem("theme","light"),document.documentElement.removeAttribute("data-dark-mode"))}),e.addEventListener("click",()=>{document.documentElement.toggleAttribute("data-dark-mode"),localStorage.setItem("theme",document.documentElement.hasAttribute("data-dark-mode")?"dark":"light")}),localStorage.getItem("theme")==="dark"?document.documentElement.setAttribute("data-dark-mode",""):document.documentElement.removeAttribute("data-dark-mode"))})()</script>
+        
+
+
+
+
+    
+        
+        
+    
+    
+
+
+
+
+
+
+    <script src="/docs/js/bootstrap.js" defer></script>
+
+
+    <script type="text/javascript" src="http://localhost:1313/docs/js/bundle.js" defer></script>
+
+        <script>
+            (function() {
+                var tocEl = document.getElementById('toc-collapse');
+                var tocBtn = document.querySelector('[data-bs-target="#toc-collapse"]');
+                if (!tocEl || !tocBtn) return;
+
+                var justOpened = false;
+
+                
+                tocEl.addEventListener('shown.bs.collapse', function() {
+                    justOpened = true;
+                    setTimeout(function() { justOpened = false; }, 500);
+                });
+
+                function closeToc() {
+                    if (tocEl.classList.contains('show') && !justOpened) {
+                        tocBtn.click();
+                    }
+                }
+
+                
+                document.addEventListener('scroll', function() {
+                    closeToc();
+                }, true);
+
+                
+                tocEl.addEventListener('click', function(e) {
+                    var link = e.target.closest('a');
+                    if (link) {
+                        e.preventDefault();
+                        justOpened = false; 
+                        closeToc();
+                        var href = link.getAttribute('href');
+                        if (href) {
+                            setTimeout(function() { window.location.hash = href; }, 250);
+                        }
+                    }
+                });
+            })();
+        </script>
+
+        
+        
+
+        
+        <script type="module">
+    var suggestions = document.getElementById('suggestions');
+    var search = document.getElementById('flexsearch');
+
+    const flexsearchContainer = document.getElementById('FlexSearchCollapse');
+
+    const hideFlexsearchBtn = document.getElementById('hideFlexsearch');
+
+    const configObject = { toggle: false }
+    const flexsearchContainerCollapse = new Collapse(flexsearchContainer, configObject) 
+
+    if (search !== null) {
+        document.addEventListener('keydown', inputFocus);
+        flexsearchContainer.addEventListener('shown.bs.collapse', function () {
+            search.focus();
+        });
+        
+        var topHeader = document.getElementById("top-header");
+        document.addEventListener('click', function(elem) {
+            if (!flexsearchContainer.contains(elem.target) && !topHeader.contains(elem.target))
+                flexsearchContainerCollapse.hide();
+        });
+    }
+
+    hideFlexsearchBtn.addEventListener('click', () =>{
+        flexsearchContainerCollapse.hide()
+    })
+
+    function inputFocus(e) {
+        if (e.ctrlKey && e.key === '/') {
+            e.preventDefault();
+            flexsearchContainerCollapse.toggle();
+        }
+        if (e.key === 'Escape' ) {
+            search.blur();
+            
+            flexsearchContainerCollapse.hide();
+        }
+    };
+
+    document.addEventListener('click', function(event) {
+
+    var isClickInsideElement = suggestions.contains(event.target);
+
+    if (!isClickInsideElement) {
+        suggestions.classList.add('d-none');
+    }
+
+    });
+
+    
+
+
+    document.addEventListener('keydown',suggestionFocus);
+
+    function suggestionFocus(e) {
+    const suggestionsHidden = suggestions.classList.contains('d-none');
+    if (suggestionsHidden) return;
+
+    const focusableSuggestions= [...suggestions.querySelectorAll('a')];
+    if (focusableSuggestions.length === 0) return;
+
+    const index = focusableSuggestions.indexOf(document.activeElement);
+
+    if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const nextIndex = index > 0 ? index - 1 : 0;
+        focusableSuggestions[nextIndex].focus();
+    }
+    else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const nextIndex= index + 1 < focusableSuggestions.length ? index + 1 : index;
+        focusableSuggestions[nextIndex].focus();
+    }
+
+    }
+
+    
+
+
+    (function(){
+
+    var index = new FlexSearch.Document({
+        
+        tokenize: "forward",
+        minlength:  2 ,
+        cache:  100 ,
+        optimize:  true ,
+        document: {
+        id: 'id',
+        store: [
+            "href", "title", "description"
+        ],
+        index: ["title", "description", "content"]
+        }
+    });
+
+
+    
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+
+    
+
+    index.add(
+            {
+                id:  0 ,
+                href: "\/docs\/admin-service\/overview\/",
+                title: "Overview",
+                description: "What the admin-service does, its role in the Arya Banking platform, and the tech stack powering it.",
+                content: "What is the Admin Service? linkThe arya-banking-admin-service is the administrative backbone of the Arya Banking event-driven microservices platform. It serves a dual purpose:\nInfrastructure Administration — Manages HashiCorp Vault secrets, AppRole credentials, and HCL policies programmatically via a REST API. Identity Administration — Manages Keycloak realm roles and inter-service OAuth2 clients via the Keycloak Admin Client. All APIs are protected by JWT-based OAuth2 Resource Server (Keycloak-issued tokens) and role-checked at the method level via a custom RolePermissionValidator backed by the security.api-roles configuration map.\nService Coordinates link Property Value Artifact org.arya.banking:arya-banking-admin-service Version 1.0.0 Java 17 Spring Boot 3.5.4 Spring Cloud 2025.0.0 Common Library arya-banking-common:1.1.9 Server Port 8089 Base API Path /api/admin GitHub Repo Event-Based-Banking-Application/arya-banking-admin-service Responsibilities linkThe admin-service is the only service in the platform that has elevated Vault and Keycloak privileges. Other services receive read-only access; the admin-service provisions, manages, and rotates that access.\nVault Management link Create, read, update, and delete KV v2 secrets scoped to individual services under secret/arya-banking/{service}/dev Full CRUD over Vault AppRoles — including generating fresh roleId / secretId credential pairs Upload and delete HCL policy files (stored as classpath resources, versioned in Git) Keycloak Management link Create confidential OAuth2 clients for inter-service communication (service accounts flow) Create, list, and query realm-level roles Assign the INTERNAL_SERVICE realm role to the service account of newly-created clients Technology Stack link Layer Technology Framework Spring Boot 3.5.4 + Spring Cloud 2025.0.0 REST API Spring Web MVC Security Spring Security OAuth2 Resource Server (JWT) Secrets HashiCorp Vault (AppRole auth, KV v2) Identity Keycloak Admin Client v26.0.4 Service Discovery Netflix Eureka Client Config Server Spring Cloud Config Database MongoDB (via arya-banking-common) Mapping MapStruct 1.5.5 API Docs SpringDoc OpenAPI / Swagger UI Build Maven + Spring Boot Buildpacks CI/CD GitHub Actions info Kafka (spring-kafka + kafka-streams) and Spring Batch are declared as Maven dependencies but are not yet implemented. They are reserved for future event publishing and batch processing features. "
+            }
+        );
+    index.add(
+            {
+                id:  1 ,
+                href: "\/docs\/platform-overview\/",
+                title: "Platform Overview",
+                description: "Complete architecture overview of the Arya Banking event-driven microservices platform — repositories, infrastructure, security, and inter-service communication.",
+                content: "Platform Summary linkArya Banking is an event-driven microservices platform modelling the core backend of a digital banking application. It is built around a service mesh of independently deployable Spring Boot services coordinated through Spring Cloud infrastructure (Eureka + Config Server), secured via Keycloak OAuth2/JWT, secrets-managed through HashiCorp Vault, and event-driven via Apache Kafka with Avro schemas.\ninfo Stack: Spring Boot 3.5.4 · Spring Cloud 2025.0.0 · Java 17 · MongoDB · Kafka · Keycloak · HashiCorp Vault · Eureka The platform currently has 9 repositories, each with a distinct responsibility:\nRepository Role arya-banking-common Shared library: domain models, exceptions, Kafka config, Avro, utilities arya-banking-admin-service Infrastructure admin: Vault CRUD, Keycloak roles/clients, HCL policies arya-banking-auth-service Authentication: Keycloak user lifecycle, login, JWT issuance arya-banking-user-service User domain: registration, profile, security details arya-banking-api-gateway Single entry point: routing, JWT validation, public/private path rules arya-banking-service-registry Eureka server: service discovery arya-banking-config-server Spring Cloud Config Server: centralized properties from Git arya-banking-configs Git-backed config files consumed by Config Server arya-banking-infra Docker Compose infrastructure: Kafka, Keycloak, Vault, Platform Explore the Service Documentation linkDive deeper into individual service documentation:\nService Description Docs Admin Service Infrastructure administration — Vault CRUD, Keycloak roles/clients, HCL policies View Admin Service Docs → info More service documentation (auth-service, user-service, api-gateway, etc.) will be added as the platform evolves. Repository Map link Event-Based-Banking-Application/ │ ├── arya-banking-infra/ ← Docker Compose infra (run first) │ ├── compose/ │ │ ├── kafka.yml ← Kafka KRaft + Schema Registry + Connect │ │ ├── keycloak.yml ← Keycloak 26 + PostgreSQL 15 │ │ ├── platform.yml ← Eureka (service-registry) + Config Server │ │ └── vault.yml ← HashiCorp Vault 1.21 │ └── Makefile ← make up / make kafka / make keycloak etc. │ ├── arya-banking-configs/ ← Git config repo (read by config-server) │ └── application.yml ← Shared: Eureka URL, Kafka, MongoDB URI, Gateway routes │ ├── arya-banking-service-registry/ ← Eureka Server (port 8761) ├── arya-banking-config-server/ ← Spring Cloud Config Server (port 8090) │ ├── arya-banking-api-gateway/ ← Spring Cloud Gateway (port 8085) │ ├── arya-banking-auth-service/ ← Auth service (port 8087) ├── arya-banking-user-service/ ← User service (port 8086) ├── arya-banking-admin-service/ ← Admin service (port 8089) │ └── arya-banking-common/ ← Shared library (GitHub Packages, v1.1.9) System Architecture linkflowchart TD CLIENT[\"Client (Browser / Mobile / Postman)\"] --\u003e|HTTP| GW GW[\"API Gateway :8085Spring Cloud Gateway (WebFlux)\"] --\u003e US[\"User Service :8086\"] GW --\u003e AU[\"Auth Service :8087\"] GW --\u003e AS[\"Admin Service :8089\"] AU --\u003e|\"Feign (OAuth2)\"| US US --\u003e|\"Feign (OAuth2)\"| AU US --\u003e|\"user.create.event\"| KF[\"Apache Kafka :9092Schema Registry :8081\"] US --\u003e MG[(\"MongoDB Atlas\")] AS --\u003e MG US \u0026 AU \u0026 AS --\u003e KC[\"Keycloak :5433PostgreSQL :5432\"] AS --\u003e VT[\"HashiCorp Vault :8091\"] SR[\"Eureka :8761\"] -.-\u003e|\"Service Discovery\"| GW \u0026 US \u0026 AU \u0026 AS CS[\"Config Server :8090\"] -.-\u003e|\"Centralized Config\"| GW \u0026 US \u0026 AU \u0026 AS info All services register with Eureka for dynamic service discovery. Configuration is centralized via Spring Cloud Config Server backed by a Git repository. Service Port Reference link Service Port Protocol Notes arya-banking-api-gateway 8085 HTTP (Reactive/WebFlux) Single entry point for all clients arya-banking-user-service 8086 HTTP (Servlet/MVC) arya-banking-auth-service 8087 HTTP (Servlet/MVC) arya-banking-admin-service 8089 HTTP (Servlet/MVC) arya-banking-config-server 8090 HTTP Config Server arya-banking-service-registry 8761 HTTP Eureka Dashboard HashiCorp Vault 8091 HTTP (→ 8200 inside Docker) TLS disabled (dev mode) Kafka 9092 PLAINTEXT External; 29092 internal Docker Schema Registry 8081 HTTP Avro schema management Kafka Connect 8082 HTTP Connector REST API Keycloak 5433 HTTP (→ 8080 inside Docker) Admin console + token endpoint PostgreSQL (Keycloak DB) 5432 TCP How the Repos Fit Together linkStartup Order link 1. arya-banking-infra (make up) ├── Kafka + Schema Registry ├── Keycloak + PostgreSQL ├── HashiCorp Vault ← unseal manually after first boot └── service-registry + config-server 2. arya-banking-admin-service (first microservice up) └── Used to provision Vault secrets + AppRoles + Keycloak clients 3. arya-banking-auth-service 4. arya-banking-user-service 5. arya-banking-api-gateway Config Resolution Chain linkflowchart LR SVC[\"Microservice Startup\"] --\u003e BT[\"bootstrap.yml\"] BT --\u003e|\"AppRole Auth\"| VT[\"Vaultsecret/arya-banking/{service}/dev\"] SVC --\u003e AY[\"application.yaml\"] AY --\u003e|\"import\"| CS[\"Config Server :8090\"] CS --\u003e|\"fetches\"| GIT[\"arya-banking-configsapplication.yml\"] info Each microservice loads secrets from Vault (via bootstrap.yml) and shared config from the Config Server (via application.yaml import). Shared Library Chain linkflowchart TD CMN[\"arya-banking-common v1.1.9(GitHub Packages)\"] --\u003e AS[\"admin-service\"] CMN --\u003e AU[\"auth-service\"] CMN --\u003e US[\"user-service\"] CMN -.-\u003e|\"NOT used by\"| GW[\"api-gateway\"] CMN -.-\u003e|\"NOT used by\"| SR[\"service-registry\"] CMN -.-\u003e|\"NOT used by\"| CS[\"config-server\"] The common library provides:\nDomain Models — User, SecurityDetails, RegistrationProgress, Role, Audit Exception Hierarchy — GlobalExceptionHandler scanned via @ComponentScan Kafka Config — KafkaConfiguration bean (conditional on bootstrap servers) OAuth2 Client Config — OAuth2AuthorizedClientManager for Feign interceptors Feign Configuration — error decoder wired into all Feign clients Avro Classes — UserCreateEvent, AuditEvent generated from .avsc schemas Utilities — CommonUtils (isEmpty, SHA256), MetaDataUtils (versioning) Request Lifecycle — End to End linkExample: User Login linksequenceDiagram participant C as Client participant GW as API Gateway participant AU as Auth Service participant KC as Keycloak participant US as User Service C-\u003e\u003eGW: POST /api/auth/authenticate?username=X\u0026password=Y Note over GW: Path permitted without JWT GW-\u003e\u003eAU: Route to auth-service:8087 AU-\u003e\u003eKC: POST token endpoint (grant_type=password) alt Login Success KC--\u003e\u003eAU: JWT access_token AU--\u003e\u003eGW: Return JWT to client else Login Failure (401) KC--\u003e\u003eAU: 401 Unauthorized AU-\u003e\u003eUS: Feign PUT /internal/api/security-details/{username}?loginFailed=true US-\u003e\u003eUS: Increment loginFailedAttempts Note over US: If ≥5 attempts: disable Keycloak user + set BLOCKED end Example: Get User by ID (Authenticated) linksequenceDiagram participant C as Client participant GW as API Gateway participant US as User Service participant MG as MongoDB C-\u003e\u003eGW: GET /api/users/{userId} + Bearer JWT GW-\u003e\u003eGW: Validate JWT via Keycloak JWK Set GW-\u003e\u003eUS: Route to user-service:8086 US-\u003e\u003eUS: Resource server validates JWT US-\u003e\u003eMG: findByUserId(userId) MG--\u003e\u003eUS: User document US--\u003e\u003eGW: 200 OK + User GW--\u003e\u003eC: Response Secrets \u0026 Configuration Flow linkVault Secret Paths link Service Vault Path What’s Stored admin-service secret/arya-banking/admin-service/dev keycloak.client-secret, etc. auth-service secret/arya-banking/auth-service/dev AUTH.SERVICE.CLIENT.SECRET, ARYA.BANKING.AUTH.CLIENT.SECRET user-service secret/arya-banking/user-service/dev MONGO.PASSWORD, USER.SERVICE.CLIENT.SECRET AppRole Credentials linkEach service has its own Vault AppRole. The role-id and secret-id are currently stored directly in bootstrap.yml.\nwarning AppRole credentials are hardcoded in bootstrap.yml — a dev-time convenience that must be externalized for production. How MONGO.PASSWORD Reaches MongoDB linkflowchart LR VT[\"Vault KVMONGO.PASSWORD\"] --\u003e|\"Spring Cloud Vault\"| SP[\"spring.application.mongo-password\"] SP --\u003e|\"application.yaml placeholder\"| URI[\"spring.data.mongodb.urimongodb+srv://admin:${...}@cluster/...\"] Authentication \u0026 Authorization Model linkKeycloak Realm link info Realm: event-based-banking-application Client Grant Type Used By Purpose banking-service-client authorization_code API Gateway Browser-facing login flow auth-service-client client_credentials auth-service Feign inter-service calls user-service-client client_credentials user-service Feign inter-service calls admin-service-client client_credentials admin-service Keycloak Admin API arya-banking-auth-client password (ROPC) auth-service Direct username/password login INTERNAL_SERVICE (Keycloak role) All services Service-to-service auth JWT Role Extraction linkAll services share the same converter pattern — extract realm_access.roles from the Keycloak JWT and prefix with ROLE_:\n// Present in: admin-service, auth-service, user-service, api-gateway Map realmAccess = jwt.getClaim(\"realm_access\"); roles.stream().map(role -\u003e \"ROLE_\" + role) Security Rules by Service link Service Public Paths Internal Paths Admin-only api-gateway /api/users/register, /api/auth/authenticate /internal/** → ROLE_INTERNAL_SERVICE — auth-service /api/auth/authenticate /internal/** → ROLE_INTERNAL_SERVICE — user-service /api/** (currently all permitted) /internal/** → ROLE_INTERNAL_SERVICE — admin-service — /internal/** → ROLE_INTERNAL_SERVICE All /api/admin/** → ROLE_ADMIN warning user-service has .requestMatchers(\"/api/**\").permitAll() — all user APIs are currently unauthenticated. This is intentional during development but needs hardening for production. Event-Driven Flow (Kafka) linkTopics link Topic Producer Consumer (Planned) Avro Schema user.create.event user-service (UserCreateProducer) TBD (notification, audit) UserCreateEvent audit.event TBD TBD AuditEvent UserCreateEvent Schema link { \"type\": \"record\", \"name\": \"UserCreateEvent\", \"fields\": [ { \"name\": \"userId\", \"type\": \"string\" }, { \"name\": \"status\", \"type\": \"string\" }, { \"name\": \"isEmailVerified\", \"type\": \"boolean\", \"default\": false }, { \"name\": \"isContactVerified\", \"type\": \"boolean\", \"default\": false } ] } When Events Are Published link Trigger Status in Event Step 1 complete (basic details) BASIC_DETAILS_ADDITION_COMPLETED Step 2 complete (address added) ADDRESS_ADDED Step 3 complete (security questions) SECURITY_CREDENTIALS_ADDED User blocked (5 failed logins) BLOCKED Any user update Current user.status Inter-Service Communication (Feign + OAuth2) linkService-to-Service Calls linkflowchart LR US[\"user-service\"] --\u003e|\"POST /internal/api/auth/register/usersOAuth2 client_credentials\"| AU[\"auth-service\"] AU --\u003e|\"PUT /internal/api/security-details/{userId}OAuth2 client_credentials\"| US OAuth2 Feign Interceptor Pattern linkBoth services use the same interceptor pattern for machine-to-machine JWT authentication:\n// OAuth2FeignConfig (both auth-service and user-service) @Bean public RequestInterceptor oauth2RequestInterceptor() { return requestTemplate -\u003e { OAuth2AuthorizeRequest request = OAuth2AuthorizeRequest .withClientRegistrationId(clientRegistrationId) .principal(clientRegistrationId).build(); OAuth2AuthorizedClient client = authorizedClientManager.authorize(request); requestTemplate.header(AUTHORIZATION, \"Bearer \" + client.getAccessToken().getTokenValue()); }; } info The outgoing Feign request carries a machine-to-machine JWT, accepted at the target service via ROLE_INTERNAL_SERVICE check. The INTERNAL_SERVICE Keycloak realm role is assigned to service account users. Infrastructure Stack linkAll compose files share the external network arya-banking-net. The Makefile is the primary operator interface.\nKafka Keycloak Platform Vault compose/kafka.yml\nKafka (KRaft mode, single broker+controller) Schema Registry (backward compatibility) Kafka Connect (REST API on 8082) Network: arya-banking-net compose/keycloak.yml\nPostgreSQL 15 (Keycloak persistence, port 5432) Keycloak 26.0.2 — start-dev mode, Argon2id password hashing Port mapping: 5433 → 8080 Data persisted to ./keycloak-data compose/platform.yml\nkarthikulkarni/arya-banking-service-registry:latest (port 8761) karthikulkarni/arya-banking-config-server:latest (port 8090) Both on arya-banking-net compose/vault.yml\nHashiCorp Vault 1.21 Port mapping: 8091 → 8200 File storage backend at /vault/data Config: vault/config/vault.hcl (UI enabled, TLS disabled) Makefile Targets link Target Action make up Create network + start all stacks make down Stop all stacks make kafka Start Kafka stack only make keycloak Start Keycloak stack only make platform Start Eureka + Config Server only make vault Start Vault only make clean Down + remove volumes + orphans User Registration Flow (Multi-Step) linkThe user-service implements a 3-step registration tracked via RegistrationProgress in MongoDB.\nstateDiagram-v2 [*] --\u003e Step1: POST /api/users/register Step1 --\u003e Step2: PUT /api/users/{userId} Step2 --\u003e Step3: PUT /api/security-details/{userId} Step3 --\u003e [*] state Step1 { [*] --\u003e ValidateNoDuplicates ValidateNoDuplicates --\u003e CreateUserDoc CreateUserDoc --\u003e FeignCallAuthService: POST /internal/api/auth/register/users FeignCallAuthService --\u003e SaveRegistrationProgress: BASIC_DETAILS_ADDITION_COMPLETED SaveRegistrationProgress --\u003e SaveSecurityDetails SaveSecurityDetails --\u003e PublishKafkaEvent } state Step2 { [*] --\u003e AddAddress AddAddress --\u003e DetectLevel2 DetectLevel2 --\u003e UpdateProgress: ADDRESS_ADDED UpdateProgress --\u003e PublishEvent2 } state Step3 { [*] --\u003e SetSecurityQuestions SetSecurityQuestions --\u003e DetectLevel3 DetectLevel3 --\u003e CompleteRegistration: SECURITY_CREDENTIALS_ADDED CompleteRegistration --\u003e PublishEvent3 } userId Generation link \"ARYA\" + SHA256(firstName + lastName + System.currentTimeMillis()) .substring(0, 6).toUpperCase() // e.g. ARYA3F9A12 Common Library Role linkarya-banking-common is the single source of truth for everything shared across services. It is published to GitHub Packages and versioned independently.\nflowchart TD CMN[\"arya-banking-common v1.1.9\"] --\u003e DM[\"Domain ModelsUser, SecurityDetails, RegistrationProgress, Role, Audit\"] CMN --\u003e EX[\"Exception HierarchyGlobalExceptionHandler via @ComponentScan\"] CMN --\u003e KK[\"Kafka ConfigKafkaConfiguration (conditional)\"] CMN --\u003e OA[\"OAuth2ClientConfigOAuth2AuthorizedClientManager for Feign\"] CMN --\u003e FC[\"FeignConfigurationError decoder for all Feign clients\"] CMN --\u003e AV[\"Avro ClassesUserCreateEvent, AuditEvent\"] CMN --\u003e UT[\"UtilitiesCommonUtils, MetaDataUtils\"] warning auth-service and user-service use arya-banking-common:1.1.7, while admin-service uses 1.1.9. There may be missing constants or types in the older version. Dependency Version Matrix link Component Version Notes Spring Boot 3.5.4 All services Spring Cloud 2025.0.0 All services Java 17 All services arya-banking-common 1.1.9 (admin), 1.1.7 (auth, user) Version drift Keycloak Admin Client 26.0.4 admin-service, auth-service Keycloak (Docker) 26.0.2 infra/keycloak.yml HashiCorp Vault (Docker) 1.21 infra/vault.yml MapStruct 1.5.5.Final admin-service, user-service Lombok 1.18.36 All services Avro 1.11.4 common, admin-service, user-service SpringDoc OpenAPI 2.8.9 admin-service, user-service JaCoCo 0.8.13 All services SpotBugs 4.8.6.1 Most services Apache HttpClient5 (default) auth-service RestTemplate pool PostgreSQL (Docker) 15 infra/keycloak.yml Confluent Kafka latest infra/kafka.yml CI/CD Pipeline Overview linkAll microservice repos share the same 3-workflow structure, delegating to shared workflows in arya-banking-workflows.\nPer-Repository Workflows link .github/workflows/ ├── deploy.yml ← Push to master → build + deploy to GitHub Packages + git tag ├── sonar-report.yml ← Push/PR → SonarCloud analysis └── auto-create-issues.yaml ← Manual → create GitHub Issues from issues.json Deploy Flow linkflowchart LR P[\"push to master\"] --\u003e J17[\"Setup Java 17 (Temurin)\"] J17 --\u003e CACHE[\"Cache ~/.m2\"] CACHE --\u003e MVN[\"mvn clean deploy\"] MVN --\u003e VER[\"Extract version from pom.xml\"] VER --\u003e TAG[\"git tag v{version} + push\"] Required Secrets link Secret Purpose GH_PAT Read arya-banking-common from GitHub Packages + push tags SONAR_TOKEN SonarCloud authentication SONAR_PROJECT_KEY SonarCloud project identifier SONAR_ORG SonarCloud organization key ORG_ISSUE_TOKEN Auto-create GitHub Issues info user-service additionally has delete-all-issues.yaml — a bulk delete workflow for all issues + milestones via GitHub API. Platform-Wide Observations \u0026 Gaps linkSecurity link Gap Location Severity DELETE /api/admin/vault-secrets missing @PreAuthorize admin-service High All /api/** in user-service are permitAll() user-service SecurityConfig High AppRole credentials hardcoded in bootstrap.yml admin, auth, user service Medium banking-service-client secret hardcoded in gateway application.yaml api-gateway Medium user-service uses arya-banking-common:1.1.7 not 1.1.9 user-service pom.xml Low Missing Implementations link Feature Status Notes Kafka consumers Not implemented Producers exist in user-service; no consumers defined anywhere Spring Batch jobs Declared, not used Dependency in admin, user, auth service pom.xml Unit / integration tests Stub only All test files are empty context-load stubs Audit event publishing Schema defined AuditEvent.avsc exists but nothing publishes to audit.event Admin user management APIs Planned In issues.json: list users, block/unblock, stats report application.yaml in arya-banking-config-server has a typo: localhosat:8761 in Eureka URL — config server won’t register with Eureka correctly. Architectural Strengths link Clean separation of concerns across all 9 repos Consistent patterns: same security config, same OAuth2 Feign interceptor, same Vault bootstrap in every service arya-banking-common significantly reduces code duplication Operation-based RBAC (admin-service) makes role changes a config-only update Vault HCL policies as classpath resources — policy-as-code, version-controlled Makefile for infra is clean and ergonomic "
+            }
+        );
+    index.add(
+            {
+                id:  2 ,
+                href: "\/docs\/",
+                title: "Arya Banking Docs",
+                description: "Documentation for the Arya Banking event-driven microservices platform.",
+                content: ""
+            }
+        );
+    index.add(
+            {
+                id:  3 ,
+                href: "\/docs\/admin-service\/entry-point\/",
+                title: "Entry Point \u0026 Annotations",
+                description: "The main application class, Spring Boot exclusions, component scan strategy, and the two custom annotations — @AdminRestController and @AllowedRoles.",
+                content: "Application Entry Point linkFile: org.arya.banking.admin.AryaBankingAdminServiceApplication\n@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class }) @ComponentScan(basePackages = { \"org.arya.banking.admin\", \"org.arya.banking.common\" }) @EnableMongoAuditing @EnableDiscoveryClient public class AryaBankingAdminServiceApplication { public static void main(String[] args) { SpringApplication.run(AryaBankingAdminServiceApplication.class, args); } } Annotation Breakdown link@SpringBootApplication(exclude = ...) linkThe admin-service is MongoDB-only — it has no relational database. The three excluded auto-configurations prevent Spring Boot from attempting to set up a DataSource (JDBC), a transaction manager backed by a DataSource, and Hibernate JPA. Without these exclusions, the application would fail on startup because no javax.sql.DataSource bean is present on the classpath.\nExcluded Class Why DataSourceAutoConfiguration Prevents JDBC DataSource bean creation DataSourceTransactionManagerAutoConfiguration Prevents JDBC transaction manager setup HibernateJpaAutoConfiguration Prevents JPA/Hibernate EntityManagerFactory setup info MongoDB’s own auto-configuration (MongoAutoConfiguration, MongoDataAutoConfiguration) is NOT excluded — it runs normally and wires up the MongoClient, MongoTemplate, and all MongoRepository beans. @ComponentScan(basePackages = {...}) linkBy default, Spring Boot scans only the package of the main class and its sub-packages (org.arya.banking.admin). The explicit @ComponentScan extends the scan to include org.arya.banking.common, which means:\nGlobalExceptionHandler (@RestControllerAdvice) is registered — all GlobalException subclasses are handled automatically. MetadataInitializer (active under metadata-loader profile) is picked up without any additional import. Common @Component, @Service, and @Mapper beans from the shared library are wired into the application context. warning If you add a new shared component to arya-banking-common and it does not appear in the context, verify that its package is under org.arya.banking.common — components in other packages will not be scanned. @EnableMongoAuditing linkActivates Spring Data MongoDB’s auditing infrastructure. Any document class annotated with @CreatedDate and @LastModifiedDate (inherited from AryaBase in the common library) will have those fields populated automatically on insert and update.\n// From AryaBase in arya-banking-common public abstract class AryaBase { @CreatedDate private Instant createdAt; @LastModifiedDate private Instant updatedAt; private boolean deleted; } @EnableDiscoveryClient linkRegisters the service with Netflix Eureka on startup. The service appears in the Eureka dashboard as ARYA-BANKING-ADMIN-SERVICE and can be resolved by other services using its logical name through the gateway or Feign clients.\nCustom Annotations link@AdminRestController linkFile: org.arya.banking.admin.annotation.AdminRestController\nA composed annotation that bundles @RestController and @RequestMapping(\"/api/admin\") into a single declaration. All controllers except ClientCreationController use it.\n@Target({ElementType.TYPE, ElementType.METHOD}) @Retention(RetentionPolicy.RUNTIME) @RestController @RequestMapping(\"/api/admin\") public @interface AdminRestController {} Usage on a controller:\n@AdminRestController // replaces @RestController + @RequestMapping(\"/api/admin\") public class VaultAppRoleController { @GetMapping(\"/vault-approle\") public ResponseEntity"
+            }
+        );
+    index.add(
+            {
+                id:  4 ,
+                href: "\/docs\/admin-service\/architecture\/",
+                title: "Architecture",
+                description: "System architecture, component interactions, project structure, and key design patterns.",
+                content: "System Context linkThe admin-service sits between the API Gateway and the platform’s two infrastructure systems — HashiCorp Vault and Keycloak. All admin requests arrive through the gateway after JWT validation.\nflowchart TD GW[\"API Gateway :8080\"] AD[\"Admin Service :8089\"] KC[\"Keycloak :5433\"] VT[\"HashiCorp Vault :8091\"] EU[\"Eureka Server\"] CS[\"Config Server :8090\"] MG[(\"MongoDB\")] KF[\"Kafka :9092\"] GW --\u003e|\"Bearer JWT + /api/admin/**\"| AD AD --\u003e|\"Admin Client (client_credentials)\"| KC AD --\u003e|\"VaultTemplate (AppRole auth)\"| VT AD --\u003e|\"Register / Heartbeat\"| EU AD --\u003e|\"Fetch remote config\"| CS AD -.-\u003e|\"Future: Audit events\"| KF AD -.-\u003e|\"Future: User queries\"| MG info Dashed lines indicate declared dependencies not yet implemented in v1.0.0. Internal Component Map linkflowchart LR subgraph Controllers CC[\"ClientCreationController\"] KC[\"KeyCloakRolesController\"] VA[\"VaultAppRoleController\"] VO[\"VaultOperationsController\"] VP[\"VaultPolicyController\"] end subgraph Services KS[\"KeyCloakServiceImpl\"] KM[\"KeyCloakManager\"] AS[\"VaultAppRoleServiceImpl\"] OS[\"VaultOperationServiceImpl\"] PS[\"VaultPolicyServiceImpl\"] RV[\"RolePermissionValidator\"] end subgraph Config SC[\"SecurityConfig\"] MS[\"MethodSecurityConfig\"] AP[\"ApiProperties\"] AR[\"AppRoleConfig\"] end CC \u0026 KC --\u003e KS KS --\u003e KM VA --\u003e AS VO --\u003e OS VP --\u003e PS Controllers --\u003e|\"@PreAuthorize SpEL\"| RV RV --\u003e AP AR --\u003e|\"VaultTemplate\"| AS \u0026 OS \u0026 PS SC --\u003e|\"JWT filter chain\"| Controllers Project Structure link arya-banking-admin-service/ ├── .github/ │ ├── issues.json │ └── workflows/ │ ├── auto-create-issues.yaml │ ├── deploy.yml │ ├── sonar-report.yaml │ └── sonar-report.yml ├── src/ │ └── main/ │ ├── java/org/arya/banking/admin/ │ │ ├── AryaBankingAdminServiceApplication.java │ │ ├── annotation/ │ │ │ ├── AdminRestController.java │ │ │ └── AllowedRoles.java │ │ ├── config/ │ │ │ ├── ApiProperties.java │ │ │ ├── AppRoleConfig.java │ │ │ ├── MethodSecurityConfig.java │ │ │ ├── SecurityConfig.java │ │ │ └── VaultConfigs.java │ │ ├── controller/ │ │ │ ├── ClientCreationController.java │ │ │ ├── KeyCloakRolesController.java │ │ │ ├── VaultAppRoleController.java │ │ │ ├── VaultOperationsController.java │ │ │ └── VaultPolicyController.java │ │ ├── dto/ │ │ │ ├── AppRole.java │ │ │ ├── AppRoleResponseDto.java │ │ │ ├── CreateAppRoleDto.java │ │ │ ├── KeyCloakClientResponse.java │ │ │ ├── KeycloakRole.java │ │ │ ├── VaultApiResponseDto.java │ │ │ ├── VaultResponseDto.java │ │ │ └── VaultSecretDto.java │ │ ├── mapper/ │ │ │ ├── KeycloakRoleMapper.java │ │ │ └── VaultResponseMapper.java │ │ └── service/ │ │ ├── KeyCloakManager.java │ │ ├── KeyCloakService.java │ │ ├── VaultAppRoleService.java │ │ ├── VaultOperationService.java │ │ ├── VaultPolicyService.java │ │ └── impl/ │ │ ├── KeyCloakServiceImpl.java │ │ ├── RolePermissionValidator.java │ │ ├── VaultAppRoleServiceImpl.java │ │ ├── VaultOperationServiceImpl.java │ │ └── VaultPolicyServiceImpl.java │ └── resources/ │ ├── application.yaml │ ├── bootstrap.yml │ ├── admin-service-policy.hcl │ └── user-service-policy.hcl └── pom.xml Key Design Decisions linkOperation-Based RBAC linkRather than hardcoding role names in @PreAuthorize annotations, the service externalises the role-to-operation mapping into application.yaml under security.api-roles. This means adding or changing roles for an operation is a config-only change — no code redeployment required.\nsecurity: api-roles: create-client: - ROLE_ADMIN query-realm: - ROLE_ADMIN vault-ops: - ROLE_ADMIN The RolePermissionValidator bean reads this map and is referenced in SpEL across all controllers:\n@PreAuthorize(\"@rolePermissionValidator.hasAnyRole(authentication, 'vault-ops')\") Policy-as-Code linkVault HCL policy files (admin-service-policy.hcl, user-service-policy.hcl) are stored in src/main/resources/ and checked in to the repository. The VaultPolicyServiceImpl reads them from the classpath and uploads them to Vault on demand via API. This keeps policy definitions version-controlled alongside the service that owns them.\nCommon Library Integration linkThe @ComponentScan in the main class includes org.arya.banking.common, meaning the common library’s @Component beans — GlobalExceptionHandler, MetadataInitializer, base mappers — are registered automatically without any explicit import configuration.\nComposite @AdminRestController Annotation linkTo avoid repeating @RestController + @RequestMapping(\"/api/admin\") on every controller, a composed annotation @AdminRestController bundles both. All controllers except ClientCreationController use it.\nwarning ClientCreationController declares @RequestMapping(\"/api/admin\") directly instead of using @AdminRestController. This inconsistency is flagged for cleanup. "
+            }
+        );
+    index.add(
+            {
+                id:  5 ,
+                href: "\/docs\/admin-service\/",
+                title: "Admin Service",
+                description: "Documentation for arya-banking-admin-service — the infrastructure and identity administration backbone of Arya Banking.",
+                content: ""
+            }
+        );
+    index.add(
+            {
+                id:  6 ,
+                href: "\/docs\/admin-service\/getting-started\/",
+                title: "Getting Started",
+                description: "Prerequisites, local setup, bootstrap configuration, and running the admin-service for the first time.",
+                content: "Prerequisites linkBefore running the admin-service locally, the following platform services must be up and reachable:\nService Default Local Port Purpose HashiCorp Vault 8091 Secrets source (AppRole auth + KV v2) Keycloak 5433 JWT issuer + Admin Client Eureka Server 8761 Service registry Spring Cloud Config Server 8090 Remote config MongoDB 27017 Shared data store (via common lib) info The Arya Banking infra stack is managed in the dedicated arya-banking-infra repository using concern-based Docker Compose files (kafka.yml, keycloak.yml, platform.yml, vault.yml) all sharing the arya-banking-net network. Vault Pre-requisites linkThe admin-service bootstraps using AppRole authentication. You need a valid role-id and secret-id before the service can start.\nStep 1 — Enable the AppRole auth method (once only):\nvault auth enable approle Step 2 — Create the admin-service AppRole with the admin policy:\nvault write auth/approle/role/admin-service \\ token_policies=\"admin-service-policy\" \\ token_ttl=1h \\ token_max_ttl=4h Step 3 — Fetch the role-id:\nvault read auth/approle/role/admin-service/role-id Step 4 — Generate a secret-id:\nvault write -f auth/approle/role/admin-service/secret-id Step 5 — Upload the admin-service policy from the service itself (after first boot with root token):\ncurl -X POST http://localhost:8089/api/admin/vault/policies?service=admin-service \\ -H \"Authorization: Bearer \" Vault Parameter File linkThe bootstrap.yml imports vault-param.yml from a local file path. Create this file before starting the service:\nmkdir -p ~/.config/arya-banking-admin-service # ~/.config/arya-banking-admin-service/vault-param.yml vault: appRole: roleId: secretId: report Never commit role-id or secret-id values to Git. The bootstrap.yml currently has hardcoded credentials — these must be rotated and moved to the local vault-param.yml file. Running the Service link Maven (local) Docker / Buildpack # From the repo root mvn spring-boot:run The service starts on port 8089 and registers with Eureka automatically.\n# Build image using Spring Boot Buildpacks (Ubuntu Noble base) mvn spring-boot:build-image # Run (inject secrets via environment) docker run -p 8089:8089 \\ -e ADMIN_SERVICE_CLIENT_SECRET= \\ arya-banking-admin-service:1.0.0 Verifying Startup linkOnce running, the following checks confirm a healthy start:\nActuator health:\ncurl http://localhost:8089/actuator/health Swagger UI:\nOpen http://localhost:8089/swagger-ui/index.html in your browser. All five controller groups should be visible.\nEureka dashboard:\nThe service should appear as ARYA-BANKING-ADMIN-SERVICE on http://localhost:8761.\nGitHub Packages Authentication linkThe arya-banking-common dependency is hosted on GitHub Packages. Maven resolves it using the settings.xml at the repo root. Ensure your GH_PAT environment variable is set with read:packages scope, or provide the token directly in ~/.m2/settings.xml.\ngithub ${env.GITHUB_ACTOR} ${env.GH_PAT} "
+            }
+        );
+    index.add(
+            {
+                id:  7 ,
+                href: "\/docs\/admin-service\/configuration\/",
+                title: "Configuration Reference",
+                description: "Complete reference for application.yaml, bootstrap.yml, and all configuration beans.",
+                content: "application.yaml linkThe main application configuration file loaded by Spring Boot on startup.\nspring: application: name: arya-banking-admin-service database: admin-service config: import: - configserver:http://localhost:8090 - file:${user.home}/.config/${spring.application.name}/vault-param.yml security: oauth2: resourceserver: jwt: jwk-set-uri: ${app.config.keycloak.jwk-set-uri} app: config: keycloak: url: http://localhost:5433 realm: event-based-banking-service client-id: admin-service-client client-secret: ${ADMIN_SERVICE_CLIENT_SECRET} token-uri: ${app.config.keycloak.token-uri} server: port: 8089 security: api-roles: create-client: - ROLE_ADMIN query-realm: - ROLE_ADMIN vault-ops: - ROLE_ADMIN Key Properties Reference link Property Value Notes server.port 8089 Service HTTP port app.config.keycloak.url http://localhost:5433 Non-standard port — local Docker Keycloak app.config.keycloak.realm event-based-banking-service Target Keycloak realm app.config.keycloak.client-id admin-service-client OAuth2 client for admin-service app.config.keycloak.client-secret ${ADMIN_SERVICE_CLIENT_SECRET} Injected from Vault at startup security.api-roles.* ROLE_ADMIN All ops currently require ROLE_ADMIN info The ADMIN_SERVICE_CLIENT_SECRET property is resolved from Vault’s KV store at the path secret/arya-banking/admin-service/dev during Spring Cloud Vault bootstrap. bootstrap.yml linkLoaded before application.yaml. Configures Vault and the Config Server connection — both of which are required to resolve properties used in application.yaml.\nspring: application: name: arya-banking-admin-service profiles: active: dev config: import: vault:// cloud: config: uri: http://localhost:8090 vault: uri: http://localhost:8091 authentication: APPROLE app-role: role-id: secret-id: kv: enabled: true backend: secret default-context: \"\" application-name: arya-banking/admin-service profile-separator: / Vault Path Resolution linkWith profile-separator: / and profiles.active: dev, the service resolves secrets from:\nsecret/arya-banking/admin-service/dev report The role-id and secret-id in bootstrap.yml are currently hardcoded. They must be externalised — either via the vault-param.yml local file or environment variables — before any production or shared-environment deployment. Configuration Beans linkApiProperties linkBinds the security.api-roles map into a typed POJO. Used by RolePermissionValidator to look up which roles are permitted for a given operation string.\n@ConfigurationProperties(prefix = \"security\") public class ApiProperties { private Map"
+            }
+        );
+    index.add(
+            {
+                id:  8 ,
+                href: "\/docs\/admin-service\/api-reference\/",
+                title: "API Reference",
+                description: "Complete REST API reference for all five admin-service controllers — Keycloak clients, realm roles, Vault AppRoles, KV secrets, and HCL policies.",
+                content: "Authentication linkAll endpoints require a valid Keycloak-issued JWT passed as a Bearer token. Obtain a token from the Keycloak token endpoint before making requests.\n# Get a token (client credentials flow) curl -X POST http://localhost:5433/realms/event-based-banking-service/protocol/openid-connect/token \\ -d \"grant_type=client_credentials\" \\ -d \"client_id=admin-service-client\" \\ -d \"client_secret=\" info All admin endpoints additionally require the ROLE_ADMIN realm role to be present in the JWT’s realm_access.roles claim. The /internal/** paths require ROLE_INTERNAL_SERVICE instead. Swagger UI linkThe interactive API documentation is available at:\nhttp://localhost:8089/swagger-ui/index.html The OpenAPI JSON spec is available at:\nhttp://localhost:8089/v3/api-docs Keycloak — Client Management linkController: ClientCreationController\nBase Path: /api/admin\nMethod Path Required Role Description POST /api/admin/inter-service-clients create-client (ROLE_ADMIN) Creates a new confidential Keycloak client for inter-service OAuth2 POST /api/admin/inter-service-clients linkCreates a new Keycloak OAuth2 client configured for the client_credentials (service accounts) flow.\nRequest:\ncurl -X POST http://localhost:8089/api/admin/inter-service-clients?clientName=my-new-service \\ -H \"Authorization: Bearer \" Response:\n{ \"clientId\": \"my-new-service\", \"clientSecret\": \"generated-secret-value\" } Error cases:\nHTTP Status Condition 409 Conflict Client with that name already exists 403 Forbidden Caller does not have ROLE_ADMIN What it does internally:\nChecks if a client with the given name already exists — throws KeyCloakClientAlreadyExists (409) if so. Builds a ClientRepresentation with service accounts enabled, standard flow disabled, access type confidential. Creates the client via Keycloak REST; throws KeyCloakServiceException if the response is not 201. Assigns the INTERNAL_SERVICE realm role to the newly created client’s service account user. Returns the clientId and generated clientSecret. Keycloak — Realm Roles linkController: KeyCloakRolesController\nBase Path: /api/admin\nMethod Path Required Role Description GET /api/admin/realm-roles query-realm (ROLE_ADMIN) Lists all realm roles GET /api/admin/realm-role?roleName= query-realm (ROLE_ADMIN) Fetches a single realm role by name POST /api/admin/realm-roles query-realm (ROLE_ADMIN) Creates a new realm role GET /api/admin/realm-roles link curl http://localhost:8089/api/admin/realm-roles \\ -H \"Authorization: Bearer \" Returns List.\nGET /api/admin/realm-role link curl \"http://localhost:8089/api/admin/realm-role?roleName=ROLE_ADMIN\" \\ -H \"Authorization: Bearer \" Returns a single KeycloakRole or 404 if the role does not exist.\nPOST /api/admin/realm-roles link curl -X POST http://localhost:8089/api/admin/realm-roles \\ -H \"Authorization: Bearer \" \\ -H \"Content-Type: application/json\" \\ -d '{\"name\": \"ROLE_ANALYST\", \"description\": \"Read-only analyst role\"}' Returns a KeyCloakResponse with responseCode: KEYCLOAK_ROLE_CREATED_200.\nVault — AppRole Management linkController: VaultAppRoleController\nBase Path: /api/admin\nRequired Role: vault-ops (ROLE_ADMIN) for all endpoints.\nMethod Path Description GET /api/admin/vault-approle Lists all AppRole names GET /api/admin/vault-approle/{role} Gets details for a specific AppRole POST /api/admin/vault-approle Creates a new AppRole with policies DELETE /api/admin/vault-approle?role= Deletes an AppRole GET /api/admin/vault-approle/secrets?appRole= Generates fresh roleId + secretId credentials POST /api/admin/vault-approle link curl -X POST http://localhost:8089/api/admin/vault-approle \\ -H \"Authorization: Bearer \" \\ -H \"Content-Type: application/json\" \\ -d '{ \"roleName\": \"user-service\", \"policies\": [\"user-service-policy\"] }' Creates the AppRole with token_ttl=1h and token_max_ttl=4h. Returns an AppRoleResponseDto containing the generated roleId and secretId.\nGET /api/admin/vault-approle/secrets link curl \"http://localhost:8089/api/admin/vault-approle/secrets?appRole=user-service\" \\ -H \"Authorization: Bearer \" Generates and returns a fresh secretId for an existing AppRole. Use this to rotate credentials after expiry.\nVault — KV Secrets linkController: VaultOperationsController\nBase Path: /api/admin\nSecret path pattern: secret/arya-banking/{service}/dev\nMethod Path Required Role Description POST /api/admin/vault-secrets vault-ops (ROLE_ADMIN) Creates a KV secret PUT /api/admin/vault-secrets vault-ops (ROLE_ADMIN) Updates (patches) a KV secret GET /api/admin/vault-secrets?service= vault-ops (ROLE_ADMIN) Reads all secrets for a service DELETE /api/admin/vault-secrets?service= ⚠️ None Deletes all secrets for a service path report The DELETE /api/admin/vault-secrets endpoint is missing @PreAuthorize. Any authenticated user (not just ROLE_ADMIN) can call it. This is a known issue and must be fixed before any production use. POST /api/admin/vault-secrets link curl -X POST http://localhost:8089/api/admin/vault-secrets \\ -H \"Authorization: Bearer \" \\ -H \"Content-Type: application/json\" \\ -d '{ \"service\": \"user-service\", \"secretKey\": \"db.password\", \"secretValue\": \"s3cr3tP@ss\" }' Writes the key-value pair to secret/arya-banking/user-service/dev.\nPUT /api/admin/vault-secrets linkUses KV v2 PATCH semantics — only the specified key is updated; other keys in the same path are preserved.\nVault — Policy Management linkController: VaultPolicyController\nBase Path: /api/admin\nRequired Role: vault-ops (ROLE_ADMIN) for all endpoints.\nMethod Path Description GET /api/admin/vault/policies Lists all ACL policy names from sys/policies/acl/ POST /api/admin/vault/policies?service= Uploads {service}-policy.hcl from classpath to Vault DELETE /api/admin/vault/policies?service= Deletes the ACL policy for a service POST /api/admin/vault/policies link # Upload the admin-service policy curl -X POST \"http://localhost:8089/api/admin/vault/policies?service=admin-service\" \\ -H \"Authorization: Bearer \" # Upload the user-service policy curl -X POST \"http://localhost:8089/api/admin/vault/policies?service=user-service\" \\ -H \"Authorization: Bearer \" The service resolves the policy file as {service}-policy.hcl from the classpath (src/main/resources/). The file is read via CommonUtils.loadConfig(path) and written to /sys/policies/acl/{service}-policy in Vault.\nDTOs link DTO Type Fields AppRole @Data class roleId, secretId AppRoleResponseDto Java record roleId, secretId CreateAppRoleDto Java record roleName, policies: List KeyCloakClientResponse Java record clientId, clientSecret KeycloakRole Java record composite, name, description, composites, attributes VaultApiResponseDto Java record data: Map, leastDuration, leaseId, requestId VaultResponseDto Java record responseCode, responseMessage VaultSecretDto Java record service, secretKey, secretValue info All DTOs except AppRole are immutable Java records. AppRole is a @Data class because it is used as a configuration binding target, which requires a mutable JavaBean. "
+            }
+        );
+    index.add(
+            {
+                id:  9 ,
+                href: "\/docs\/admin-service\/services-deep-dive\/",
+                title: "Services Deep-Dive",
+                description: "Implementation internals of all five service classes — KeyCloakServiceImpl, VaultAppRoleServiceImpl, VaultOperationServiceImpl, VaultPolicyServiceImpl, and RolePermissionValidator.",
+                content: "Service Layer Overview linkThe admin-service has four service interfaces, four implementations, and one auxiliary component (RolePermissionValidator) that plugs into Spring Security.\nflowchart TD subgraph Interfaces KS[\"KeyCloakService\"] AS[\"VaultAppRoleService\"] OS[\"VaultOperationService\"] PS[\"VaultPolicyService\"] end subgraph Implementations KSI[\"KeyCloakServiceImpl\"] ASI[\"VaultAppRoleServiceImpl\"] OSI[\"VaultOperationServiceImpl\"] PSI[\"VaultPolicyServiceImpl\"] RPV[\"RolePermissionValidator\"] end subgraph Infrastructure KM[\"KeyCloakManager\\n(@Component)\"] VT[\"VaultTemplate\\n(AppRoleConfig bean)\"] VO[\"VaultOperations\\n(injected)\"] AP[\"ApiProperties\\n(config binding)\"] end KS --\u003e KSI --\u003e KM AS --\u003e ASI --\u003e VT OS --\u003e OSI --\u003e VO PS --\u003e PSI --\u003e VT RPV --\u003e AP All implementations are annotated with @Service, @Transactional, @Slf4j, and @RequiredArgsConstructor (Lombok-generated constructor injection).\nKeyCloakService Interface link public interface KeyCloakService { KeyCloakClientResponse createClient(String clientName); List getRealmRoles(); KeycloakRole getRealmRoleByName(String roleName); KeyCloakResponse createRealmRole(KeycloakRole keycloakRole); } KeyCloakServiceImpl linkcreateClient(String clientName) linkCreates a new confidential OAuth2 client for the service accounts flow and assigns the INTERNAL_SERVICE realm role to its service account.\nflowchart TD A[\"Check if client exists\\ngetRealmClient().findByClientId(name)\"] --\u003e|\"found (non-empty list)\"| B[\"Throw KeyCloakClientAlreadyExists (409)\"] A --\u003e|\"not found (empty list)\"| C[\"Build ClientRepresentation\\n• serviceAccountsEnabled = true\\n• standardFlowEnabled = false\\n• publicClient = false\"] C --\u003e D[\"POST to Keycloak\\ngetRealmClient().create(rep)\"] D --\u003e|\"response != 201\"| E[\"Throw KeyCloakServiceException\"] D --\u003e|\"201 Created\"| F[\"Retrieve created client\\ngetRealmClient().findByClientId(name).get(0)\"] F --\u003e G[\"Get service account user\\ngetRealmClient().get(id).getServiceAccountUser()\"] G --\u003e H[\"Look up INTERNAL_SERVICE\\nrealm role representation\"] H --\u003e I[\"Assign role to service account user\\ngetRealmUsers().get(userId).roles().realmLevel().add(...)\"] I --\u003e J[\"Return KeyCloakClientResponse\\n(clientId, clientSecret)\"] Key design choices:\npublicClient = false makes the client confidential — it must present a client_secret to obtain tokens. serviceAccountsEnabled = true is what enables the client_credentials grant type. standardFlowEnabled = false disables the browser-based authorization code flow — this client is for machine-to-machine use only. The INTERNAL_SERVICE role assignment is what grants the new service access to /internal/** endpoints on other services. createRealmRole(KeycloakRole keycloakRole) linkUses a try/catch on NotFoundException to implement “check-then-create” logic. The Keycloak Admin Client throws NotFoundException when a role does not exist, which is the signal to proceed:\npublic KeyCloakResponse createRealmRole(KeycloakRole keycloakRole) { try { keyCloakManager.getRealmRoles() .get(keycloakRole.name()) .toRepresentation(); // throws NotFoundException if absent throw new KeyCloakRealmRoleAlreadyExists( \"Role already exists: \" + keycloakRole.name()); } catch (NotFoundException e) { RoleRepresentation role = keycloakRoleMapper.toEntity(keycloakRole); keyCloakManager.getKeyCloakInstanceWithRealm().roles().create(role); return new KeyCloakResponse(KEYCLOAK_ROLE_CREATED_200, \"Role created\"); } } info This pattern — catching NotFoundException as a success condition — is idiomatic when using the Keycloak Admin Client. There is no separate ’exists’ API; the read attempt doubles as the existence check. getRealmRoles() and getRealmRoleByName(String roleName) link public List getRealmRoles() { return keycloakRoleMapper.toDtoList( keyCloakManager.getRealmRoles().list() ); } public KeycloakRole getRealmRoleByName(String roleName) { return keycloakRoleMapper.toDto( keyCloakManager.getRealmRoles().get(roleName).toRepresentation() ); } Both delegate to KeyCloakManager accessors and pass the result through KeycloakRoleMapper.\nVaultAppRoleService Interface link public interface VaultAppRoleService { List getAppRoles(); VaultApiResponseDto getAppRole(String role); AppRoleResponseDto createAppRole(CreateAppRoleDto createAppRoleDto); VaultResponseDto deleteAppRole(String role); AppRoleResponseDto generateCredentials(String service); } VaultAppRoleServiceImpl linkUses VaultTemplate injected from AppRoleConfig. All Vault paths are built as string constants.\nPath Constants link private static final String APPROLE_BASE = \"/auth/approle/role/\"; private static final String APPROLE_PATH = \"/auth/approle/role/%s\"; private static final String ROLE_ID_PATH = \"/auth/approle/role/%s/role-id\"; private static final String SECRET_ID_PATH = \"/auth/approle/role/%s/secret-id\"; createAppRole(CreateAppRoleDto dto) link public AppRoleResponseDto createAppRole(CreateAppRoleDto dto) { Map params = Map.of( \"policies\", dto.policies(), \"token_ttl\", \"1h\", \"token_max_ttl\", \"4h\" ); vaultTemplate.write( String.format(APPROLE_PATH, dto.roleName()), params); // Read back the generated role-id VaultResponse roleIdResponse = vaultTemplate.read( String.format(ROLE_ID_PATH, dto.roleName())); String roleId = (String) roleIdResponse.getData().get(\"role_id\"); // Generate a new secret-id VaultResponse secretIdResponse = vaultTemplate.write( String.format(SECRET_ID_PATH, dto.roleName()), Map.of()); String secretId = (String) secretIdResponse.getData().get(\"secret_id\"); return new AppRoleResponseDto(roleId, secretId); } info The role-id is deterministic and set by Vault on AppRole creation. The secret-id is generated fresh on each write to the secret-id endpoint. Both are returned together so the caller can immediately bootstrap the new service. generateCredentials(String service) linkThe credential rotation method. It reads the stable role-id (which does not change across rotations) and generates a brand-new secret-id, which implicitly invalidates the previous one if secret_id_num_uses was set to 1.\npublic AppRoleResponseDto generateCredentials(String service) { VaultResponse roleIdResponse = vaultTemplate.read( String.format(ROLE_ID_PATH, service)); String roleId = (String) roleIdResponse.getData().get(\"role_id\"); VaultResponse secretIdResponse = vaultTemplate.write( String.format(SECRET_ID_PATH, service), Map.of()); String secretId = (String) secretIdResponse.getData().get(\"secret_id\"); return new AppRoleResponseDto(roleId, secretId); } deleteAppRole(String role) link public VaultResponseDto deleteAppRole(String role) { vaultTemplate.delete(String.format(APPROLE_PATH, role)); return new VaultResponseDto(\"\", \"AppRole deleted\"); } Returns an empty VaultResponseDto. The empty responseCode is intentional — deletion does not carry a meaningful response body from Vault.\nVaultOperationService Interface link public interface VaultOperationService { VaultResponseDto createVaultSecret(VaultSecretDto dto); VaultResponseDto deleteVaultSecret(String service); Map getVaultSecret(String service); VaultResponseDto updateVaultSecret(VaultSecretDto dto); } VaultOperationServiceImpl linkUses injected VaultOperations (the interface behind VaultTemplate) and builds a VaultKeyValueOperations handle per method call targeting the KV v2 secret backend.\nKV Handle Setup link private VaultKeyValueOperations kvOps() { return vaultOperations.opsForKeyValue( \"secret\", VaultKeyValueOperationsSupport.KeyValueBackend.KV_2 ); } private String secretPath(String service) { return \"arya-banking/\" + service + \"/dev\"; } Operations link Create Read Update (PATCH) Delete public VaultResponseDto createVaultSecret(VaultSecretDto dto) { kvOps().put( secretPath(dto.service()), Collections.singletonMap(dto.secretKey(), dto.secretValue()) ); return new VaultResponseDto(VAULT_SECRET_CREATED_200, \"Secret created\"); } Writes a single key-value pair to the path. If other keys already exist at that path, they are overwritten — put replaces the entire data map. Use updateVaultSecret for a non-destructive merge.\npublic Map getVaultSecret(String service) { VaultValueResponse"
+            }
+        );
+    index.add(
+            {
+                id:  10 ,
+                href: "\/docs\/admin-service\/mappers\/",
+                title: "Mappers",
+                description: "MapStruct compile-time mapping — BaseMapper contract, KeycloakRoleMapper, VaultResponseMapper, and how annotation processor ordering is configured.",
+                content: "Overview linkThe admin-service uses MapStruct 1.5.5.Final for compile-time, type-safe DTO ↔ entity mapping. All generated mapper implementations are Spring beans (componentModel = \"spring\") and are injected like any other @Component.\nThere are two mappers in the service:\nMapper Entity (E) DTO (D) Source KeycloakRoleMapper RoleRepresentation (Keycloak Admin Client) KeycloakRole (local record) org.arya.banking.admin.mapper VaultResponseMapper VaultResponse (Spring Vault) VaultApiResponseDto (local record) org.arya.banking.admin.mapper Both extend BaseMapper from arya-banking-common.\nBaseMapper Contract linkDefined in arya-banking-common, this interface establishes the four-method contract that all mappers in the platform must implement:\npublic interface BaseMapper { D toDto(E entity); E toEntity(D dto); List toDtoList(List entityList); List toEntityList(List dtoList); } MapStruct generates all four implementations automatically when a mapper interface extends BaseMapper and declares its type parameters. The list methods are generated by delegating to toDto and toEntity element-by-element.\nKeycloakRoleMapper linkFile: org.arya.banking.admin.mapper.KeycloakRoleMapper\nMaps between Keycloak’s RoleRepresentation (from keycloak-admin-client) and the admin-service’s local KeycloakRole Java record.\n@Mapper(componentModel = \"spring\") public interface KeycloakRoleMapper extends BaseMapper { KeycloakRole toDto(RoleRepresentation roleRepresentation); List toDtoList(List roleRepresentations); } Mapped Fields link RoleRepresentation Field KeycloakRole Record Field Notes id (not mapped) Internal Keycloak UUID, not exposed name name Role identifier string, e.g. ROLE_ADMIN description description Human-readable description composite composite true if the role is composed of other roles composites composites Nested Composites object (sub-roles) attributes attributes Map"
+            }
+        );
+    index.add(
+            {
+                id:  11 ,
+                href: "\/docs\/admin-service\/security\/",
+                title: "Security",
+                description: "JWT authentication flow, role-based access control, RolePermissionValidator internals, and the @AllowedRoles annotation.",
+                content: "Authentication Flow linkThe admin-service acts as an OAuth2 Resource Server. It never issues tokens — it validates JWTs issued by Keycloak.\nsequenceDiagram participant C as Client (Postman / Service) participant KC as Keycloak :5433 participant AD as Admin Service :8089 C-\u003e\u003eKC: POST /token (client_credentials) KC--\u003e\u003eC: JWT (realm_access.roles: [\"ADMIN\"]) C-\u003e\u003eAD: GET /api/admin/realm-roles + Bearer JWT AD-\u003e\u003eAD: Validate JWT signature via JWK Set URI AD-\u003e\u003eAD: Extract realm_access.roles → prefix ROLE_ AD-\u003e\u003eAD: @PreAuthorize → RolePermissionValidator AD-\u003e\u003eAD: Lookup \"query-realm\" → [\"ROLE_ADMIN\"] AD-\u003e\u003eAD: Compare with user authorities AD--\u003e\u003eC: 200 OK / 403 Forbidden JWT Claims Processing linkKeycloak tokens include roles under the realm_access claim:\n{ \"realm_access\": { \"roles\": [\"ADMIN\", \"offline_access\", \"uma_authorization\"] } } The JwtAuthenticationConverter in SecurityConfig maps each role to a Spring GrantedAuthority by prepending ROLE_:\n\"ADMIN\" → \"ROLE_ADMIN\" \"INTERNAL_SERVICE\" → \"ROLE_INTERNAL_SERVICE\" Role-to-Operation Matrix link Operation Key Required Role Endpoints create-client ROLE_ADMIN POST /api/admin/inter-service-clients query-realm ROLE_ADMIN GET/POST /api/admin/realm-roles, GET /api/admin/realm-role vault-ops ROLE_ADMIN All /api/admin/vault-* endpoints (path-based) ROLE_INTERNAL_SERVICE /internal/** ⚠️ (missing) None DELETE /api/admin/vault-secrets report The DELETE /api/admin/vault-secrets endpoint is missing @PreAuthorize. Any authenticated user — not just ROLE_ADMIN — can delete a Vault secret path. This must be patched. RolePermissionValidator linkBean name: rolePermissionValidator. This is the central enforcement point for operation-level RBAC across all controllers.\n@Component @RequiredArgsConstructor public class RolePermissionValidator { private final ApiProperties apiProperties; public Boolean hasAnyRole(Authentication authentication, String operation) { List allowedRoles = apiProperties.getApiRoles().get(operation); if (CommonUtils.isEmpty(allowedRoles)) return false; Set userRoles = authentication.getAuthorities() .stream() .map(GrantedAuthority::getAuthority) .collect(Collectors.toSet()); boolean hasRole = allowedRoles.stream().anyMatch(userRoles::contains); if (!hasRole) { throw new UnAuthorizedException(\"User does not have valid access for this operation\"); } return true; } } Flow for @PreAuthorize(\"@rolePermissionValidator.hasAnyRole(authentication, 'vault-ops')\"):\nSpring AOP intercepts the controller method call. Evaluates the SpEL expression — calls rolePermissionValidator.hasAnyRole(...). The validator looks up \"vault-ops\" in ApiProperties.apiRoles → resolves to [\"ROLE_ADMIN\"]. Compares against the JWT-extracted GrantedAuthority set. If no match: throws UnAuthorizedException (HTTP 403). If match: returns true and the call proceeds. @AllowedRoles Annotation linkA meta-annotation that wraps the SpEL expression in a cleaner, declarative form:\n@Target({ElementType.METHOD}) @Retention(RetentionPolicy.RUNTIME) @PreAuthorize(\"@rolePermissionValidator.hasAnyRole(authentication, #allowedRoles.value())\") public @interface AllowedRoles { String value(); } Usage (intended):\n@AllowedRoles(\"vault-ops\") @GetMapping(\"/vault-approle\") public ResponseEntity\u003c?\u003e getAppRoles() { ... } warning @AllowedRoles is defined but not yet used in any controller. All controllers currently use inline @PreAuthorize(…) expressions. Migrating to @AllowedRoles would improve consistency and reduce boilerplate. Adding a New Operation Role linkTo protect a new endpoint with a custom role mapping, no code changes are required — only config:\nStep 1 — Add the operation mapping in application.yaml:\nsecurity: api-roles: my-new-operation: - ROLE_ANALYST - ROLE_ADMIN Step 2 — Annotate the controller method:\n@PreAuthorize(\"@rolePermissionValidator.hasAnyRole(authentication, 'my-new-operation')\") @GetMapping(\"/my-endpoint\") public ResponseEntity\u003c?\u003e myEndpoint() { ... } The validator reads the updated config at runtime — no restart required if using Spring Cloud Config with refresh scope.\n"
+            }
+        );
+    index.add(
+            {
+                id:  12 ,
+                href: "\/docs\/admin-service\/vault-integration\/",
+                title: "Vault Integration",
+                description: "Deep dive into HashiCorp Vault AppRole authentication, KV v2 operations, and HCL policy management within the admin-service.",
+                content: "Overview linkThe admin-service has a dual relationship with Vault:\nAs a consumer — It authenticates to Vault using AppRole at startup to read its own secrets (e.g., ADMIN_SERVICE_CLIENT_SECRET). As an administrator — It exposes REST endpoints that allow operators to manage Vault AppRoles, KV secrets, and ACL policies for other services. flowchart LR subgraph Startup BS[\"bootstrap.yml\\n(role-id + secret-id)\"] VC[\"VaultConfigs\\n(@ConfigurationProperties)\"] AR[\"AppRoleConfig\\n(VaultTemplate bean)\"] end subgraph Runtime API VA[\"VaultAppRoleServiceImpl\"] VO[\"VaultOperationServiceImpl\"] VP[\"VaultPolicyServiceImpl\"] end BS --\u003e VC --\u003e AR AR --\u003e|\"VaultTemplate\"| VA \u0026 VO \u0026 VP AppRole Bootstrap linkOn application startup, Spring Cloud Vault reads bootstrap.yml and authenticates to Vault:\ncloud: vault: uri: http://localhost:8091 authentication: APPROLE app-role: role-id: secret-id: kv: enabled: true backend: secret application-name: arya-banking/admin-service profile-separator: / Spring resolves secrets from the path: secret/data/arya-banking/admin-service/dev\nThe AppRoleConfig bean additionally builds a standalone VaultTemplate using the same credentials. This template is used by all three Vault*ServiceImpl classes for programmatic Vault operations.\nVaultAppRoleServiceImpl linkManages AppRoles in Vault’s auth/approle/ mount.\nPath Constants link APPROLE_BASE = \"/auth/approle/role/\" APPROLE_PATH = \"/auth/approle/role/{roleName}\" ROLE_PATH = \"/auth/approle/role/{roleName}/role-id\" SECRET_PATH = \"/auth/approle/role/{roleName}/secret-id\" Operations link Method Vault Call Returns getAppRoles() vaultTemplate.list(APPROLE_BASE) List of role names getAppRole(role) vaultTemplate.read(APPROLE_PATH) VaultApiResponseDto createAppRole(dto) vaultTemplate.write(APPROLE_PATH) AppRoleResponseDto (roleId + secretId) deleteAppRole(role) vaultTemplate.delete(APPROLE_PATH) VaultResponseDto generateCredentials(service) read role-id + write secret-id AppRoleResponseDto AppRole Creation linkWhen creating an AppRole, the service writes the following parameters to Vault:\nMap params = Map.of( \"policies\", createAppRoleDto.policies(), \"token_ttl\", \"1h\", \"token_max_ttl\", \"4h\" ); vaultTemplate.write(\"/auth/approle/role/\" + roleName, params); After writing, it reads back the generated role-id and generates a secret-id in separate calls, returning both in the AppRoleResponseDto.\nCredential Rotation linkThe generateCredentials(service) method is the standard rotation mechanism. It reads the existing role-id (which does not change) and generates a new secret-id, invalidating the old one:\n# Via API curl \"http://localhost:8089/api/admin/vault-approle/secrets?appRole=user-service\" \\ -H \"Authorization: Bearer \" VaultOperationServiceImpl linkManages KV v2 secrets for all services under secret/arya-banking/.\nSecret Path Pattern link secret/arya-banking/{service}/dev Each service has an isolated path. The admin-service is the only actor with write access.\nOperations link // Builds a KV v2 operations handle on each call VaultKeyValueOperations kvOps = vaultOperations .opsForKeyValue(\"secret\", VaultKeyValueOperationsSupport.KeyValueBackend.KV_2); String path = \"arya-banking/\" + service + \"/dev\"; Method KV v2 Operation Notes createVaultSecret kvOps.put(path, singletonMap(key, value)) Creates or overwrites the secret getVaultSecret kvOps.get(path) Throws VaultSecretNotFoundException if empty updateVaultSecret kvOps.patch(path, singletonMap(key, value)) KV v2 PATCH — merges into existing data deleteVaultSecret kvOps.delete(path) Deletes the entire path info The PATCH operation (updateVaultSecret) uses KV v2’s merge semantics. Only the key specified in VaultSecretDto is updated — other keys at the same path are preserved. VaultPolicyServiceImpl linkManages Vault ACL policies under sys/policies/acl/.\nPolicy File Convention linkHCL policy files are stored as classpath resources:\nsrc/main/resources/ ├── admin-service-policy.hcl └── user-service-policy.hcl The file is loaded via CommonUtils.loadConfig(\"{service}-policy.hcl\") which reads it as a UTF-8 string from the classpath using SpringContextHolder.\nUpload Flow link public VaultResponseDto uploadPolicy(String service) throws IOException { String policyContent = commonUtils.loadConfig(service + \"-policy.hcl\"); Map body = Map.of(\"policy\", policyContent); vaultTemplate.write(\"/sys/policies/acl/\" + service + \"-policy\", body); return new VaultResponseDto(VAULT_SECRET_CREATED_200, \"Policy uploaded\"); } HCL Policies linkadmin-service-policy.hcl linkThe broadest policy — grants full CRUD to the admin-service across all secrets and the AppRole system.\n# Full access to all arya-banking KV secrets path \"secret/data/arya-banking/*\" { capabilities = [\"create\", \"read\", \"update\", \"delete\", \"patch\"] } path \"secret/metadata/arya-banking/*\" { capabilities = [\"read\", \"delete\"] } # AppRole management path \"auth/approle/role/*\" { capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"] } path \"auth/approle/role/*/secret-id\" { capabilities = [\"create\", \"read\"] } path \"auth/approle/role/*/role-id\" { capabilities = [\"read\"] } # System auth management path \"sys/auth/*\" { capabilities = [\"create\", \"update\", \"read\"] } # Policy management path \"sys/policies/acl/*\" { capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"] } user-service-policy.hcl linkMinimal, read-only policy scoped to the user-service secret path.\npath \"secret/data/arya-banking/user-service\" { capabilities = [\"read\"] } path \"secret/data/arya-banking/user-service/*\" { capabilities = [\"read\"] } path \"secret/metadata/arya-banking/user-service\" { capabilities = [\"read\"] } path \"secret/metadata/arya-banking/user-service/*\" { capabilities = [\"read\"] } Upload it with:\ncurl -X POST \"http://localhost:8089/api/admin/vault/policies?service=user-service\" \\ -H \"Authorization: Bearer \" info Adding a policy for a new service is as simple as adding a {service}-policy.hcl file to src/main/resources/ and calling the upload endpoint. No code changes are needed. "
+            }
+        );
+    index.add(
+            {
+                id:  13 ,
+                href: "\/docs\/admin-service\/keycloak-integration\/",
+                title: "Keycloak Integration",
+                description: "How the admin-service integrates with Keycloak — the KeyCloakManager factory, client creation flow, and realm role management.",
+                content: "Overview linkThe admin-service uses the Keycloak Admin Client (keycloak-admin-client:26.0.4) to programmatically manage the event-based-banking-service realm. It is the only service in the platform that holds admin-level Keycloak credentials.\nThe integration covers:\nCreating confidential OAuth2 clients for new microservices (service accounts flow) Listing and creating realm-level roles Assigning roles to the service account of a newly provisioned client KeyCloakManager linkKeyCloakManager is a @Component that acts as a factory and accessor for the Keycloak Admin API. It initialises the client on startup via @PostConstruct using the client_credentials grant type.\n@PostConstruct public void init() { keycloak = KeycloakBuilder.builder() .serverUrl(serverUrl) .realm(keyCloakRealm) .clientId(clientId) .clientSecret(clientSecret) .grantType(CLIENT_CREDENTIALS) .build(); } The clientSecret is resolved from Vault at startup (${ADMIN_SERVICE_CLIENT_SECRET}), so KeyCloakManager only initialises correctly after Vault bootstrap completes.\nAccessor Methods link Method Returns Use getKeyCloakInstanceWithRealm() RealmResource Top-level realm handle getRealmClient() ClientsResource Client management operations getRealmRoles() RolesResource Realm role management getRealmUsers() UsersResource User management (future use) Client Creation Flow linkWhen POST /api/admin/inter-service-clients?clientName= is called, KeyCloakServiceImpl.createClient(String clientName) executes the following steps:\nflowchart TD A[\"Check if client exists\"] --\u003e|\"exists\"| B[\"Throw KeyCloakClientAlreadyExists (409)\"] A --\u003e|\"not found\"| C[\"Build ClientRepresentation\\n(serviceAccountsEnabled=true\\nstandardFlowEnabled=false\\npublicClient=false)\"] C --\u003e D[\"POST to Keycloak Clients API\"] D --\u003e|\"not 201\"| E[\"Throw KeyCloakServiceException\"] D --\u003e|\"201 Created\"| F[\"Get service account user\\nfor the new client\"] F --\u003e G[\"Assign INTERNAL_SERVICE\\nrealm role to service account\"] G --\u003e H[\"Return KeyCloakClientResponse\\n(clientId, clientSecret)\"] The INTERNAL_SERVICE realm role is what enables the new client to call /internal/** paths on other services. The admin-service’s SecurityConfig grants access to /internal/** only to principals holding ROLE_INTERNAL_SERVICE.\nRealm Role Management linkcreateRealmRole link public KeyCloakResponse createRealmRole(KeycloakRole keycloakRole) { try { // Attempt to read the role first — if found, it already exists keyCloakManager.getRealmRoles().get(keycloakRole.name()).toRepresentation(); throw new KeyCloakRealmRoleAlreadyExists(\"Role already exists: \" + keycloakRole.name()); } catch (NotFoundException e) { // NotFoundException means it doesn't exist — safe to create RoleRepresentation role = keycloakRoleMapper.toEntity(keycloakRole); keyCloakManager.getKeyCloakInstanceWithRealm().roles().create(role); return new KeyCloakResponse(KEYCLOAK_ROLE_CREATED_200, \"Role created successfully\"); } } info The Keycloak client throws a NotFoundException when a role does not exist. KeyCloakServiceImpl uses this as a signal to proceed with creation — an idiomatic pattern when using the Keycloak Admin Client. MapStruct Mapper linkThe KeycloakRoleMapper converts between Keycloak’s RoleRepresentation (Admin Client model) and the service’s local KeycloakRole record:\n@Mapper(componentModel = \"spring\") public interface KeycloakRoleMapper extends BaseMapper { KeycloakRole toDto(RoleRepresentation roleRepresentation); List toDtoList(List roleRepresentations); } The BaseMapper contract from arya-banking-common also requires toEntity and toEntityList, which MapStruct generates automatically.\nConfiguration link app: config: keycloak: url: http://localhost:5433 realm: event-based-banking-service client-id: admin-service-client client-secret: ${ADMIN_SERVICE_CLIENT_SECRET} warning Keycloak runs on port 5433 in the local Docker environment — non-standard. Ensure this port is not blocked by a firewall and is exposed correctly in the keycloak.yml Docker Compose file in the infra repo. "
+            }
+        );
+    index.add(
+            {
+                id:  14 ,
+                href: "\/docs\/admin-service\/management\/data-models\/",
+                title: "Data Models \u0026 Common Library",
+                description: "Domain models, DTOs, MapStruct mappers, exceptions, and utilities from arya-banking-common used by the admin-service.",
+                content: "Common Library linkArtifact: org.arya.banking:arya-banking-common:1.1.9\nHosted on: GitHub Packages (Event-Based-Banking-Application)\nPackage base: org.arya.banking.common\nThe admin-service depends on arya-banking-common for shared MongoDB domain models, exception hierarchy, utility classes, Avro schemas, Kafka topic constants, and the BaseMapper interface. The main class scans org.arya.banking.common explicitly, so all common @Component beans (exception handlers, mappers) are loaded automatically.\nDomain Models (MongoDB Documents) link Model Collection Key Fields User user userId (unique index), firstName, lastName, emailId, contactNumbers, addresses, primaryAddress, status, roleId RegistrationProgress registration_progress userId, status, subStatus, lastStepCompleted, nextStep SecurityDetails security_details userId, securityQuestions, twoFactorEnabled, isEmailVerified, isContactNumberVerified, loginFailedAttempts UserCredentials user_credentials userId, passwordHash Role role roleName, description, permissions: List Audit audit actionType, targetTable, targetId, userId, changeType, description, auditTime All document classes extend AryaBase, which provides deleted, createdAt, and updatedAt fields populated automatically via @EnableMongoAuditing.\nEmbedded Models link Model Fields Address street, city, state, zipCode, country, addressType ContactNumber contactNumber, type, isVerified Permission module, actions: List SecurityQuestions question, answer KeyCloakUser Builder DTO for Keycloak user creation Enums link Enum Values UserStatus ACTIVE, BLOCKED, DORMANT AddressType PERMANENT, RESIDENTIAL ContactNumberType PRIMARY, SECONDARY, OTHERS Modules USERS, ACCOUNTS, TRANSACTIONS, LOANS RegistrationConstants BASIC_DETAILS_ADDED, SECURITY_CREDENTIALS_ADDED, ADD_ADDRESS RegistrationConstants carries state metadata: status, subStatus, nextStep, and lastStepCompleted — used to track where a user is in the three-step registration flow.\nException Hierarchy linkAll exceptions extend GlobalException, which carries an HTTP error code, an application error code, and a message. The GlobalExceptionHandler (@RestControllerAdvice) catches all GlobalException subclasses and returns a standardised ErrorResponse(errorCode, errorMessage).\nRuntimeException └── GlobalException (httpErrorCode, errorCode, errorMessage) ├── UserAlreadyExistsException (409) ├── UserNotFoundException (404) ├── SecurityDetailsNotFoundException (varies) ├── InvalidOAuth2Client (varies) ├── KeyCloakClientAlreadyExists (409) ├── KeyCloakRealmRoleAlreadyExists (409) ├── KeyCloakRealmRoleNotFoundException (404) ├── KeyCloakServiceException (varies) ├── UnAuthorizedException (403) ├── RoleIdNotFoundException (403) ├── SecretIdNotFoundException (403) ├── AppRoleCreationException (403) └── VaultSecretNotFoundException (404) Response Codes linkStandardised response code constants used as values in VaultResponseDto.responseCode and KeyCloakResponse.responseCode:\nConstant HTTP Meaning USER_CREATED_201 User resource created USER_UPDATED_200 User resource updated SECURITY_DETAILS_UPDATED_200 Security details updated KEYCLOAK_ROLE_CREATED_200 Keycloak realm role created VAULT_SECRET_CREATED_200 Vault KV secret written VAULT_SECRET_DELETED_200 Vault KV secret deleted VAULT_SECRET_UPDATED_200 Vault KV secret patched BaseMapper Interface linkAll MapStruct mappers in both the admin-service and the common library extend this contract:\npublic interface BaseMapper { D toDto(E entity); E toEntity(D dto); List toDtoList(List entityList); List toEntityList(List dtoList); } The admin-service provides two implementations:\nMapper Entity DTO KeycloakRoleMapper RoleRepresentation (Keycloak) KeycloakRole (record) VaultResponseMapper VaultResponse (Spring Vault) VaultApiResponseDto (record) Utilities linkCommonUtils link Method Description isEmpty(Object) Null/blank/empty check for String, List, BigDecimal, Map isNotEmpty(Object) Inverse of isEmpty generateSHA256hash(String) SHA-256 hex digest via Apache Commons loadConfig(String path) Loads a classpath resource as a UTF-8 string via SpringContextHolder convertListIntoMap(List, keyExtractor) Converts a list into a Map loadConfig is used by VaultPolicyServiceImpl to read .hcl policy files from the classpath.\nMetaDataUtils linkHandles automatic schema versioning for MongoDB documents annotated with @TrackMetadata. It compares old vs new ColumnMetadata lists and increments version numbers:\nMAJOR bump — column removed MINOR bump — column added PATCH bump — nullability changed Avro Schemas linkTwo Avro schemas are defined in arya-banking-common for future Kafka event publishing:\nSchema Namespace Fields AuditEvent.avsc org.arya.banking.common.avro actionType, targetTable, targetId, userId, changeType, details UserCreateEvent.avsc org.arya.banking.common.avro userId, status, isEmailVerified, isContactVerified Kafka Topic Constants link Constant Topic Name USER_CREATE_EVENT user.create.event AUDIT_EVENT audit.event info Kafka infrastructure (spring-kafka, kafka-streams, Avro) is declared as a dependency but no producers or consumers are implemented in the admin-service yet. "
+            }
+        );
+    index.add(
+            {
+                id:  15 ,
+                href: "\/docs\/admin-service\/management\/cicd\/",
+                title: "CI/CD \u0026 Build",
+                description: "GitHub Actions workflows, Maven build configuration, SonarCloud analysis, and Docker image generation.",
+                content: "GitHub Actions Workflows linkThree workflows are defined under .github/workflows/.\ndeploy.yml — Build \u0026 Release linkTrigger: Push to master branch, or manual workflow_dispatch.\nflowchart LR T[\"Push to master\"] --\u003e A[\"Checkout source\"] A --\u003e B[\"Setup Java 17 (Temurin)\"] B --\u003e C[\"Cache ~/.m2/repository\"] C --\u003e D[\"mvn clean deploy\\n(-s settings.xml)\"] D --\u003e E[\"Extract version\\nfrom pom.xml\"] E --\u003e F[\"Create + push\\ngit tag vX.Y.Z\"] Key details:\nPublishes the JAR to GitHub Packages using the GH_PAT secret. Automatically tags the commit with the version from pom.xml (e.g., v1.0.0). The settings.xml at the repo root wires GitHub Packages authentication using GITHUB_ACTOR and GH_PAT. sonar-report.yaml — Code Quality linkTrigger: Push to any branch, or pull request.\nflowchart LR T[\"Push / PR\"] --\u003e A[\"Checkout\"] A --\u003e B[\"Setup Java 17\"] B --\u003e C[\"Cache ~/.m2\"] C --\u003e D[\"mvn clean verify\\n(compiles + tests)\"] D --\u003e E[\"mvn verify sonar:sonar\\n(JaCoCo + SonarCloud)\"] Secrets required:\nSecret Purpose SONAR_TOKEN SonarCloud authentication SONAR_PROJECT_KEY Project identifier on SonarCloud SONAR_ORG SonarCloud organisation name GH_PAT GitHub Packages read access (for arya-banking-common) Coverage reports are sourced from: target/site/jacoco/jacoco.xml\nA helper script add-secrets.sh is included to set these secrets via the GitHub CLI:\n./add-secrets.sh auto-create-issues.yaml — Issue Automation linkTrigger: Delegated to the shared reusable workflow:\narya-banking-workflows/.github/workflows/issue-creation.yaml@main\nReads .github/issues.json and automatically creates GitHub Issues with labels and milestones. This allows planned tasks to be tracked as issues without manual creation.\nMaven Build Configuration linkKey Build Plugins link Plugin Version Purpose maven-compiler-plugin 3.11.0 Wires MapStruct + Lombok annotation processors in the correct order spotbugs-maven-plugin 4.8.6.1 Static bytecode analysis — flags potential bugs jacoco-maven-plugin 0.8.13 Code coverage instrumentation and XML report generation spring-boot-maven-plugin — Produces executable JAR + Buildpack container image Annotation Processor Order linkMapStruct must run after Lombok so that Lombok-generated getters/setters are visible to MapStruct during compilation:\n-Amapstruct.suppressGeneratorTimestamp=true -Amapstruct.defaultComponentModel=spring org.projectlombok:lombok:1.18.36 org.mapstruct:mapstruct-processor:1.5.5.Final Container Image linkThe spring-boot-maven-plugin builds a container image using Cloud Native Buildpacks with an Ubuntu Noble base:\nmvn spring-boot:build-image The resulting image is tagged as arya-banking-admin-service:{version}.\nLocal Docker Compose linkA docker-compose.yaml at the repo root provides a minimal local Kafka stack for testing future event publishing features:\nservices: kafka: image: confluentinc/cp-kafka ports: - 9092:9092 - 29092:29092 - 29093:29093 environment: KAFKA_PROCESS_ROLES: broker,controller KAFKA_NODE_ID: 1 CLUSTER_ID: 5hci6rGNQECCvCLOiFDKow schema-registry: image: confluentinc/cp-schema-registry ports: - 8081:8081 depends_on: - kafka info The full platform infrastructure (Vault, Keycloak, Eureka, Config Server, MongoDB) is managed in the arya-banking-infra repository using concern-based Compose files sharing the arya-banking-net Docker network. "
+            }
+        );
+    index.add(
+            {
+                id:  16 ,
+                href: "\/docs\/admin-service\/management\/roadmap\/",
+                title: "Roadmap \u0026 Known Issues",
+                description: "Planned features, GitHub issue backlog, and known bugs or technical debt in the current v1.0.0 release.",
+                content: "Planned Features linkThe following items are defined in .github/issues.json and will be auto-created as GitHub Issues via the auto-create-issues workflow.\n# Feature Description Labels 1 List all users Paginated admin API to fetch list of users admin, api 2 Block / unblock users Admin API to block or unblock user accounts admin, user-management 3 Update roles Modify user roles using Keycloak RBAC admin, keycloak 4 View audit logs Access audit logs for compliance and investigation admin, audit 5 Trigger user notifications Manually trigger notifications to users admin, notification 6 View system-wide stats Dashboard for system statistics such as total user count admin, analytics Known Issues \u0026 Technical Debt linkSecurity link 🚨\nMissing @PreAuthorize on DELETE /api/admin/vault-secrets\nThe deleteVaultSecret method in VaultOperationsController is not annotated with @PreAuthorize. Any authenticated user — regardless of role — can delete a Vault secret path. This is a critical gap and should be patched immediately:\n@PreAuthorize(\"@rolePermissionValidator.hasAnyRole(authentication, 'vault-ops')\") @DeleteMapping(\"/vault-secrets\") public ResponseEntity\u003c?\u003e deleteVaultSecret(@RequestParam String service) { ... } Configuration link warning The bootstrap.yml currently has role-id and secret-id hardcoded. These credentials expire and must be rotated manually. Externalise them into the vault-param.yml local config file or inject via environment variables before any shared deployment. Code Consistency link warning ClientCreationController does not use @AdminRestController — it declares @RequestMapping(\"/api/admin\") directly. This inconsistency should be corrected to match all other controllers. warning The @AllowedRoles annotation is defined but unused. All controllers use inline @PreAuthorize expressions instead. Either adopt @AllowedRoles consistently or remove it to avoid confusion. Unused Dependencies link Dependency Status Notes spring-kafka + kafka-streams Declared, not used Avro schemas and topic constants exist; producers/consumers not yet implemented spring-boot-starter-batch Declared, not used No batch jobs implemented Test Coverage link warning Only a context-load stub test exists (AryaBankingAdminServiceApplication). No unit or integration tests have been written. JaCoCo is configured but will report near-zero coverage until tests are added. Code Quality link info VaultPolicyServiceImpl has an unused import: org.apache.kafka.common.protocol.types.Field.Field. This should be cleaned up to avoid SpotBugs warnings. Dependency Versions Reference link Dependency Version Spring Boot 3.5.4 Spring Cloud 2025.0.0 Keycloak Admin Client 26.0.4 SpringDoc OpenAPI 2.8.9 MapStruct 1.5.5.Final Lombok 1.18.36 Avro 1.11.4 arya-banking-common 1.1.9 JaCoCo 0.8.13 SpotBugs Plugin 4.8.6.1 "
+            }
+        );
+    search.addEventListener('input', show_results, true);
+
+    function show_results(){
+        const maxResult =  8 ;
+        const minlength =  2 ;
+        var searchQuery = sanitizeHTML(this.value);
+        var results = index.search(searchQuery, {limit: maxResult, enrich: true});
+
+        
+        const flatResults = new Map(); 
+        for (const result of results.flatMap(r => r.result)) {
+        if (flatResults.has(result.doc.href)) continue;
+        flatResults.set(result.doc.href, result.doc);
+        }
+
+        suggestions.innerHTML = "";
+        suggestions.classList.remove('d-none');
+
+        
+        if (searchQuery.length < minlength) {
+            const minCharMessage = document.createElement('div')
+            minCharMessage.innerHTML = `Please type at least <strong>${minlength}</strong> characters`
+            minCharMessage.classList.add("suggestion__no-results");
+            suggestions.appendChild(minCharMessage);
+            return;
+        } else {
+            
+            if (flatResults.size === 0 && searchQuery) {
+                const noResultsMessage = document.createElement('div')
+                noResultsMessage.innerHTML = "No results for" + ` "<strong>${searchQuery}</strong>"`
+                noResultsMessage.classList.add("suggestion__no-results");
+                suggestions.appendChild(noResultsMessage);
+                return;
+            }
+        }
+
+        
+        for(const [href, doc] of flatResults) {
+            const entry = document.createElement('div');
+            suggestions.appendChild(entry);
+
+            const a = document.createElement('a');
+            a.href = href;
+            entry.appendChild(a);
+
+            const title = document.createElement('span');
+            title.textContent = doc.title;
+            title.classList.add("suggestion__title");
+            a.appendChild(title);
+
+            const description = document.createElement('span');
+            description.textContent = doc.description;
+            description.classList.add("suggestion__description");
+            a.appendChild(description);
+
+            suggestions.appendChild(entry);
+
+            if(suggestions.childElementCount == maxResult) break;
+        }
+    }
+    }());
+</script>
+        
+    </body>
+</html>

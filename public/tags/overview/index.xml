@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Overview on Arya Banking Docs</title>
+    <link>http://localhost:1313/tags/overview/</link>
+    <description>Recent content in Overview on Arya Banking Docs</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 20 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/overview/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Overview</title>
+      <link>http://localhost:1313/docs/admin-service/overview/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/admin-service/overview/</guid>
+      <description>&lt;h2 id=&#34;what-is-the-admin-service&#34;&gt;What is the Admin Service? &lt;a href=&#34;#what-is-the-admin-service&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The &lt;code&gt;arya-banking-admin-service&lt;/code&gt; is the administrative backbone of the &lt;strong&gt;Arya Banking&lt;/strong&gt; event-driven microservices platform. It serves a dual purpose:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Infrastructure Administration&lt;/strong&gt; — Manages HashiCorp Vault secrets, AppRole credentials, and HCL policies programmatically via a REST API.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Identity Administration&lt;/strong&gt; — Manages Keycloak realm roles and inter-service OAuth2 clients via the Keycloak Admin Client.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;All APIs are protected by &lt;strong&gt;JWT-based OAuth2 Resource Server&lt;/strong&gt; (Keycloak-issued tokens) and role-checked at the method level via a custom &lt;code&gt;RolePermissionValidator&lt;/code&gt; backed by the &lt;code&gt;security.api-roles&lt;/code&gt; configuration map.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Platform Overview</title>
+      <link>http://localhost:1313/docs/platform-overview/</link>
+      <pubDate>Sat, 01 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/platform-overview/</guid>
+      <description>&lt;h2 id=&#34;platform-summary&#34;&gt;Platform Summary &lt;a href=&#34;#platform-summary&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;i class=&#34;material-icons align-middle&#34;&gt;link&lt;/i&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Arya Banking&lt;/strong&gt; is an event-driven microservices platform modelling the core backend of a digital banking application. It is built around a service mesh of independently deployable Spring Boot services coordinated through Spring Cloud infrastructure (Eureka + Config Server), secured via Keycloak OAuth2/JWT, secrets-managed through HashiCorp Vault, and event-driven via Apache Kafka with Avro schemas.&lt;/p&gt;&#xA;&#xA;&lt;div class=&#34;alert alert-info d-flex&#34; role=&#34;alert&#34;&gt;&#xA;  &lt;div class=&#34;flex-shrink-1 alert-icon&#34;&gt;&#xA;  &#xA;  &lt;span class=&#34;material-icons size-20 me-2&#34;&gt;&#xA;  info&#xA;  &lt;/span&gt;&lt;/div&gt;&#xA;  &#xA;  &lt;div class=&#34;w-100&#34;&gt;Stack: Spring Boot 3.5.4 · Spring Cloud 2025.0.0 · Java 17 · MongoDB · Kafka · Keycloak · HashiCorp Vault · Eureka&lt;/div&gt;&#xA;  &lt;/div&gt;&#xA;&lt;p&gt;The platform currently has &lt;strong&gt;9 repositories&lt;/strong&gt;, each with a distinct responsibility:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
