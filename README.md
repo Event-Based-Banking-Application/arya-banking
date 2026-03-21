@@ -42,9 +42,10 @@ When contributing to the documentation, simply add your Markdown files to the `c
 - Use appropriate front matter (e.g., `title`, `weight`) for ordering.
 - You can utilize [Lotus Docs Shortcodes](https://lotusdocs.dev/docs/shortcodes/) like tabs, alerts, and Mermaid diagrams to present your content.
 
-## 🤖 AI Agent Integration (`.agents`)
+## 🤖 Autonomous AI Integration (`.agents`)
 
-This documentation repository is uniquely configured with an `.agents` directory to directly assist AI coding agents in building and maintaining the documentation:
+This documentation repository is uniquely designed to be co-maintained by AI agents. It features a proactive, self-managing `.agents` ecosystem that allows the AI to iteratively learn, remember, and independently optimize its own behavior across sessions:
 
-- **Skills (`.agents/skills/`)**: Contains custom behavioral rules and knowledge references. For example, the `lotusdocs` skill teaches the agent how to correctly write markdown compatible with the theme, while the `github-codebase-knowledge` skill stores parsed intelligence about the application's microservice repositories to help the agent document them accurately.
-- **Work Context (`.agents/workctx/`)**: Stores dated markdown files detailing the accomplishments, problem-solving approaches, and bug fixes applied during previous agent sessions. The agent can use the *Learn Work Context* skill to ingest these files, enabling it to learn from past work and maintain deep project context across different sessions.
+- **Iterative Skill Building (`.agents/skills/skill-creator`)**: A structured workflow that enables the AI to cooperatively interview the user, draft new custom skills, write evaluation prompts, and run internal benchmarks to iteratively improve itself autonomously.
+- **Theme & Knowledge Skills (`.agents/skills/`)**: Contains mandatory, aggressive behavioral rules. For example, the `lotusdocs` skill natively intercepts all markdown generation to enforce Hugo/Bootstrap shortcodes (tabs, mermaid, alerts), while the `github-codebase-knowledge` skill acts as an intelligence cache of the application's microservice structures.
+- **Proactive Memory (`.agents/workctx/`)**: A continuous-learning engine comprised of two heavily integrated, auto-triggering skills (`save-workctx` and `learn-workctx`). When debugging stubborn errors or finalizing large documentation features, the agent automatically captures the work using structured Component/Fix breakdowns without being explicitly asked. When starting a fresh session, it silently executes aggressive `grep_search` sweeps across this folder to internalize past architectural decisions—acting as a perpetual project memory layer.
