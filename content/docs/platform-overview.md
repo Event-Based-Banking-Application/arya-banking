@@ -40,6 +40,8 @@ Dive deeper into individual service documentation:
 {{< table "table-hover" >}}
 | Service | Description | Docs |
 |---|---|---|
+| **Service Registry** | Central Spring Cloud Netflix Eureka service discovery server | [View Service Registry Docs →]({{< ref "service-registry" >}}) |
+| **Config Server** | Centralized Spring Cloud configuration layer backed by Git | [View Config Server Docs →]({{< ref "config-server" >}}) |
 | **Admin Service** | Infrastructure administration — Vault CRUD, Keycloak roles/clients, HCL policies | [View Admin Service Docs →]({{< ref "admin-service" >}}) |
 {{< /table >}}
 
