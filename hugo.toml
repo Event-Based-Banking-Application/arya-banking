@@ -1,4 +1,4 @@
-baseURL = 'https://event-based-banking-application.github.io/docs/'
+baseURL = 'http://localhost:1313/'
 languageCode = 'en-us'
 title = 'Arya Banking Docs'
 
