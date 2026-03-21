@@ -1,28 +1,61 @@
 ---
 title: "Overview"
-description: "High-level summary of the Service Registry, its role, and technology stack."
+description: "Architecture and configuration of the Netflix Eureka service registry."
 icon: "info"
 weight: 100
 toc: true
 ---
 
-## Role in the Ecosystem
+## Introduction
 
-`arya-banking-service-registry` is the **first infrastructure service** that must be running before any other microservice can register or be discovered. It acts as the central phone-book for the entire Arya Banking ecosystem.
+The `arya-banking-service-registry` is the central "phone-book" for the entire platform. Based on **Netflix Eureka**, it allows microservices to find each other dynamically without hardcoding IP addresses.
 
-{{< alert context="primary" text="Every microservice (user-service, auth-service, admin-service, api-gateway, config-server) registers here at startup and queries it for peer locations." />}}
+It is the **first infrastructure component** that must be started in the deployment sequence.
 
 ---
 
-## Technology Stack
+## Core Architecture
 
-The Service Registry is intentionally thin—its only job is to run the Eureka server engine.
+Every microservice in the Arya Banking ecosystem acts as a Eureka Client. At startup, they register their network location (IP and Port) with this server.
 
-{{< table "table-striped table-sm" >}}
-| Technology | Version / Purpose |
-|------------|-------------------|
-| Spring Boot | 3.5.4 — Framework and auto-configuration |
-| Netflix Eureka | 2025.0.0 (Spring Cloud BOM) — Core registry engine |
-| Java | 17 (Eclipse Temurin) |
-| Web & Actuator | Tomcat web server and health metrics |
+```mermaid
+flowchart LR
+    US[User Service] -- Register --> ER[Service Registry :8761]
+    AS[Auth Service] -- Register --> ER
+    GW[API Gateway] -- Discover --> ER
+    ER -- Resolve --> US
+```
+
+---
+
+## Configuration Reference
+
+The registry is intentionally thin, relying on default Spring Cloud Netflix Eureka settings.
+
+### Server Settings (`application.yaml`)
+* **Port**: `8761` (The standard Eureka port).
+* **Self-Registration**: Disabled (`register-with-eureka: false`) to prevent the server from appearing in its own list.
+* **Registry Fetching**: Disabled (`fetch-registry: false`) to conserve memory in standalone mode.
+
+### Docker Environment
+* **Internal Port**: `8761`.
+* **Health Check**: Actuator is enabled at `/actuator/health`.
+
+---
+
+## Dashboard
+
+When the registry is running, you can access the Eureka Dashboard to see all connected services:
+
+{{< alert context="primary" text="Access the dashboard at `http://localhost:8761` in your local development environment." />}}
+
+---
+
+## Known Limitations
+
+{{< table "table-striped" >}}
+| Limitation | Current State | Recommendation |
+|---|---|---|
+| **Single Point of Failure** | Running as a single instance. | Implement a peer-to-peer Eureka cluster for production. |
+| **Security** | Dashboard and API are currently open. | Add `spring-security` with Basic Auth for the `/eureka/**` endpoints. |
 {{< /table >}}

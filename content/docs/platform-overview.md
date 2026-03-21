@@ -38,10 +38,14 @@ The platform currently has **9 repositories**, each with a distinct responsibili
 Dive deeper into individual service documentation:
 
 {{< table "table-hover" >}}
+
 | Service | Description | Docs |
 |---|---|---|
+| **Common Library** | Shared domain models, Kafka/Avro schemas, and exceptions | [View Common Library Docs →]({{< ref "common" >}}) |
 | **Service Registry** | Central Spring Cloud Netflix Eureka service discovery server | [View Service Registry Docs →]({{< ref "service-registry" >}}) |
 | **Config Server** | Centralized Spring Cloud configuration layer backed by Git | [View Config Server Docs →]({{< ref "config-server" >}}) |
+| **API Gateway** | Reactive entry point, JWT validation, and request routing | [View API Gateway Docs →]({{< ref "api-gateway" >}}) |
+| **Infrastructure** | Core stack: Kafka, Keycloak, Vault, and Orchestration | [View Infrastructure Docs →]({{< ref "infra" >}}) |
 | **Admin Service** | Infrastructure administration — Vault CRUD, Keycloak roles/clients, HCL policies | [View Admin Service Docs →]({{< ref "admin-service" >}}) |
 {{< /table >}}
 

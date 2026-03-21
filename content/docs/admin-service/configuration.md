@@ -34,7 +34,7 @@ app:
   config:
     keycloak:
       url: http://localhost:5433
-      realm: event-based-banking-service
+      realm: event-based-banking-application
       client-id: admin-service-client
       client-secret: ${ADMIN_SERVICE_CLIENT_SECRET}
       token-uri: ${app.config.keycloak.token-uri}

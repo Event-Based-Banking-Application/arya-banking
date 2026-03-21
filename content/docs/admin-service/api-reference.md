@@ -15,7 +15,7 @@ All endpoints require a valid Keycloak-issued JWT passed as a Bearer token. Obta
 
 ```bash {linenos=table, anchorlinenos=true}
 # Get a token (client credentials flow)
-curl -X POST http://localhost:5433/realms/event-based-banking-service/protocol/openid-connect/token \
+curl -X POST http://localhost:5433/realms/event-based-banking-application/protocol/openid-connect/token \
   -d "grant_type=client_credentials" \
   -d "client_id=admin-service-client" \
   -d "client_secret=<secret>"
