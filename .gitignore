@@ -2,3 +2,7 @@ public/
 resources/
 .hugo_build.lock
 themes/github.com/
+
+# Skill Creator benchmark evaluation folders
+.agents/skills/*-workspace/
+.temp_clone_debug/
