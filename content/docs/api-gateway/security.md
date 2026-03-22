@@ -1,54 +1,66 @@
 ---
-title: "Security & JWT"
-description: "OAuth2 configuration, Resource Server details, and path-based authorization."
+title: "Security"
+description: "Security configuration and JWT validation in the API Gateway."
 icon: "security"
-weight: 300
+weight: 400
 toc: true
 ---
 
-## Security Configuration
+## Gateway Security Strategy
 
-The security layer is implemented in `SecurityConfig.java` using Spring's **EnableWebFluxSecurity**.
+The API Gateway is the first line of defense. It acts as an **OAuth2 Resource Server**, validating every incoming request that targets a non-permitted path.
 
-### Authorization Rules
+---
 
-{{< table "table-striped table-sm" >}}
-| Matcher | Rule |
+## 1. JWT Validation
+
+The Gateway uses **Spring Security Reactive** to validate tokens against Keycloak.
+
+### Signature & Issuer Validation
+- **JWK Set**: Fetches public keys from `${app.config.keycloak.jwk-set-uri}`.
+- **Issuer**: Ensures the `iss` claim matches the configured Keycloak realm URL.
+
+### Security Configuration
+The `SecurityConfig.java` defines the filter chain:
+
+```java {linenos=table, anchorlinenos=true}
+@Bean
+public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .authorizeExchange(exchanges -> exchanges
+            .pathMatchers("/api/auth/**", "/api/users/register").permitAll() // Public
+            .anyExchange().authenticated() // Private
+        )
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+    return http.build();
+}
+```
+
+---
+
+## 2. Global CORS Configuration
+
+To allow cross-origin requests from the banking frontend, the Gateway is configured with a global CORS policy.
+
+{{< table "table-striped table-hover table-sm" >}}
+| Setting | Value |
 |---|---|
-| `/api/users/register` | `permitAll()` |
-| `/api/auth/authenticate` | `permitAll()` |
-| `/internal/**` | `hasAuthority("ROLE_INTERNAL_SERVICE")` |
-| `anyExchange()` | `authenticated()` |
+| **Allowed Origins** | `*` (Development) / Specified frontend URL |
+| **Allowed Methods** | `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS` |
+| **Allowed Headers** | `*` |
+| **Allow Credentials** | `true` |
 {{< /table >}}
 
 ---
 
-## JWT Resource Server
+## 3. JWT Authority Mapping
 
-The gateway validates every incoming JWT signature using Keycloak's public keys (JWKS).
+Similar to the microservices, the Gateway extracts roles from the `realm_access.roles` claim. This allows the Gateway to potentially perform path-based RBAC (e.g., restricting `/api/admin/**` to `ROLE_ADMIN`) before the request even leaves the ingress layer.
 
-* **Validation Style**: Asymmetric (RS256)
-* **JWK Set URI**: `.../realms/event-based-banking-application/protocol/openid-connect/certs`
-
-{{< alert context="success" text="No shared secrets are required on the gateway for JWT validation. It fetches public keys dynamically from Keycloak." />}}
+{{< alert context="tip" text="For a detailed breakdown of how roles are mapped, see the [Global Security Model]({{< ref \"/docs/system/security-model\" >}})." />}}
 
 ---
 
-## OAuth2 Client Flow
+## Security Observability
 
-To support browser-based login, the gateway is also an OAuth2 Client.
-
-### Registration Details
-* **Client ID**: `banking-service-client`
-* **Grant Type**: `authorization_code`
-* **Scope**: `openid`
-
-{{< alert context="warning" text="The `client-secret` is currently provided via the Config Server or direct application properties. Ensure this is managed securely in production." />}}
-
----
-
-## CSRF Protection
-
-CSRF is **disabled** (`csrf().disable()`).
-
-Since the Arya Banking platform is a stateless API architecture using JWTs rather than session cookies, CSRF protection (which targets session-cookie-based hijacking) is not required for the Gateway's API routes.
+Failed authentication attempts are logged at the Gateway level, providing early visibility into potential brute-force or unauthorized access patterns.

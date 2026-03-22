@@ -1,86 +1,69 @@
 ---
 title: "Domain Models"
-description: "Comprehensive reference for shared entities and MongoDB document structures."
-icon: "schema"
+description: "Detailed breakdown of the shared MongoDB entities in Arya Banking."
+icon: "dataset"
 weight: 200
 toc: true
 ---
 
-## Model Hierarchy
+## Shared Entity Models
 
-All major entities in the platform extend a shared base class for auditing and soft-deletion consistency.
-
-```mermaid
-classDiagram
-    class AryaBase {
-        +Boolean deleted
-        +LocalDateTime createdAt
-        +LocalDateTime updatedAt
-    }
-    class User {
-        +String userId
-        +String emailId
-        +UserStatus status
-        +List addresss
-    }
-    class Role {
-        +String roleName
-        +List permissions
-    }
-    class SecurityDetails {
-        +String userId
-        +List securityQuestions
-    }
-    
-    AryaBase <|-- User
-    AryaBase <|-- Role
-    AryaBase <|-- SecurityDetails
-    AryaBase <|-- UserCredentials
-```
+The `arya-banking-common` library defines the foundational domain models used across the microservices ecosystem. These are persisted in **MongoDB Atlas**.
 
 ---
 
-## 1. AryaBase (The Foundation)
+## 1. User Entity (`User`)
+The primary entity for user profile information.
 
-Every root document extends `AryaBase`, providing:
-* **Soft Delete**: Uses a `deleted` boolean flag instead of destructive removal.
-* **Auditing**: Auto-populated `createdAt` and `updatedAt` timestamps.
-
----
-
-## 2. Core Entities
-
-### User (`user` collection)
-The central entity for banking users.
-* **Fields**: `firstName`, `lastName`, `emailId`, `primaryContactNumber`, `status`.
-* **Typos to Note**: The field for addresses is named `addresss` (triple 's').
-
-### Role (`role` collection)
-Defines platform permissions.
-* **Permissions**: Each role contains a list of modules (`USERS`, `ACCOUNTS`, etc.) and permitted actions (`READ`, `WRITE`, `DELETE`).
-
-### SecurityDetails (`security_details` collection)
-Manages sensitive identity verification.
-* **Features**: Security questions, 2FA toggles, and login failure tracking for account lockout logic.
-
----
-
-## 3. Registration Flow Constants
-
-The library provides `RegistrationConstants` to manage the multi-step signup process:
-
-{{< table "table-sm table-striped" >}}
-| Step | Action | Next Step |
+{{< table "table-striped table-hover table-sm" >}}
+| Field | Type | Description |
 |---|---|---|
-| **1** | `BASIC_DETAILS_ADDED` | `ADD_ADDRESS` |
-| **2** | `ADDRESS_ADDED` | `ADD_SECURITY_CREDENTIALS` |
-| **3** | `SECURITY_CREDENTIALS_ADDED` | _Complete_ |
+| `userId` | String | Unique app-level ID (e.g., `ARYA3F9A12`). |
+| `firstName` | String | User's legal first name. |
+| `lastName` | String | User's legal last name. |
+| `emailId` | String | Primary email address (unique). |
+| `primaryContactNumber` | String | 10-digit Indian mobile format. |
+| `contactNumbers` | List | Collection of `ContactNumber` objects. |
+| `addresses` | List | Collection of `Address` objects. |
+| `status` | Enum | `ACTIVE`, `BLOCKED`, `DORMANT`. |
 {{< /table >}}
 
 ---
 
-## 4. Enums
+## 2. Security Details (`SecurityDetails`)
+Owner of the multi-factor and account-lock state.
 
-* **`UserStatus`**: `ACTIVE`, `BLOCKED`, `DORMANT`.
-* **`AddressType`**: `PERMANENT`, `RESIDENTIAL`.
-* **`Modules`**: `USERS`, `ACCOUNTS`, `TRANSACTIONS`, `LOANS`.
+{{< table "table-striped table-hover table-sm" >}}
+| Field | Type | Description |
+|---|---|---|
+| `userId` | String | Reference to the User entity. |
+| `securityQuestions` | List | Collection of `SecurityQuestions` (Q&A). |
+| `loginFailedAttempts` | Integer | Counter for failed logins (max 5). |
+| `twoFactorEnabled` | Boolean | Global toggle for 2FA. |
+| `isEmailVerified` | Boolean | Email verification status. |
+{{< /table >}}
+
+---
+
+## 3. Registration Progress (`RegistrationProgress`)
+State machine data for the 3-step registration flow.
+
+{{< table "table-striped table-hover table-sm" >}}
+| Field | Type | Description |
+|---|---|---|
+| `userId` | String | Reference to the User entity. |
+| `status` | String | Global registration status (`IN_PROGRESS` / `COMPLETE`). |
+| `subStatus` | String | Detailed step (e.g., `ADDRESS_ADDED`). |
+| `nextStep` | String | Hint for the UI on what to collect next. |
+{{< /table >}}
+
+---
+
+## Common Base: `AryaBase`
+
+All major entities extend `AryaBase`, inheriting automatic tracking fields:
+- `createdAt`: Timestamp of creation.
+- `updatedAt`: Timestamp of the last update.
+- `deleted`: Soft-delete flag.
+
+{{< alert context="info" text="Audit trails are automatically managed via Spring Data MongoDB's <code>@EnableMongoAuditing</code>." />}}

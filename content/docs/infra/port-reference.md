@@ -29,6 +29,7 @@ The following ports are mapped from the Docker containers to your host machine.
 
 When services communicate **inside** the Docker network (`arya-banking-net`), they should use the container hostnames instead of `localhost`.
 
+{{< table "table-striped table-hover table-sm" >}}
 | Destination Service | Hostname | Port |
 |---|---|---|
 | **Kafka** | `kafka` | `29092` |
@@ -36,6 +37,7 @@ When services communicate **inside** the Docker network (`arya-banking-net`), th
 | **Vault** | `vault` | `8200` |
 | **Eureka** | `service-registry` | `8761` |
 | **Config Server** | `config-server` | `8090` |
+{{< /table >}}
 
 ---
 
@@ -43,9 +45,11 @@ When services communicate **inside** the Docker network (`arya-banking-net`), th
 
 For reference, the following ports are used by the Spring Boot microservices (usually run on the host):
 
+{{< table "table-striped table-hover table-sm" >}}
 | Port | Service |
 |---|---|
 | **8085** | API Gateway |
 | **8086** | User Service |
 | **8087** | Auth Service |
 | **8089** | Admin Service |
+{{< /table >}}

@@ -1,59 +1,55 @@
 ---
 title: "Exception Framework"
-description: "Global error handling, standard error codes, and Feign propagation."
-icon: "report"
-weight: 400
+description: "Global error handling and exception hierarchy in Arya Banking."
+icon: "error"
+weight: 300
 toc: true
 ---
 
-## Overview
+## Centralized Error Handling
 
-Consistency in error reporting is critical for a distributed system. The common library provides a unified exception hierarchy and automated handlers to ensure all services return standard JSON error responses.
+Arya Banking uses a unified exception hierarchy defined in the `common` library and applied via `@RestControllerAdvice` in every microservice.
 
 ---
 
-## The GlobalException
+## 1. Global Exception Class
 
-The base for all domain exceptions is `GlobalException`. It carries three pieces of information:
-1.  **HTTP Status Code**: (e.g., 404, 401).
-2.  **Domain Error Code**: A unique string identifier (e.g., `USER_NOT_FOUND_404`).
-3.  **Error Message**: A descriptive human-readable message.
+The `GlobalException` class is the root of all domain-specific errors. It carries:
+- **`httpErrorCode`**: The standard HTTP status code (e.g., 404, 401).
+- **`errorCode`**: A platform-specific error code (e.g., `USER_NOT_FOUND_404`).
+- **`errorMessage`**: A human-readable message.
 
-### Common Exception Codes
+---
 
-{{< table "table-striped table-sm" >}}
-| Code | HTTP | Scenario |
-|---|---|---|
-| `USER_NOT_FOUND_404` | 404 | Missing user profile. |
-| `USER_ALREADY_EXISTS_409` | 409 | Duplicate registration attempt. |
-| `SECURITY_INVALID_CREDENTIALS_401` | 401 | Failed authentication. |
-| `ACCOUNT_LOCKED_403` | 403 | Too many failed logins. |
+## 2. Error Mapping Matrix
+
+{{< table "table-striped table-hover table-sm" >}}
+| Exception Class | HTTP Code | Platform Code | Purpose |
+|---|---|---|---|
+| `UserNotFoundException` | 404 | `USER_NOT_FOUND_404` | User lookup failed. |
+| `UserAlreadyExistsException` | 409 | `USER_ALREADY_EXISTS_409` | Duplicate registration attempt. |
+| `UnAuthorizedException` | 403 | `ADMIN_UN_AUTHORIZED_403` | RBAC check failed. |
+| `VaultSecretNotFoundException`| 404 | `VAULT_SECRET_404` | Missing secret in Vault. |
+| `KeyCloakServiceException` | 500 | `KC_SERVICE_500` | Error during Keycloak API call. |
 {{< /table >}}
 
 ---
 
-## Global Event Handler
+## 3. Global Exception Handler
 
-Every service importing this library automatically inherits the `@RestControllerAdvice` defined in `GlobalExceptionHandler`.
+The `GlobalExceptionHandler` is automatically picked up via `@ComponentScan("org.arya.banking.common")`. It intercepts all thrown `GlobalException` subclasses and returns a consistent JSON payload:
 
-### Response Format
-When an exception occurs, the API returns a structured JSON:
-```json
+```json {linenos=table, anchorlinenos=true}
 {
   "errorCode": "USER_NOT_FOUND_404",
-  "errorMessage": "No user found with the provided ID."
+  "errorMessage": "User not found with ID: ARYA123456"
 }
 ```
 
 ---
 
-## Inter-Service Propagation
+## 4. Feign Error Decoding
 
-When service A calls service B via Feign, errors can easily be lost. We solve this with the **`FeignClientErrorDecoder`**.
+Inter-service communication errors are deserialized back into their original exception types via the `FeignClientErrorDecoder`. This ensures that a 404 from the `auth-service` is correctly re-thrown as a `UserNotFoundException` in the `user-service`.
 
-{{< alert context="primary" text="This decoder automatically deserialises the 4xx/5xx error bodies into `GlobalException` objects, allowing the calling service to catch and handle specific domain errors exactly as if they occurred locally." />}}
-
-To use it, add the configuration to your Feign client:
-```java
-@FeignClient(name = "auth-service", configuration = FeignConfiguration.class)
-```
+{{< alert context="tip" text="This pattern maintains a clean, uniform error experience across the entire distributed system." />}}

@@ -1,89 +1,67 @@
 ---
 title: "Vault Setup"
-description: "Step-by-step guide for initializing and unsealing HashiCorp Vault."
-icon: "lock"
+description: "Configuring HashiCorp Vault for secrets management in Arya Banking."
+icon: "security"
 weight: 400
 toc: true
 ---
 
-## The Sealed State
+## Secrets Orchestration
 
-By design, HashiCorp Vault starts in a **sealed** state. In this state, Vault knows where the data is but cannot decrypt it as the master key is not in memory.
-
----
-
-## First-Time Initialization
-
-When running the stack for the first time, you must initialize the Vault server to generate the shard keys and the initial root token.
-
-```bash
-# Initialize Vault (1 key share, 1 threshold for dev)
-docker exec vault vault operator init \
-  -key-shares=1 \
-  -key-threshold=1 \
-  -format=json > vault-init.json
-```
-
-{{< alert context="danger" text="**Critical:** Save the contents of `vault-init.json`. If you lose the unseal key, you lose access to all secrets permanently." />}}
+The platform uses HashiCorp Vault to securely store and inject environment-specific properties (secrets) into microservices at runtime.
 
 ---
 
-## Manual Unsealing
+## 1. Vault Server Configuration
 
-After every container restart or `make up`, Vault will be sealed. You must provide the unseal key to bring it online.
+The Vault server is started in `dev` mode for simplicity, using a file-based storage backend.
 
-{{< tabs tabTotal="2" >}}
+- **Internal Port**: `8200`
+- **External Port**: `8091`
+- **Network**: `arya-banking-net`
 
-{{% tab tabName="Bash" %}}
-```bash
-# Extract key and unseal
-UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' vault-init.json)
-docker exec vault vault operator unseal $UNSEAL_KEY
-```
-{{% /tab %}}
-
-{{% tab tabName="PowerShell" %}}
-```powershell
-$init = Get-Content vault-init.json | ConvertFrom-Json
-docker exec vault vault operator unseal $init.unseal_keys_b64[0]
-```
-{{% /tab %}}
-
-{{< /tabs >}}
+### Unsealing Process
+When the Vault container starts for the first time, it must be unsealed (though `dev` mode currently auto-unseals with a known root token). In production, the `admin-service` or a manual operator uses unseal keys to unlock the master key.
 
 ---
 
-## AppRole Configuration
+## 2. KV v2 Secret Engine
 
-The `admin-service` and other microservices use **AppRole** authentication to fetch their configuration.
+We use the **KV (Key-Value) Version 2** engine. This engine supports versioning and soft-deletion of secrets.
 
-### 1. Enable AppRole Auth
-```bash
-docker exec vault vault auth enable approle
-```
+- **Mount Path**: `secret/`
+- **Application Path**: `arya-banking/{service}/{profile}`
 
-### 2. Create Policy
-Save this as `admin-policy.hcl` and apply it:
-```bash
-docker exec vault vault policy write admin-policy - <<EOF
-path "secret/data/*" {
-  capabilities = ["read", "list"]
-}
-EOF
-```
+Example: `secret/data/arya-banking/user-service/dev`
 
-### 3. Generate Credentials
-```bash
-# Get the Role ID
-docker exec vault vault read auth/approle/role/admin-role/role-id
+---
 
-# Generate a new Secret ID
-docker exec vault vault write -f auth/approle/role/admin-role/secret-id
+## 3. AppRole Authentication
+
+Microservices authenticate to Vault using the **AppRole** mechanism. This is a machine-to-machine authentication method that does not require a human operator.
+
+### Credentials
+- **Role ID**: A static identifier configured in `bootstrap.yml`.
+- **Secret ID**: A sensitive credential (similar to a password) used to generate a temporary Vault token.
+
+#### Sample `bootstrap.yml`
+```yaml
+spring:
+  cloud:
+    vault:
+      authentication: APPROLE
+      app-role:
+        role-id: ${VAULT_ROLE_ID}
+        secret-id: ${VAULT_SECRET_ID}
 ```
 
 ---
 
-## Accessing the UI
+## 4. Admin Service Integration
 
-Once unsealed, the Vault Web UI is accessible at:
-[http://localhost:8091/ui](http://localhost:8091/ui)
+The `arya-banking-admin-service` provides REST wrappers to manage Vault programmatically:
+- **Upload Policies**: Convert `.hcl` files into Vault ACL policies.
+- **Generate AppRoles**: Create new service identities.
+- **Manage Secrets**: CRUD operations on the KV store.
+
+{{< alert context="important" text="The Admin Service uses a broad policy (<code>admin-service-policy.hcl</code>) that allows it to manage AppRoles and secrets platform-wide." />}}

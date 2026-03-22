@@ -24,12 +24,12 @@ title = 'Arya Banking Docs'
 
 [params.docs]
   title           = "Event Based Banking Application"
-  pathName        = "docs"    # you likely already have this
-  landingPage     = false  # disables the theme landing page
+  pathName        = "docs"
+  landingPage     = false
   themeColor      = "blue"
-  darkMode        = true          # ← enables the toggle switch in the navbar
+  darkMode        = true
   prism           = true
-  prismTheme      = "lucario"     # ← dark-friendly: lucario | twilight (was: lotusdocs)
+  prismTheme      = "lucario"
   sidebarIcons    = true
   titleIcon       = true
   toc             = true
