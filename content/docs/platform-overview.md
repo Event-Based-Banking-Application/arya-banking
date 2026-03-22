@@ -46,10 +46,11 @@ Dive deeper into individual service documentation:
 | **Config Server** | Centralized Spring Cloud configuration layer backed by Git | [View Config Server Docs →]({{< ref "config-server" >}}) |
 | **API Gateway** | Reactive entry point, JWT validation, and request routing | [View API Gateway Docs →]({{< ref "api-gateway" >}}) |
 | **Infrastructure** | Core stack: Kafka, Keycloak, Vault, and Orchestration | [View Infrastructure Docs →]({{< ref "infra" >}}) |
+| **User Service** | Core user domain — multi-step registration, profile, and security management | [View User Service Docs →]({{< ref "user-service" >}}) |
 | **Admin Service** | Infrastructure administration — Vault CRUD, Keycloak roles/clients, HCL policies | [View Admin Service Docs →]({{< ref "admin-service" >}}) |
 {{< /table >}}
 
-{{< alert context="info" text="More service documentation (auth-service, user-service, api-gateway, etc.) will be added as the platform evolves." />}}
+{{< alert context="info" text="More service documentation (auth-service, etc.) will be added as the platform evolves." />}}
 
 ---
 
