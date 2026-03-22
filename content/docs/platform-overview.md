@@ -47,6 +47,7 @@ Dive deeper into individual service documentation:
 | **API Gateway** | Reactive entry point, JWT validation, and request routing | [View API Gateway Docs →]({{< ref "api-gateway" >}}) |
 | **Infrastructure** | Core stack: Kafka, Keycloak, Vault, and Orchestration | [View Infrastructure Docs →]({{< ref "infra" >}}) |
 | **User Service** | Core user domain — multi-step registration, profile, and security management | [View User Service Docs →]({{< ref "user-service" >}}) |
+| **Auth Service** | Identity bridge — Keycloak Admin SDK, user management, and JWT issuance | [View Auth Service Docs →]({{< ref "auth-service" >}}) |
 | **Admin Service** | Infrastructure administration — Vault CRUD, Keycloak roles/clients, HCL policies | [View Admin Service Docs →]({{< ref "admin-service" >}}) |
 {{< /table >}}
 
