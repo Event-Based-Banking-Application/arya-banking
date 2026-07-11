@@ -20,30 +20,40 @@ This roadmap tracks 27 improvements identified across all 9 repositories, ranked
 
 ---
 
-### 1. Hardcoded Vault AppRole credentials in bootstrap.yml
+### 1. Hardcoded Vault AppRole credentials in bootstrap.yml ✅
 
 **Files:**
-- `arya-banking-auth-service/src/main/resources/bootstrap.yml`
-- `arya-banking-user-service/src/main/resources/bootstrap.yml`
-- `arya-banking-admin-service/src/main/resources/bootstrap.yml`
+- `arya-banking-auth-service/bootstrap.yml`
+- `arya-banking-user-service/bootstrap.yml`
+- `arya-banking-admin-service/bootstrap.yml`
 
-**Current (vulnerable) code:**
+**Fixed:** Each service now uses a gitignored `vault-credentials.yml` file at its project root, imported via `spring.config.import: "optional:file:./vault-credentials.yml"`. The `bootstrap.yml` contains only `placeholder` values that are overridden by the local file.
 
 ```yaml
+# bootstrap.yml
+spring:
+  config:
+    import: "optional:file:./vault-credentials.yml"
+  cloud:
+    vault:
+      app-role:
+        role-id: placeholder
+        secret-id: placeholder
+```
+
+```yaml
+# vault-credentials.yml (gitignored — not committed)
 spring:
   cloud:
     vault:
-      authentication: APPROLE
       app-role:
-        role-id: d2cc5f12-8cd1-b304-74c5-35496934db32
-        secret-id: ec58563d-3439-2d42-4f4a-43e4fcb59b46
+        role-id: <actual-role-id>
+        secret-id: <actual-secret-id>
 ```
-
-**Problem:** Both `role-id` and `secret-id` are hardcoded in version control. Anyone with read access to the repo can authenticate as the service to Vault and read all secrets.
 
 | Affected Repos | Severity |
 |---|---|
-| auth-service, user-service, admin-service | 🟡 In Progress |
+| auth-service, user-service, admin-service | ✅ Completed |
 
 ---
 

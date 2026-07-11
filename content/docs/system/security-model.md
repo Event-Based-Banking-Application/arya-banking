@@ -44,8 +44,8 @@ The standard `realm_access.roles` claim in the Keycloak JWT is extracted and con
 
 ### AppRole Authentication
 Instead of static tokens, microservices use **Vault AppRole** to authenticate at startup.
-- **Role ID**: Unique ID for the service (stored in `bootstrap.yml`).
-- **Secret ID**: A one-time or short-lived credential (stored in `bootstrap.yml` or injected via environment).
+- **Role ID**: Unique ID for the service (configured per-service in `.gitignore`-d `vault-credentials.yml`).
+- **Secret ID**: A sensitive credential used to generate a temporary Vault token (same file).
 
 ### Secret Paths
 Secrets are organized by service and environment:
@@ -96,7 +96,7 @@ public JwtAuthenticationConverter jwtAuthenticationConverter() {
 
 ## 4. Security Observations & Hardening
 
-{{< alert context="warning" text="<strong>Warning:</strong> Current <code>bootstrap.yml</code> files in several services have hardcoded Vault <code>secret-id</code> values. This is suitable for development only and must be handled via CI/CD secrets for production deployment." />}}
+{{< alert context="info" text="Each service now externalizes Vault credentials via a gitignored <code>vault-credentials.yml</code> file. The <code>bootstrap.yml</code> contains only <code>placeholder</code> values that are overridden by the local file or environment variables." />}}
 
 {{< table "table-striped table-hover table-sm" >}}
 | Area | Current Implementation | Recommendation |

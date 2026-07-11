@@ -65,9 +65,8 @@ public RestTemplate restTemplate() {
 
 For production deployments, ensure the following environment variables are set:
 
-| Variable | Description |
-|---|---|
-| `VAULT_ROLE_ID` | AppRole Role ID for Vault authentication. |
-| `VAULT_SECRET_ID` | AppRole Secret ID for Vault authentication. |
+| Variable / File | Description |
+|---|---|---|
+| `vault-credentials.yml` | AppRole Role ID + Secret ID for Vault auth (local gitignored file) |
 | `AUTH.SERVICE.CLIENT.SECRET` | Secret for service-to-service Feign calls. |
 | `ARYA.BANKING.AUTH.CLIENT.SECRET` | Secret for the Keycloak Admin Client SDK. |

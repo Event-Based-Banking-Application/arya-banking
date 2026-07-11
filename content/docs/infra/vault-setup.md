@@ -76,19 +76,42 @@ Example: `secret/data/arya-banking/user-service/dev`
 Microservices authenticate to Vault using the **AppRole** mechanism. This is a machine-to-machine authentication method that does not require a human operator.
 
 ### Credentials
-- **Role ID**: A static identifier configured in `bootstrap.yml`.
+- **Role ID**: A static identifier for the service's AppRole.
 - **Secret ID**: A sensitive credential (similar to a password) used to generate a temporary Vault token.
 
-#### Sample `bootstrap.yml`
+#### Local File Approach (`vault-credentials.yml`)
+
+Each service has a gitignored `vault-credentials.yml` at its project root that provides the Role ID and Secret ID:
+
+```yaml
+# vault-credentials.yml (gitignored — do not commit)
+spring:
+  cloud:
+    vault:
+      app-role:
+        role-id: <role-id>
+        secret-id: <secret-id>
+```
+
+The `bootstrap.yml` imports this file via `spring.config.import`:
+
 ```yaml
 spring:
+  config:
+    import: "optional:file:./vault-credentials.yml"
   cloud:
     vault:
       authentication: APPROLE
       app-role:
-        role-id: ${VAULT_ROLE_ID}
-        secret-id: ${VAULT_SECRET_ID}
+        role-id: placeholder
+        secret-id: placeholder
 ```
+
+The `optional:` prefix ensures the service starts even if the file is missing (useful in CI/CD where credentials are injected by other means).
+
+#### Alternative: Environment Variables
+
+For containerized or CI/CD deployments, the same values can be injected via environment variables or a secrets manager by replacing the `placeholder` values with `${...}` placeholders.
 
 ---
 

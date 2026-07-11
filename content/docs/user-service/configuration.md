@@ -36,17 +36,19 @@ spring:
 
 ### `bootstrap.yml` (Startup Secrets)
 
-Processed before the main application context to fetch secrets from Vault.
+Processed before the main application context to fetch secrets from Vault. Credentials come from the gitignored `vault-credentials.yml` file via `spring.config.import`.
 
 ```yaml
 spring:
+  config:
+    import: "optional:file:./vault-credentials.yml"
   cloud:
     vault:
       uri: http://localhost:8091
       authentication: APPROLE
       app-role:
-        role-id: ${VAULT_ROLE_ID}
-        secret-id: ${VAULT_SECRET_ID}
+        role-id: placeholder
+        secret-id: placeholder
       kv:
         application-name: arya-banking/user-service
 ```
@@ -98,9 +100,8 @@ public RequestInterceptor oauth2RequestInterceptor() {
 
 ## Environment Variables
 
-| Variable | Description | Source |
-|---|---|---|
-| `VAULT_ROLE_ID` | AppRole Role ID for Vault auth | Infrastructure Compose |
-| `VAULT_SECRET_ID` | AppRole Secret ID for Vault auth | Infrastructure Compose |
+| Variable / File | Description | Source |
+|---|---|---|---|
+| `vault-credentials.yml` | AppRole Role ID + Secret ID for Vault auth | Local file (gitignored) |
 | `MONGO.PASSWORD` | Password for MongoDB Atlas | Vault KV `secret/arya-banking/user-service` |
 | `USER.SERVICE.CLIENT.SECRET` | Client secret for Feign auth | Vault KV `secret/arya-banking/user-service` |

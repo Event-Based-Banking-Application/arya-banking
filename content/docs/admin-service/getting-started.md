@@ -67,23 +67,21 @@ curl -X POST http://localhost:8089/api/admin/vault/policies?service=admin-servic
 
 ---
 
-## Vault Parameter File
+## Vault Credentials File
 
-The `bootstrap.yml` imports `vault-param.yml` from a local file path. Create this file before starting the service:
-
-```bash {linenos=table, anchorlinenos=true}
-mkdir -p ~/.config/arya-banking-admin-service
-```
+The `bootstrap.yml` imports `vault-credentials.yml` from the project root. Create this file before starting the service — it's already in `.gitignore` so it won't be committed:
 
 ```yaml {linenos=table, anchorlinenos=true}
-# ~/.config/arya-banking-admin-service/vault-param.yml
-vault:
-  appRole:
-    roleId: <your-role-id>
-    secretId: <your-secret-id>
+# vault-credentials.yml (project root — gitignored)
+spring:
+  cloud:
+    vault:
+      app-role:
+        role-id: <your-role-id>
+        secret-id: <your-secret-id>
 ```
 
-{{< alert context="danger" text="Never commit role-id or secret-id values to Git. The bootstrap.yml currently has hardcoded credentials — these must be rotated and moved to the local vault-param.yml file." />}}
+{{< alert context="info" text="The <code>optional:</code> prefix in <code>bootstrap.yml</code> allows the service to start even without this file. Without it, Vault auth will fail with the placeholder values." />}}
 
 ---
 

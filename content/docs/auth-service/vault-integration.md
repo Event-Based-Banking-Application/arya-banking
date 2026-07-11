@@ -14,24 +14,37 @@ The `arya-banking-auth-service` uses **Spring Cloud Vault** to retrieve sensitiv
 
 ## Authentication: AppRole
 
-The service authenticates with Vault using the **AppRole** mechanism. This requires a `role-id` and a `secret-id`, which are provided in `bootstrap.yml`.
+The service authenticates with Vault using the **AppRole** mechanism. Credentials are provided via a gitignored `vault-credentials.yml` file at the project root, which `bootstrap.yml` imports.
 
 ### Bootstrap Configuration
 
 ```yaml {linenos=table, anchorlinenos=true}
+# bootstrap.yml
 spring:
+  config:
+    import: "optional:file:./vault-credentials.yml"
   cloud:
     vault:
       uri: http://localhost:8091
       authentication: APPROLE
       app-role:
-        role-id: ${VAULT_ROLE_ID}
-        secret-id: ${VAULT_SECRET_ID}
+        role-id: placeholder
+        secret-id: placeholder
       kv:
         enabled: true
         backend: secret
         application-name: arya-banking/auth-service
         # kv-version: 2  <-- BUG: Missing in current bootstrap.yml
+```
+
+```yaml {linenos=table, anchorlinenos=true}
+# vault-credentials.yml (gitignored — project root)
+spring:
+  cloud:
+    vault:
+      app-role:
+        role-id: <your-role-id>
+        secret-id: <your-secret-id>
 ```
 
 ---

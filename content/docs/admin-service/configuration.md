@@ -80,7 +80,7 @@ spring:
   profiles:
     active: dev
   config:
-    import: vault://
+    import: "optional:file:./vault-credentials.yml"
   cloud:
     config:
       uri: http://localhost:8090
@@ -88,8 +88,8 @@ spring:
       uri: http://localhost:8091
       authentication: APPROLE
       app-role:
-        role-id: <role-id>
-        secret-id: <secret-id>
+        role-id: placeholder
+        secret-id: placeholder
       kv:
         enabled: true
         backend: secret
@@ -106,7 +106,7 @@ With `profile-separator: /` and `profiles.active: dev`, the service resolves sec
 secret/arya-banking/admin-service/dev
 ```
 
-{{< alert context="danger" text="The role-id and secret-id in bootstrap.yml are currently hardcoded. They must be externalised — either via the vault-param.yml local file or environment variables — before any production or shared-environment deployment." />}}
+{{< alert context="info" text="The role-id and secret-id values come from the gitignored <code>vault-credentials.yml</code> file at the project root — not from <code>bootstrap.yml</code> itself. The <code>placeholder</code> values are safely overridden when that file exists." />}}
 
 ---
 
