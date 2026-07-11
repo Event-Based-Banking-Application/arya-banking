@@ -5,7 +5,7 @@ icon: "info"
 weight: 10
 toc: true
 date: "2025-03-01T00:00:00Z"
-lastmod: "2026-03-22T00:00:00Z"
+lastmod: "2026-07-11T00:00:00Z"
 tags: ["overview", "architecture", "microservices"]
 ---
 
@@ -28,6 +28,7 @@ Explore the foundational principles and technical guides that power the Arya Ban
 | **[Inter-service Communication]({{< ref "/docs/system/inter-service-communication" >}})** | Details on Feign, OAuth2 (M2M), and Kafka event flows. |
 | **[Security Model]({{< ref "/docs/system/security-model" >}})** | Comprehensive overview of Keycloak, Vault, and JWT processing. |
 | **[Infrastructure Stack]({{< ref "/docs/infra/overview" >}})** | Docker orchestration, networking, and platform setup. |
+| **[Local Development Setup]({{< ref "/docs/local-development/overview" >}})** | Step-by-step guide to running the full platform locally. |
 {{< /table >}}
 
 ---
@@ -57,23 +58,39 @@ The platform is distributed across **9 interconnected repositories**:
 ```text
 Event-Based-Banking-Application/
 │
-├── arya-banking-infra/                  ← Docker Compose infra (Kafka, Keycloak, etc.)
+├── arya-banking/                        ← Documentation site (Hugo)
+├── arya-banking-infra/                  ← Docker Compose infra (Kafka, Keycloak, Vault)
 ├── arya-banking-configs/                ← Centralized Git-backed configuration
+├── arya-banking-common/                 ← Shared Maven library (GitHub Packages)
+│
 ├── arya-banking-service-registry/       ← Eureka Server (Discovery)
-├── arya-banking-config-server/          ← Spring Cloud Config Server (Properties)
-├── arya-banking-api-gateway/            ← Reactive Entry Point
-├── arya-banking-auth-service/           ← Identity Bridge
-├── arya-banking-user-service/           ← User Domain
-├── arya-banking-admin-service/          ← Infrastructure Admin
-└── arya-banking-common/                 ← Shared Library (Maven/GitHub Packages)
+├── arya-banking-config-server/          ← Spring Cloud Config Server
+├── arya-banking-api-gateway/            ← Reactive entry point
+│
+├── arya-banking-user-service/           ← User domain
+├── arya-banking-auth-service/           ← Identity bridge
+└── arya-banking-admin-service/          ← Infrastructure admin
 ```
 
 ---
 
 ## Quick Reference
 
-- **API Gateway Port**: `8085` (Primary entry point)
+{{< table "table-striped table-hover table-sm" >}}
+| Service | Port | Description |
+|---------|------|-------------|
+| **API Gateway** | `8085` | Primary entry point (Docker) |
+| **User Service** | `8086` | User domain (Host) |
+| **Auth Service** | `8087` | Identity bridge (Host) |
+| **Admin Service** | `8089` | Infrastructure admin (Host) |
+| **Config Server** | `8090` | Centralized configuration (Docker) |
+| **Vault** | `8091` | Secrets management + UI (Docker) |
+| **Eureka** | `8761` | Service discovery dashboard (Docker) |
+| **Kafka** | `9092` / `29092` | Messaging — external / internal (Docker) |
+| **Keycloak** | `5433` | IAM admin + auth (Docker) |
+{{< /table >}}
+
 - **Shared Network**: `arya-banking-net`
-- **Identity Provider**: Keycloak (Port `5433` -> `8080`)
-- **Secret Management**: HashiCorp Vault (Port `8091` -> `8200`)
-- **Service Discovery**: Eureka (Port `8761`)
+- **Infrastructure Runs In**: Docker containers via `arya-banking-infra`
+- **Business Services Run On**: Host via `mvn spring-boot:run`
+- **Secrets**: HashiCorp Vault with AppRole authentication (local `vault-credentials.yml`)
