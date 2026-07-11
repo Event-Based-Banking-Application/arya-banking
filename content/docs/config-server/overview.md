@@ -20,3 +20,17 @@ The configuration layer consists of two tightly coupled repositories:
 {{< /table >}}
 
 `arya-banking-config-server` is a Spring Cloud Config Server that reads property files from the `arya-banking-configs` Git repository and serves them over HTTP to all microservices. It registers itself with Eureka, so clients can discover it by name instead of hardcoding a URL.
+
+---
+
+## Dockerized Deployment
+
+The Config Server is containerized as part of the platform stack. It is defined in `compose/platform.yml` in the `arya-banking-infra` repository.
+
+- **Image**: `karthikulkarni/arya-banking-config-server:latest`
+- **Container Name**: `config-server`
+- **Host Port**: `8090` &rarr; Container `8090`
+- **Network**: `arya-banking-net`
+- **Depends On**: `service-registry` (healthy)
+
+{{< alert context="info" text="See the [Infrastructure &rarr; Docker Compose]({{< ref \"/docs/infra/docker-compose\" >}}) page for the full platform stack definition." />}}

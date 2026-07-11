@@ -26,6 +26,19 @@ The gateway performs three critical functions:
 
 ---
 
+## Dockerized Deployment
+
+The API Gateway is deployed as a Docker container as part of the platform stack. It is defined in `compose/platform.yml` alongside the Service Registry and Config Server.
+
+- **Image**: `karthikulkarni/arya-banking-api-gateway:latest`
+- **Container Name**: `api-gateway`
+- **Host Port**: `8085` &rarr; Container `8085`
+- **Network**: `arya-banking-net`
+
+{{< alert context="info" text="See the [Infrastructure &rarr; Docker Compose]({{< ref \"/docs/infra/docker-compose\" >}}) page for the full platform stack definition." />}}
+
+---
+
 ## Reactive Architecture
 
 Unlike traditional servlet-based Spring Boot applications, the API Gateway is built on **Spring WebFlux**.

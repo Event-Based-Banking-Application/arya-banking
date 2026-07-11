@@ -22,20 +22,28 @@ The Gateway serves as the **Single Entry Point** (Ingress) for all external clie
 
 ## Routing Engine
 
-Routes are defined centrally in `arya-banking-configs/application.yml`. The Gateway dynamically routes requests based on the path prefix.
+Routes are defined centrally in the `arya-banking-configs` repository and served to the gateway at startup via the **Spring Cloud Config Server**. The gateway imports configuration using `spring.config.import: 'configserver:'` pointed at `http://config-server:8090`.
 
-### Internal vs Public Routes
+Route targets use the `lb://` scheme (e.g., `lb://arya-banking-user-service`) so that **Eureka** resolves the downstream service address dynamically.
 
-The Gateway enforces a distinction between:
-- **Public Routes**: Accessible without authentication (e.g., `/api/users/register`, `/api/auth/authenticate`).
-- **Private Routes**: Require a valid JWT issued by Keycloak.
-- **Internal Routes**: Hidden from the Gateway or restricted at the source (e.g., `/internal/**`).
+### Route Access Tiers
+
+The Gateway enforces three tiers of access:
+- **Public Routes**: No authentication required (e.g., `/api/users/register`, `/api/auth/authenticate`).
+- **Internal Routes**: Require `ROLE_INTERNAL_SERVICE` authority in the JWT (e.g., `/internal/**`).
+- **Authenticated Routes**: All other paths require a valid Keycloak JWT.
 
 ---
 
+## Dockerized Deployment
+
+The API Gateway is containerized alongside the Service Registry and Config Server in `compose/platform.yml`. The Docker image is built via GitHub Actions on version tags and pushed to Docker Hub as `karthikulkarni/arya-banking-api-gateway:latest`.
+
+{{< alert context="info" text="See the [Infrastructure &rarr; Docker Compose]({{< ref \"/docs/infra/docker-compose\" >}}) page for the full platform stack configuration." />}}
+
 ## Service Discovery
 
-The Gateway registers itself with the **Service Registry (Eureka)**. When routing to a microservice, it typically uses the service ID (e.g. `http://arya-banking-user-service`) unless direct URI overrides are active.
+The Gateway registers itself with **Eureka** (Service Registry) and uses it for downstream route resolution. Routes defined in the Config Server use the `lb://` scheme (e.g., `lb://arya-banking-user-service`), which Eureka resolves to the actual host and port — enabling load balancing and failover.
 
 ---
 

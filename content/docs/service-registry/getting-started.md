@@ -24,15 +24,18 @@ mvn spring-boot:run
 ```
 {{% /tab %}}
 
-{{% tab tabName="Docker Compose" %}}
-Requires Docker and Docker Compose. This runs a standalone instance, not attached to the full `arya-banking-net`.
+{{% tab tabName="Docker Compose (Platform Stack)" %}}
+Requires Docker and Docker Compose. The Service Registry is deployed as part of the platform stack via `arya-banking-infra`.
 
 ```bash {linenos=table, anchorlinenos=true}
-# Build the image and start the container in detached mode
-docker-compose up -d
+# From the arya-banking-infra directory
+make platform
+
+# Or directly:
+docker compose -f compose/platform.yml up -d
 
 # View live logs
-docker-compose logs -f arya-registry
+docker compose -f compose/platform.yml logs -f
 ```
 {{% /tab %}}
 {{< /tabs >}}

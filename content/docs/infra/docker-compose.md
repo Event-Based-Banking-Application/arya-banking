@@ -71,6 +71,7 @@ Orchestrates the Spring Cloud infrastructure components.
 |---|---|---|---|
 | **Service Registry** | `arya-banking-service-registry` | `8761` | Eureka Server |
 | **Config Server** | `arya-banking-config-server` | `8090` | Spring Cloud Config |
+| **API Gateway** | `arya-banking-api-gateway` | `8085` | Spring Cloud Gateway |
 {{< /table >}}
 
 ---
@@ -92,10 +93,12 @@ flowchart TD
         VT[Vault :8200]
         EUR[Eureka :8761]
         CS[Config Server :8090]
+        GW[API Gateway :8085]
     end
 
     C -->|:9092| K
     C -->|:5433| KC
     C -->|:8091| VT
     C -->|:8761| EUR
+    C -->|:8085| GW
 ```

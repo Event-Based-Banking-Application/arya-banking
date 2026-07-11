@@ -14,14 +14,49 @@ The platform uses HashiCorp Vault to securely store and inject environment-speci
 
 ## 1. Vault Server Configuration
 
-The Vault server is started in `dev` mode for simplicity, using a file-based storage backend.
+Vault runs in **production mode** with a file-based storage backend, configured via `compose/vault/config/vault.hcl`.
 
 - **Internal Port**: `8200`
 - **External Port**: `8091`
 - **Network**: `arya-banking-net`
+- **Storage**: File-backed (`/vault/data`)
+- **UI**: Enabled at `http://localhost:8091/ui`
 
-### Unsealing Process
-When the Vault container starts for the first time, it must be unsealed (though `dev` mode currently auto-unseals with a known root token). In production, the `admin-service` or a manual operator uses unseal keys to unlock the master key.
+```hcl
+# compose/vault/config/vault.hcl
+ui = true
+
+storage "file" {
+  path = "/vault/data"
+}
+
+listener "tcp" {
+  address     = "0.0.0.0:8200"
+  tls_disable = 1
+}
+
+disable_mlock = false
+```
+
+### Initialisation & Unsealing
+
+Vault starts in a **sealed** state after every restart. The `scripts/vault-unseal.ps1` PowerShell script automates the entire lifecycle:
+
+{{< table "table-striped table-sm" >}}
+| Phase | Action |
+|---|---|
+| **First start** | Script detects no keys file, initialises Vault (5 shares, threshold 3), and saves unseal keys + root token to `scripts/vault/init/keys.txt` |
+| **Subsequent starts** | Script reads the saved keys, submits 3 of 5 unseal shards via the Vault REST API |
+{{< /table >}}
+
+```powershell
+# Auto-initialise and unseal
+make vault-unseal
+```
+
+{{% alert icon="🔑" context="warning" %}}
+The generated `scripts/vault/init/keys.txt` is `.gitignore`-d and **must be backed up securely**. Without it, a sealed Vault cannot be recovered.
+{{% /alert %}}
 
 ---
 

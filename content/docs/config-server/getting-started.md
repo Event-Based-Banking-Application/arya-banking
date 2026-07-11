@@ -16,7 +16,7 @@ The `arya-banking-config-server` uses Maven and is optimized for multi-stage Doc
 |---|---|
 | Build Fat JAR | `mvn -B -DskipTests package` |
 | Build Docker Image | `docker build -t arya-banking-config-server:latest .` |
-| Start via Compose | `docker-compose up -d` |
+| Start via Platform Stack | `docker compose -f compose/platform.yml up -d` (from `arya-banking-infra`) |
 
 {{< /table >}}
 

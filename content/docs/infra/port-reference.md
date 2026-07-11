@@ -37,6 +37,7 @@ When services communicate **inside** the Docker network (`arya-banking-net`), th
 | **Vault** | `vault` | `8200` |
 | **Eureka** | `service-registry` | `8761` |
 | **Config Server** | `config-server` | `8090` |
+| **API Gateway** | `api-gateway` | `8085` |
 {{< /table >}}
 
 ---

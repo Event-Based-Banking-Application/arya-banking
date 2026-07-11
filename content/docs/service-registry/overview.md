@@ -43,6 +43,19 @@ The registry is intentionally thin, relying on default Spring Cloud Netflix Eure
 
 ---
 
+## Dockerized Deployment
+
+The Service Registry is containerized as part of the platform stack. It is defined in `compose/platform.yml` in the `arya-banking-infra` repository.
+
+- **Image**: `karthikulkarni/arya-banking-service-registry:latest`
+- **Container Name**: `service-registry`
+- **Host Port**: `8761` &rarr; Container `8761`
+- **Network**: `arya-banking-net`
+
+{{< alert context="info" text="See the [Infrastructure &rarr; Docker Compose]({{< ref \"/docs/infra/docker-compose\" >}}) page for the full platform stack definition." />}}
+
+---
+
 ## Dashboard
 
 When the registry is running, you can access the Eureka Dashboard to see all connected services:

@@ -21,20 +21,31 @@ The Gateway uses **Spring Security Reactive** to validate tokens against Keycloa
 - **Issuer**: Ensures the `iss` claim matches the configured Keycloak realm URL.
 
 ### Security Configuration
-The `SecurityConfig.java` defines the filter chain:
+The `SecurityConfig.java` defines the reactive filter chain:
 
 ```java {linenos=table, anchorlinenos=true}
 @Bean
-public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-    http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-        .authorizeExchange(exchanges -> exchanges
-            .pathMatchers("/api/auth/**", "/api/users/register").permitAll() // Public
-            .anyExchange().authenticated() // Private
-        )
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-    return http.build();
+public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity serverHttpSecurity) {
+    serverHttpSecurity.authorizeExchange(authorize ->
+            authorize.pathMatchers("/api/users/register", "/api/auth/authenticate").permitAll()
+                    .pathMatchers("/internal/**").hasAuthority("ROLE_INTERNAL_SERVICE")
+                    .anyExchange().authenticated())
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
+    return serverHttpSecurity.build();
 }
 ```
+
+### Route-Level Access
+
+{{< table "table-striped table-sm" >}}
+| Path Pattern | Access Rule | Purpose |
+|---|---|---|
+| `/api/users/register` | `permitAll` | User self-registration |
+| `/api/auth/authenticate` | `permitAll` | Login endpoint |
+| `/internal/**` | `ROLE_INTERNAL_SERVICE` | Service-to-service calls |
+| All other paths | Authenticated (JWT required) | Standard API access |
+{{< /table >}}
 
 ---
 

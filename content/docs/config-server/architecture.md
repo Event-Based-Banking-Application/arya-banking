@@ -22,6 +22,28 @@ sequenceDiagram
     Note over Service: Service boots up using fetched config
 ```
 
+## Dockerized Platform Stack
+
+The Config Server runs as a Docker container in the platform stack. The `compose/platform.yml` configures it with health checks against `/actuator/health` and an environment override for the Eureka URL:
+
+```yaml
+config-server:
+  image: karthikulkarni/arya-banking-config-server:latest
+  ports:
+    - "8090:8090"
+  environment:
+    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+  depends_on:
+    service-registry:
+      condition: service_started
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:8090/actuator/health"]
+```
+
+{{< alert context="info" text="See the [Infrastructure &rarr; Docker Compose]({{< ref \"/docs/infra/docker-compose\" >}}) page for the full platform.yml details." />}}
+
+---
+
 ## Startup Order
 
 Since services depend on remote properties to connect to databases and message brokers, the startup order is critical:

@@ -10,7 +10,7 @@ toc: true
 
 The `arya-banking-infra` repository is the **single source of truth** for all infrastructure in the Arya Banking platform. It contains no application code — only Docker Compose definitions, configuration files, and automation scripts.
 
-Every third-party service (Kafka, Keycloak, Vault) and every platform service (Service Registry, Config Server) is orchestrated from this central location.
+Every third-party service (Kafka, Keycloak, Vault) and every platform service (Service Registry, Config Server, API Gateway) is orchestrated from this central location.
 
 ---
 
@@ -24,11 +24,16 @@ arya-banking-infra/
 ├── compose/
 │   ├── kafka.yml                   ← Kafka + Schema Registry + Kafka Connect
 │   ├── keycloak.yml                ← PostgreSQL + Keycloak
-│   ├── platform.yml                ← Service Registry + Config Server
+│   ├── platform.yml                ← Service Registry + Config Server + API Gateway
 │   ├── vault.yml                   ← HashiCorp Vault
 │   └── vault/
 │       └── config/
 │           └── vault.hcl           ← Vault server configuration
+├── scripts/
+│   ├── vault-unseal.ps1            ← Vault initialisation and unsealing
+│   └── vault/
+│       └── init/
+│           └── keys.txt (gitignored)← Generated unseal keys + root token
 └── .gitignore
 ```
 
@@ -46,7 +51,7 @@ The stack is divided into four primary concerns:
 | **Event Streaming** | Messaging & Schemas | Apache Kafka, Schema Registry |
 | **Identity & Access** | IAM | Keycloak, PostgreSQL |
 | **Secrets Management** | Security | HashiCorp Vault |
-| **Spring Platform** | Service Coordination | Eureka, Config Server |
+| **Spring Platform** | Service Coordination | Eureka, Config Server, API Gateway |
 {{< /table >}}
 
 ---

@@ -37,9 +37,14 @@ If you only need a specific subset of the infrastructure, use these scoped comma
 * `make keycloak`: Start Keycloak and PostgreSQL.
 * `make keycloak-down`: Stop the Keycloak stack.
 
-### Platform Batch (Eureka/Config)
-* `make platform`: Start Service Registry and Config Server.
+### Platform Batch (Eureka/Config/Gateway)
+* `make platform`: Start Service Registry, Config Server, and API Gateway.
 * `make platform-down`: Stop the platform services.
+
+### Vault Batch (Secrets)
+* `make vault`: Start HashiCorp Vault.
+* `make vault-down`: Stop Vault.
+* `make vault-unseal`: Auto-initialise and unseal Vault (requires 3 of 5 unseal keys).
 
 ---
 

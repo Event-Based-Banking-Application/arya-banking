@@ -32,6 +32,25 @@ spring:
 
 ---
 
+## Platform Stack Integration
+
+When running as part of the full platform stack via `arya-banking-infra/compose/platform.yml`, the Service Registry is the first container to start. The Config Server and API Gateway depend on it.
+
+```yaml
+# From compose/platform.yml
+service-registry:
+  image: karthikulkarni/arya-banking-service-registry:latest
+  container_name: service-registry
+  ports:
+    - "8761:8761"
+  networks:
+    - arya-banking-net
+```
+
+{{< alert context="info" text="Refer to the [Infrastructure &rarr; Docker Compose]({{< ref \"/docs/infra/docker-compose\" >}}) page for the complete platform.yml configuration." />}}
+
+---
+
 ## Environment Variables
 
 When running via Docker Compose or in production, you can override default settings using environment variables.
