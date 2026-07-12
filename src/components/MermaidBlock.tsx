@@ -63,11 +63,15 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
   useEffect(() => {
     if (!open) return;
+    document.body.style.overflow = "hidden";
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
     };
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handler);
+    };
   }, [open, close]);
 
   if (error) {
@@ -98,12 +102,12 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
       {open && svgHtml && (
         <div
-          className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 md:p-10"
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) close();
           }}
         >
-          <div className="relative max-w-[95vw] max-h-[90vh] w-full h-full flex items-center justify-center">
+          <div className="relative flex items-center justify-center" style={{ width: "65vw", height: "65vh" }}>
             <button
               onClick={close}
               className="absolute -top-10 right-0 text-muted hover:text-ink transition-colors z-10"
@@ -112,11 +116,12 @@ export default function MermaidBlock({ chart }: { chart: string }) {
               <X size={24} />
             </button>
             <div
-              className="w-full h-full flex items-center justify-center overflow-auto"
+              className="flex items-center justify-center overflow-auto"
+              style={{ maxWidth: "65vw", maxHeight: "65vh" }}
               dangerouslySetInnerHTML={{
                 __html: svgHtml.replace(
                   "<svg ",
-                  '<svg style="max-width:100%;max-height:100%;width:auto;height:auto" '
+                  '<svg style="max-width:65vw;max-height:65vh;width:auto;height:auto" '
                 ),
               }}
             />
