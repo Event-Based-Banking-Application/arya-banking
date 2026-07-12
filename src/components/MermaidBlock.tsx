@@ -3,12 +3,20 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
+function styleSvg(svg: string, style: string): string {
+  const withoutSize = svg
+    .replace(/\s+style="[^"]*"/, "")
+    .replace(/\s+width="[^"]*"/, "")
+    .replace(/\s+height="[^"]*"/, "");
+  return withoutSize.replace("<svg", `<svg style="${style}"`);
+}
+
 export default function MermaidBlock({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [svgHtml, setSvgHtml] = useState<string | null>(null);
+  const [rawSvg, setRawSvg] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -41,13 +49,8 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         const { svg } = await mermaid.render(id, chart);
         if (cancelled || !ref.current) return;
 
-        const scaled = svg
-          .replace(/width="[^"]*"/, "")
-          .replace(/height="[^"]*"/, "")
-          .replace("<svg ", '<svg style="max-width:100%;width:100%;height:auto" ');
-
-        ref.current.innerHTML = scaled;
-        setSvgHtml(scaled);
+        setRawSvg(svg);
+        ref.current.innerHTML = styleSvg(svg, "max-width:100%;width:100%;height:auto");
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -100,7 +103,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         </div>
       </div>
 
-      {open && svgHtml && (
+      {open && rawSvg && (
         <div
           className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
@@ -116,13 +119,9 @@ export default function MermaidBlock({ chart }: { chart: string }) {
               <X size={24} />
             </button>
             <div
-              className="flex items-center justify-center overflow-auto"
-              style={{ maxWidth: "65vw", maxHeight: "65vh" }}
+              className="flex items-center justify-center"
               dangerouslySetInnerHTML={{
-                __html: svgHtml.replace(
-                  "<svg ",
-                  '<svg style="max-width:65vw;max-height:65vh;width:auto;height:auto" '
-                ),
+                __html: styleSvg(rawSvg, "max-width:65vw;max-height:65vh;width:auto;height:auto"),
               }}
             />
           </div>
