@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { X, Maximize2 } from "lucide-react";
 
 export default function MermaidBlock({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [svgHtml, setSvgHtml] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,15 +41,13 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         const { svg } = await mermaid.render(id, chart);
         if (cancelled || !ref.current) return;
 
-        ref.current.innerHTML = svg;
-        const svgEl = ref.current.querySelector("svg");
-        if (svgEl) {
-          svgEl.removeAttribute("width");
-          svgEl.removeAttribute("height");
-          svgEl.style.maxWidth = "100%";
-          svgEl.style.width = "100%";
-          svgEl.style.height = "auto";
-        }
+        const scaled = svg
+          .replace(/width="[^"]*"/, "")
+          .replace(/height="[^"]*"/, "")
+          .replace("<svg ", '<svg style="max-width:100%;width:100%;height:auto" ');
+
+        ref.current.innerHTML = scaled;
+        setSvgHtml(scaled);
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -57,6 +58,17 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     render();
     return () => { cancelled = true; };
   }, [chart]);
+
+  const close = useCallback(() => setOpen(false), []);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open, close]);
 
   if (error) {
     return (
@@ -72,11 +84,45 @@ export default function MermaidBlock({ chart }: { chart: string }) {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px]"
-    >
-      <div ref={ref} className="w-full max-w-full" />
-    </div>
+    <>
+      <div
+        ref={containerRef}
+        onClick={() => setOpen(true)}
+        className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px] cursor-pointer group relative"
+      >
+        <div ref={ref} className="w-full max-w-full pointer-events-none" />
+        <div className="absolute top-2 right-2 text-muted opacity-0 group-hover:opacity-100 transition-opacity">
+          <Maximize2 size={16} />
+        </div>
+      </div>
+
+      {open && svgHtml && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 md:p-10"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) close();
+          }}
+        >
+          <div className="relative max-w-[95vw] max-h-[90vh] w-full h-full flex items-center justify-center">
+            <button
+              onClick={close}
+              className="absolute -top-10 right-0 text-muted hover:text-ink transition-colors z-10"
+              aria-label="Close"
+            >
+              <X size={24} />
+            </button>
+            <div
+              className="w-full h-full flex items-center justify-center overflow-auto"
+              dangerouslySetInnerHTML={{
+                __html: svgHtml.replace(
+                  "<svg ",
+                  '<svg style="max-width:100%;max-height:100%;width:auto;height:auto" '
+                ),
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
