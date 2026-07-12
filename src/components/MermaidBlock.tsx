@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
-function createCleanSvgElement(svgString: string): SVGSVGElement | null {
+function createCleanSvgElement(svgString: string, style: string): SVGSVGElement | null {
   try {
     // Parse as HTML (lenient) to handle mermaid's HTML-like content in labels (<br>, <p>)
     const parser = new DOMParser();
@@ -15,7 +15,7 @@ function createCleanSvgElement(svgString: string): SVGSVGElement | null {
     svgElement.removeAttribute("width");
     svgElement.removeAttribute("height");
     svgElement.removeAttribute("style");
-    svgElement.setAttribute("style", "max-width:100%;width:100%;height:auto");
+    svgElement.setAttribute("style", style);
 
     return svgElement as SVGSVGElement;
   } catch (e) {
@@ -29,7 +29,8 @@ export default function MermaidBlock({ chart }: { chart: string }) {
   const modalRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [svgElement, setSvgElement] = useState<SVGSVGElement | null>(null);
+  const [inlineSvg, setInlineSvg] = useState<SVGSVGElement | null>(null);
+  const [modalSvg, setModalSvg] = useState<SVGSVGElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,17 +67,22 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         const { svg } = await mermaid.render(id, chart);
         if (cancelled) return;
 
-        const cleanSvg = createCleanSvgElement(svg);
-        if (!cleanSvg) throw new Error("Failed to parse mermaid SVG");
+        // Inline: fill content width
+        const inlineSvgEl = createCleanSvgElement(svg, "max-width:100%;width:100%;height:auto");
+        // Modal: scale to fit 85vw x 80vh container
+        const modalSvgEl = createCleanSvgElement(svg, "max-width:85vw;max-height:80vh;width:auto;height:auto");
+
+        if (!inlineSvgEl || !modalSvgEl) throw new Error("Failed to parse mermaid SVG");
 
         // Render inline
         if (inlineRef.current) {
           inlineRef.current.innerHTML = "";
-          inlineRef.current.appendChild(cleanSvg.cloneNode(true));
+          inlineRef.current.appendChild(inlineSvgEl);
         }
 
         // Store for modal
-        setSvgElement(cleanSvg.cloneNode(true) as SVGSVGElement);
+        setInlineSvg(inlineSvgEl);
+        setModalSvg(modalSvgEl);
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -88,12 +94,12 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     return () => { cancelled = true; };
   }, [chart]);
 
-  // Append SVG to modal when it opens
+  // Append modal SVG when modal opens
   useEffect(() => {
-    if (!open || !svgElement || !modalRef.current) return;
+    if (!open || !modalSvg || !modalRef.current) return;
     modalRef.current.innerHTML = "";
-    modalRef.current.appendChild(svgElement);
-  }, [open, svgElement]);
+    modalRef.current.appendChild(modalSvg);
+  }, [open, modalSvg]);
 
   const close = useCallback(() => setOpen(false), []);
 
