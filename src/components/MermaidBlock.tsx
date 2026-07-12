@@ -5,11 +5,9 @@ import { X, Maximize2 } from "lucide-react";
 
 function createCleanSvgElement(svgString: string): SVGSVGElement | null {
   try {
+    // Parse as HTML (lenient) to handle mermaid's HTML-like content in labels (<br>, <p>)
     const parser = new DOMParser();
-    const doc = parser.parseFromString(svgString, "image/svg+xml");
-    const parseError = doc.querySelector("parsererror");
-    if (parseError) throw new Error(parseError.textContent || "SVG parse error");
-
+    const doc = parser.parseFromString(svgString, "text/html");
     const svgElement = doc.querySelector("svg");
     if (!svgElement) throw new Error("No <svg> element found");
 
@@ -19,8 +17,9 @@ function createCleanSvgElement(svgString: string): SVGSVGElement | null {
     svgElement.removeAttribute("style");
     svgElement.setAttribute("style", "max-width:100%;width:100%;height:auto");
 
-    return svgElement;
-  } catch {
+    return svgElement as SVGSVGElement;
+  } catch (e) {
+    console.error("createCleanSvgElement error:", e);
     return null;
   }
 }
@@ -42,7 +41,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
         mermaid.initialize({
           startOnLoad: false,
-          theme: "dark",
+          theme: "base",
           themeVariables: {
             primaryColor: "#0066b1",
             primaryBorderColor: "#1c69d4",
@@ -52,10 +51,14 @@ export default function MermaidBlock({ chart }: { chart: string }) {
             tertiaryColor: "#0d0d0d",
             mainBkg: "#1a1a1a",
             nodeBorder: "#0066b1",
+            nodeTextColor: "#ffffff",
+            nodeFill: "#1a1a1a",
             clusterBkg: "#0d0d0d",
             clusterBorder: "#262626",
             edgeLabelBackground: "#1a1a1a",
-            nodeTextColor: "#ffffff",
+            edgeLabelColor: "#ffffff",
+            fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+            fontSize: "16px",
           },
         });
 
