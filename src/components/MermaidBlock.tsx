@@ -41,11 +41,24 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         if (cancelled || !ref.current) return;
 
         setRawSvg(svg);
-        const stripped = svg
-          .replace(/\s+style="[^"]*"/g, "")
-          .replace(/\s+width="[^"]*"/g, "")
-          .replace(/\s+height="[^"]*"/g, "");
-        ref.current.innerHTML = stripped.replace("<svg", '<svg style="max-width:100%;width:100%;height:auto"');
+
+        // Safe client-only DOM parsing to cleanly override sizing style
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svg, "image/svg+xml");
+        const svgElement = doc.querySelector("svg");
+
+        if (svgElement) {
+          svgElement.removeAttribute("width");
+          svgElement.removeAttribute("height");
+          svgElement.removeAttribute("style");
+          svgElement.setAttribute("style", "max-width:100%;width:100%;height:auto");
+
+          const serializer = new XMLSerializer();
+          const cleanSvg = serializer.serializeToString(svgElement);
+          ref.current.innerHTML = cleanSvg;
+        } else {
+          ref.current.innerHTML = svg;
+        }
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
