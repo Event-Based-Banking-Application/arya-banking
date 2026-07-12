@@ -13,7 +13,6 @@ function styleSvg(svg: string, style: string): string {
 
 export default function MermaidBlock({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [rawSvg, setRawSvg] = useState<string | null>(null);
@@ -93,7 +92,6 @@ export default function MermaidBlock({ chart }: { chart: string }) {
   return (
     <>
       <div
-        ref={containerRef}
         onClick={() => setOpen(true)}
         className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px] cursor-pointer group relative"
       >
@@ -105,12 +103,12 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
       {open && rawSvg && (
         <div
-          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-8"
           onClick={(e) => {
             if (e.target === e.currentTarget) close();
           }}
         >
-          <div className="relative flex items-center justify-center" style={{ width: "65vw", height: "65vh" }}>
+          <div className="relative flex items-center justify-center">
             <button
               onClick={close}
               className="absolute -top-10 right-0 text-muted hover:text-ink transition-colors z-10"
@@ -119,9 +117,8 @@ export default function MermaidBlock({ chart }: { chart: string }) {
               <X size={24} />
             </button>
             <div
-              className="flex items-center justify-center"
               dangerouslySetInnerHTML={{
-                __html: styleSvg(rawSvg, "max-width:65vw;max-height:65vh;width:auto;height:auto"),
+                __html: styleSvg(rawSvg, "max-width:85vw;max-height:80vh;width:auto;height:auto"),
               }}
             />
           </div>
