@@ -1,9 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
-function createCleanSvgElement(svgString: string, style: string): SVGSVGElement | null {
+function svgToDataUri(svgString: string): string {
+  // Minify and encode
+  const minified = svgString
+    .replace(/\s+/g, " ")
+    .replace(/>\s+</g, "><")
+    .trim();
+  return `data:image/svg+xml;base64,${btoa(minified)}`;
+}
+
+function createStyledSvg(svgString: string, style: string): string {
   try {
     // Parse as HTML (lenient) to handle mermaid's HTML-like content in labels (<br>, <p>)
     const parser = new DOMParser();
@@ -17,20 +26,18 @@ function createCleanSvgElement(svgString: string, style: string): SVGSVGElement 
     svgElement.removeAttribute("style");
     svgElement.setAttribute("style", style);
 
-    return svgElement as SVGSVGElement;
+    return svgElement.outerHTML;
   } catch (e) {
-    console.error("createCleanSvgElement error:", e);
-    return null;
+    console.error("createStyledSvg error:", e);
+    return svgString;
   }
 }
 
 export default function MermaidBlock({ chart }: { chart: string }) {
-  const inlineRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [inlineSvg, setInlineSvg] = useState<SVGSVGElement | null>(null);
-  const [modalSvg, setModalSvg] = useState<SVGSVGElement | null>(null);
+  const [inlineDataUri, setInlineDataUri] = useState<string | null>(null);
+  const [modalDataUri, setModalDataUri] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,21 +75,12 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         if (cancelled) return;
 
         // Inline: fill content width
-        const inlineSvgEl = createCleanSvgElement(svg, "max-width:100%;width:100%;height:auto");
+        const inlineStyled = createStyledSvg(svg, "max-width:100%;width:100%;height:auto");
         // Modal: scale to fit 85vw x 80vh container
-        const modalSvgEl = createCleanSvgElement(svg, "max-width:85vw;max-height:80vh;width:auto;height:auto");
+        const modalStyled = createStyledSvg(svg, "max-width:85vw;max-height:80vh;width:auto;height:auto");
 
-        if (!inlineSvgEl || !modalSvgEl) throw new Error("Failed to parse mermaid SVG");
-
-        // Render inline
-        if (inlineRef.current) {
-          inlineRef.current.innerHTML = "";
-          inlineRef.current.appendChild(inlineSvgEl);
-        }
-
-        // Store for modal
-        setInlineSvg(inlineSvgEl);
-        setModalSvg(modalSvgEl);
+        setInlineDataUri(svgToDataUri(inlineStyled));
+        setModalDataUri(svgToDataUri(modalStyled));
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -94,27 +92,20 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     return () => { cancelled = true; };
   }, [chart]);
 
-  // Append modal SVG when modal opens
-  useEffect(() => {
-    if (!open || !modalSvg || !modalRef.current) return;
-    modalRef.current.innerHTML = "";
-    modalRef.current.appendChild(modalSvg);
-  }, [open, modalSvg]);
-
   const close = useCallback(() => setOpen(false), []);
 
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", handler);
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handler);
     };
-  }, [open, close]);
+  }, [open]);
 
   if (error) {
     return (
@@ -135,17 +126,23 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         onClick={() => setOpen(true)}
         className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px] cursor-pointer group relative"
       >
-        <div ref={inlineRef} className="w-full max-w-full pointer-events-none" />
+        {inlineDataUri && (
+          <img
+            src={inlineDataUri}
+            alt="Mermaid diagram"
+            className="w-full max-w-full h-auto"
+          />
+        )}
         <div className="absolute top-2 right-2 text-muted opacity-0 group-hover:opacity-100 transition-opacity">
           <Maximize2 size={16} />
         </div>
       </div>
 
-      {open && (
+      {open && modalDataUri && (
         <div
           className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
-            if (e.target === e.currentTarget) close();
+            if (e.target === e.currentTarget) setOpen(false);
           }}
         >
           <div
@@ -159,7 +156,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
             >
               <X size={24} />
             </button>
-            <div ref={modalRef} className="flex items-center justify-center" />
+            <img src={modalDataUri} alt="Mermaid diagram" className="max-w-[85vw] max-h-[80vh] w-auto h-auto" />
           </div>
         </div>
       )}
