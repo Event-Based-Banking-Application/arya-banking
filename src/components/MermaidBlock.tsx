@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 export default function MermaidBlock({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [loaded, setLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     async function render() {
       try {
         const { default: mermaid } = await import("mermaid");
-        if (cancelled || !ref.current) return;
+        if (cancelled) return;
 
         mermaid.initialize({
           startOnLoad: false,
@@ -36,10 +36,9 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
         const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
         const { svg } = await mermaid.render(id, chart);
-        if (!cancelled && ref.current) {
-          ref.current.innerHTML = svg;
-          setLoaded(true);
-        }
+        if (cancelled || !ref.current) return;
+
+        ref.current.innerHTML = svg;
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -66,12 +65,10 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
   return (
     <div
-      ref={ref}
+      ref={containerRef}
       className="my-6 flex justify-center overflow-x-auto py-4 border border-hairline-strong bg-surface-soft"
     >
-      {!loaded && (
-        <div className="text-muted text-sm">Rendering diagram...</div>
-      )}
+      <div ref={ref} />
     </div>
   );
 }
