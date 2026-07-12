@@ -3,11 +3,39 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
+function styleSvgInline(svg: string): string {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svg, "image/svg+xml");
+    const parseError = doc.querySelector("parsererror");
+    if (parseError) throw new Error(parseError.textContent || "SVG parse error");
+
+    const svgElement = doc.querySelector("svg");
+    if (!svgElement) throw new Error("No <svg> element found");
+
+    svgElement.removeAttribute("width");
+    svgElement.removeAttribute("height");
+    svgElement.removeAttribute("style");
+    svgElement.setAttribute("style", "max-width:100%;width:100%;height:auto");
+
+    const serializer = new XMLSerializer();
+    return serializer.serializeToString(svgElement);
+  } catch {
+    // Fallback: simple string replace if DOM parsing fails
+    return svg
+      .replace(/\s+style="[^"]*"/g, "")
+      .replace(/\s+width="[^"]*"/g, "")
+      .replace(/\s+height="[^"]*"/g, "")
+      .replace("<svg", '<svg style="max-width:100%;width:100%;height:auto"');
+  }
+}
+
 export default function MermaidBlock({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [rawSvg, setRawSvg] = useState<string | null>(null);
+  const [modalSvg, setModalSvg] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -42,23 +70,11 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
         setRawSvg(svg);
 
-        // Safe client-only DOM parsing to cleanly override sizing style
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(svg, "image/svg+xml");
-        const svgElement = doc.querySelector("svg");
+        const inlineSvg = styleSvgInline(svg);
+        ref.current.innerHTML = inlineSvg;
 
-        if (svgElement) {
-          svgElement.removeAttribute("width");
-          svgElement.removeAttribute("height");
-          svgElement.removeAttribute("style");
-          svgElement.setAttribute("style", "max-width:100%;width:100%;height:auto");
-
-          const serializer = new XMLSerializer();
-          const cleanSvg = serializer.serializeToString(svgElement);
-          ref.current.innerHTML = cleanSvg;
-        } else {
-          ref.current.innerHTML = svg;
-        }
+        // Modal version - keep raw, CSS handles sizing
+        setModalSvg(svg);
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -110,7 +126,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         </div>
       </div>
 
-      {open && rawSvg && (
+      {open && modalSvg && (
         <div
           className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
@@ -130,7 +146,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
             </button>
             <div
               className="mermaid-modal flex items-center justify-center"
-              dangerouslySetInnerHTML={{ __html: rawSvg }}
+              dangerouslySetInnerHTML={{ __html: modalSvg }}
             />
           </div>
         </div>
