@@ -3,14 +3,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
-function styleSvg(svg: string, style: string): string {
-  const withoutSize = svg
-    .replace(/\s+style="[^"]*"/, "")
-    .replace(/\s+width="[^"]*"/, "")
-    .replace(/\s+height="[^"]*"/, "");
-  return withoutSize.replace("<svg", `<svg style="${style}"`);
-}
-
 export default function MermaidBlock({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +41,11 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         if (cancelled || !ref.current) return;
 
         setRawSvg(svg);
-        ref.current.innerHTML = styleSvg(svg, "max-width:100%;width:100%;height:auto");
+        const stripped = svg
+          .replace(/\s+style="[^"]*"/g, "")
+          .replace(/\s+width="[^"]*"/g, "")
+          .replace(/\s+height="[^"]*"/g, "");
+        ref.current.innerHTML = stripped.replace("<svg", '<svg style="max-width:100%;width:100%;height:auto"');
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -103,23 +99,25 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
       {open && rawSvg && (
         <div
-          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-8"
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) close();
           }}
         >
-          <div className="relative flex items-center justify-center">
+          <div
+            className="relative bg-surface-soft border border-hairline-strong flex items-center justify-center overflow-auto p-6"
+            style={{ width: "85vw", height: "80vh" }}
+          >
             <button
               onClick={close}
-              className="absolute -top-10 right-0 text-muted hover:text-ink transition-colors z-10"
+              className="absolute top-3 right-3 text-muted hover:text-ink transition-colors z-10"
               aria-label="Close"
             >
               <X size={24} />
             </button>
             <div
-              dangerouslySetInnerHTML={{
-                __html: styleSvg(rawSvg, "max-width:85vw;max-height:80vh;width:auto;height:auto"),
-              }}
+              className="mermaid-modal flex items-center justify-center"
+              dangerouslySetInnerHTML={{ __html: rawSvg }}
             />
           </div>
         </div>
