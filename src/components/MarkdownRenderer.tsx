@@ -3,6 +3,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import React from "react";
+import MermaidBlock from "@/components/MermaidBlock";
 
 function getHeadingText(children: React.ReactNode): string {
   let text = "";
@@ -82,10 +83,16 @@ export default function MarkdownRenderer({
             className?: string;
             children?: React.ReactNode;
           }) => {
-            const isInline = !className;
-            if (isInline) {
+            if (!className) {
               return <code>{children}</code>;
             }
+
+            const isMermaid = className.includes("language-mermaid");
+            if (isMermaid) {
+              const chartText = React.Children.toArray(children).join("");
+              return <MermaidBlock chart={chartText} />;
+            }
+
             return (
               <pre>
                 <code className={className}>{children}</code>
