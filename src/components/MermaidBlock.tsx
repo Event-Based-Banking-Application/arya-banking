@@ -3,11 +3,34 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
+function createCleanSvgElement(svgString: string): SVGSVGElement | null {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgString, "image/svg+xml");
+    const parseError = doc.querySelector("parsererror");
+    if (parseError) throw new Error(parseError.textContent || "SVG parse error");
+
+    const svgElement = doc.querySelector("svg");
+    if (!svgElement) throw new Error("No <svg> element found");
+
+    // Clean up sizing attributes, let CSS handle responsive sizing
+    svgElement.removeAttribute("width");
+    svgElement.removeAttribute("height");
+    svgElement.removeAttribute("style");
+    svgElement.setAttribute("style", "max-width:100%;width:100%;height:auto");
+
+    return svgElement;
+  } catch {
+    return null;
+  }
+}
+
 export default function MermaidBlock({ chart }: { chart: string }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const inlineRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [rawSvg, setRawSvg] = useState<string | null>(null);
+  const [svgElement, setSvgElement] = useState<SVGSVGElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,28 +61,19 @@ export default function MermaidBlock({ chart }: { chart: string }) {
 
         const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
         const { svg } = await mermaid.render(id, chart);
-        if (cancelled || !ref.current) return;
+        if (cancelled) return;
 
-        setRawSvg(svg);
+        const cleanSvg = createCleanSvgElement(svg);
+        if (!cleanSvg) throw new Error("Failed to parse mermaid SVG");
 
-        // Parse SVG and insert as actual DOM nodes (preserves SVG namespace)
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(svg, "image/svg+xml");
-        const svgElement = doc.querySelector("svg");
-
-        if (svgElement) {
-          // Clean up sizing attributes
-          svgElement.removeAttribute("width");
-          svgElement.removeAttribute("height");
-          svgElement.removeAttribute("style");
-          svgElement.setAttribute("style", "max-width:100%;width:100%;height:auto");
-
-          // Clone into the document to preserve SVG namespace
-          ref.current.innerHTML = "";
-          ref.current.appendChild(svgElement.cloneNode(true));
-        } else {
-          ref.current.innerHTML = svg;
+        // Render inline
+        if (inlineRef.current) {
+          inlineRef.current.innerHTML = "";
+          inlineRef.current.appendChild(cleanSvg.cloneNode(true));
         }
+
+        // Store for modal
+        setSvgElement(cleanSvg.cloneNode(true) as SVGSVGElement);
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -70,6 +84,13 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     render();
     return () => { cancelled = true; };
   }, [chart]);
+
+  // Append SVG to modal when it opens
+  useEffect(() => {
+    if (!open || !svgElement || !modalRef.current) return;
+    modalRef.current.innerHTML = "";
+    modalRef.current.appendChild(svgElement);
+  }, [open, svgElement]);
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -105,13 +126,13 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         onClick={() => setOpen(true)}
         className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px] cursor-pointer group relative"
       >
-        <div ref={ref} className="w-full max-w-full pointer-events-none" />
+        <div ref={inlineRef} className="w-full max-w-full pointer-events-none" />
         <div className="absolute top-2 right-2 text-muted opacity-0 group-hover:opacity-100 transition-opacity">
           <Maximize2 size={16} />
         </div>
       </div>
 
-      {open && rawSvg && (
+      {open && (
         <div
           className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
@@ -129,7 +150,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
             >
               <X size={24} />
             </button>
-            <div className="mermaid-modal flex items-center justify-center" dangerouslySetInnerHTML={{ __html: rawSvg }} />
+            <div ref={modalRef} className="flex items-center justify-center" />
           </div>
         </div>
       )}
