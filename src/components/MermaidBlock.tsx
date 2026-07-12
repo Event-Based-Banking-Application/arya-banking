@@ -3,24 +3,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
-function svgToDataUri(svgString: string): string {
-  // Minify and encode
-  const minified = svgString
-    .replace(/\s+/g, " ")
-    .replace(/>\s+</g, "><")
-    .trim();
-  return `data:image/svg+xml;base64,${btoa(minified)}`;
-}
-
 function createStyledSvg(svgString: string, style: string): string {
   try {
-    // Parse as HTML (lenient) to handle mermaid's HTML-like content in labels (<br>, <p>)
     const parser = new DOMParser();
     const doc = parser.parseFromString(svgString, "text/html");
     const svgElement = doc.querySelector("svg");
     if (!svgElement) throw new Error("No <svg> element found");
 
-    // Clean up sizing attributes, let CSS handle responsive sizing
     svgElement.removeAttribute("width");
     svgElement.removeAttribute("height");
     svgElement.removeAttribute("style");
@@ -33,14 +22,21 @@ function createStyledSvg(svgString: string, style: string): string {
   }
 }
 
+function svgToBlobUrl(svgHtml: string): string {
+  const blob = new Blob([svgHtml], { type: "image/svg+xml" });
+  return URL.createObjectURL(blob);
+}
+
 export default function MermaidBlock({ chart }: { chart: string }) {
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [inlineDataUri, setInlineDataUri] = useState<string | null>(null);
-  const [modalDataUri, setModalDataUri] = useState<string | null>(null);
+  const [inlineBlobUrl, setInlineBlobUrl] = useState<string | null>(null);
+  const [modalBlobUrl, setModalBlobUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    let inlineUrl: string | null = null;
+    let modalUrl: string | null = null;
 
     async function render() {
       try {
@@ -74,13 +70,16 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         const { svg } = await mermaid.render(id, chart);
         if (cancelled) return;
 
-        // Inline: fill content width
         const inlineStyled = createStyledSvg(svg, "max-width:100%;width:100%;height:auto");
-        // Modal: scale to fit 85vw x 80vh container
         const modalStyled = createStyledSvg(svg, "max-width:85vw;max-height:80vh;width:auto;height:auto");
 
-        setInlineDataUri(svgToDataUri(inlineStyled));
-        setModalDataUri(svgToDataUri(modalStyled));
+        inlineUrl = svgToBlobUrl(inlineStyled);
+        modalUrl = svgToBlobUrl(modalStyled);
+
+        if (!cancelled) {
+          setInlineBlobUrl(inlineUrl);
+          setModalBlobUrl(modalUrl);
+        }
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -89,7 +88,11 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     }
 
     render();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      if (inlineUrl) URL.revokeObjectURL(inlineUrl);
+      if (modalUrl) URL.revokeObjectURL(modalUrl);
+    };
   }, [chart]);
 
   const close = useCallback(() => setOpen(false), []);
@@ -126,9 +129,9 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         onClick={() => setOpen(true)}
         className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px] cursor-pointer group relative"
       >
-        {inlineDataUri && (
+        {inlineBlobUrl && (
           <img
-            src={inlineDataUri}
+            src={inlineBlobUrl}
             alt="Mermaid diagram"
             className="w-full max-w-full h-auto"
           />
@@ -138,7 +141,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         </div>
       </div>
 
-      {open && modalDataUri && (
+      {open && modalBlobUrl && (
         <div
           className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
@@ -156,7 +159,11 @@ export default function MermaidBlock({ chart }: { chart: string }) {
             >
               <X size={24} />
             </button>
-            <img src={modalDataUri} alt="Mermaid diagram" className="max-w-[85vw] max-h-[80vh] w-auto h-auto" />
+            <img
+              src={modalBlobUrl}
+              alt="Mermaid diagram"
+              className="max-w-[85vw] max-h-[80vh] w-auto h-auto"
+            />
           </div>
         </div>
       )}
