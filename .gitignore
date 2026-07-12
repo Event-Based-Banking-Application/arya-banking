@@ -1,8 +1,20 @@
+# Next.js
+.next/
+out/
+
+# Hugo
 public/
 resources/
-.hugo_build.lock
-themes/github.com/
 
-# Skill Creator benchmark evaluation folders
-.agents/skills/*-workspace/
-.temp_clone_debug/
+# IDE
+.agents/
+.idea/
+*.swp
+*.swo
+
+# Dependencies
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
