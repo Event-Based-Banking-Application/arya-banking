@@ -39,6 +39,14 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         if (cancelled || !ref.current) return;
 
         ref.current.innerHTML = svg;
+        const svgEl = ref.current.querySelector("svg");
+        if (svgEl) {
+          svgEl.removeAttribute("width");
+          svgEl.removeAttribute("height");
+          svgEl.style.maxWidth = "100%";
+          svgEl.style.width = "100%";
+          svgEl.style.height = "auto";
+        }
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -66,9 +74,9 @@ export default function MermaidBlock({ chart }: { chart: string }) {
   return (
     <div
       ref={containerRef}
-      className="my-6 flex justify-center overflow-x-auto py-4 border border-hairline-strong bg-surface-soft"
+      className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px]"
     >
-      <div ref={ref} />
+      <div ref={ref} className="w-full max-w-full" />
     </div>
   );
 }
