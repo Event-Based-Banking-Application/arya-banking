@@ -40,13 +40,13 @@ Each service has its own dedicated documentation covering its specific logic, AP
 {{< table "table-striped table-hover" >}}
 | Service | Description | Docs |
 |---|---|---|
-| **Common Library** | Shared domain models, Kafka/Avro schemas, and exceptions | [View Docs →]({{< ref "common" >}}) |
-| **API Gateway** | Reactive entry point, JWT validation, and request routing | [View Docs →]({{< ref "api-gateway" >}}) |
-| **User Service** | Multi-step registration and profile management | [View Docs →]({{< ref "user-service" >}}) |
-| **Auth Service** | Identity bridge and Keycloak user management | [View Docs →]({{< ref "auth-service" >}}) |
-| **Admin Service** | Infrastructure administration and secret provisioning | [View Docs →]({{< ref "admin-service" >}}) |
-| **Config Server** | Centralized Spring Cloud configuration layer | [View Docs →]({{< ref "config-server" >}}) |
-| **Service Registry** | Eureka service discovery server | [View Docs →]({{< ref "service-registry" >}}) |
+| **Common Library** | Shared domain models, Kafka/Avro schemas, and exceptions | [View Docs →]({{< ref "/docs/common" >}}) |
+| **API Gateway** | Reactive entry point, JWT validation, and request routing | [View Docs →]({{< ref "/docs/api-gateway" >}}) |
+| **User Service** | Multi-step registration and profile management | [View Docs →]({{< ref "/docs/user-service" >}}) |
+| **Auth Service** | Identity bridge and Keycloak user management | [View Docs →]({{< ref "/docs/auth-service" >}}) |
+| **Admin Service** | Infrastructure administration and secret provisioning | [View Docs →]({{< ref "/docs/admin-service" >}}) |
+| **Config Server** | Centralized Spring Cloud configuration layer | [View Docs →]({{< ref "/docs/config-server" >}}) |
+| **Service Registry** | Eureka service discovery server | [View Docs →]({{< ref "/docs/service-registry" >}}) |
 {{< /table >}}
 
 ---
