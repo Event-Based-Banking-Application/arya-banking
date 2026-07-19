@@ -5,6 +5,8 @@ import rehypePrism from "rehype-prism-plus";
 import remarkGfm from "remark-gfm";
 import React from "react";
 import MermaidBlock from "@/components/MermaidBlock";
+
+const BASE_PATH = "/arya-banking";
 import Tabs from "@/components/Tabs";
 import CodeBlock from "@/components/CodeBlock";
 
@@ -89,9 +91,10 @@ export default function MarkdownRenderer({
           ),
           a: ({ href, children }) => {
             const isExternal = href?.startsWith("http");
+            const isInternal = href?.startsWith("/") && !isExternal;
             return (
               <a
-                href={href}
+                href={isInternal ? `${BASE_PATH}${href}` : href}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
               >
