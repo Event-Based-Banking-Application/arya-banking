@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { marked } from "marked";
 
 const contentDir = path.join(process.cwd(), "content/docs");
 
@@ -85,6 +86,37 @@ function preprocessShortcodes(markdown: string, sectionSlug: string): string {
     /\{\{<\s*ref\s+"([^"]+)"\s*>\}\}/g,
     (_match: string, url: string) => {
       return `${pageDir}${url}/`;
+    }
+  );
+
+  // Convert prism shortcodes to fenced code blocks
+  // {{< prism lang="yaml" ... >}}...{{< /prism >}}
+  result = result.replace(
+    /\{\{<\s*prism\s+[^}]*>\}\}([\s\S]*?)\{\{<\s*\/prism\s*>\}\}/g,
+    (_match: string, code: string) => {
+      const langMatch = _match.match(/lang="([^"]*)"/);
+      const lang = langMatch ? langMatch[1] : "";
+      return "```" + lang + "\n" + code.trim() + "\n```";
+    }
+  );
+
+  // Convert tabs shortcodes to HTML
+  // {{< tabs tabTotal="N" >}}{{% tab tabName="..." %}}...{{% /tab %}}{{< /tabs >}}
+  result = result.replace(
+    /\{\{<\s*tabs\s+[^}]*>\}\}([\s\S]*?)\{\{<\s*\/tabs\s*>\}\}/g,
+    (_match: string, body: string) => {
+      const tabs: { name: string; content: string }[] = [];
+      const tabRegex = /\{\{%\s*tab\s+tabName="([^"]*)"\s*%\}\}([\s\S]*?)\{\{%\s*\/tab\s*%\}/g;
+      let tabMatch: RegExpExecArray | null;
+      while ((tabMatch = tabRegex.exec(body)) !== null) {
+        const name = tabMatch[1];
+        const rawContent = tabMatch[2].trim();
+        const html = marked.parse(rawContent, { async: false }) as string;
+        tabs.push({ name, content: html });
+      }
+      if (tabs.length === 0) return _match;
+      const encoded = encodeURIComponent(JSON.stringify(tabs));
+      return `<div class="tabs" data-tabs="${encoded}"></div>`;
     }
   );
 
@@ -203,20 +235,28 @@ function scanDirectory(
 }
 
 let cachedTree: DocSection | null = null;
-let cachedPages: DocPage[] | null = null;
+
+function flattenTree(node: DocSection): DocPage[] {
+  const pages: DocPage[] = [];
+  for (const child of node.children) {
+    if (child.type === "page") {
+      pages.push(child);
+    } else {
+      pages.push(...flattenTree(child));
+    }
+  }
+  return pages;
+}
 
 export function getDocsTree(): DocSection {
   if (cachedTree) return cachedTree;
   const result = scanDirectory(contentDir);
   cachedTree = result.section!;
-  cachedPages = result.pages;
   return cachedTree;
 }
 
 export function getAllPages(): DocPage[] {
-  if (cachedPages) return cachedPages;
-  getDocsTree();
-  return cachedPages!;
+  return flattenTree(getDocsTree());
 }
 
 export function getPageBySlug(slug: string): DocPage | null {

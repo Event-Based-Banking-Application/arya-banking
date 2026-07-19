@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DocSection, DocPage, DocNode } from "@/lib/content";
@@ -22,6 +22,10 @@ function SidebarNode({
       (node.slug === activeSlug || activeSlug.startsWith(node.slug + "/")));
 
   const [expanded, setExpanded] = useState(isActive);
+
+  useEffect(() => {
+    if (isActive) setExpanded(true);
+  }, [isActive]);
 
   if (node.type === "page") {
     return (
@@ -99,7 +103,7 @@ export default function Sidebar({ tree }: { tree: DocSection }) {
     .replace(/\/$/, "");
 
   return (
-    <aside className="hidden lg:block w-64 shrink-0 border-r border-hairline/50 overflow-y-auto h-[calc(100vh-4rem)] sticky top-16">
+    <aside className="hidden lg:block fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] overflow-y-auto border-r border-hairline/50 z-40 bg-canvas">
       <div className="py-4">
         <div className="px-3 pb-3 mb-2 border-b border-hairline/50">
           <Link

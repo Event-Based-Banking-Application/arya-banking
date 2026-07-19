@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "prismjs/themes/prism-okaidia.css";
 import Shell from "@/components/Shell";
 import { getSearchIndex } from "@/lib/content";
 

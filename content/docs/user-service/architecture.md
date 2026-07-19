@@ -26,32 +26,31 @@ flowchart TD
 The registration process is a state machine controlled by the `UserValidator` and tracked in the `registration_progress` collection.
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Step1: POST /api/users/register
-    Step1 --> Step2: PUT /api/users/{userId}
-    Step2 --> Step3: PUT /api/security-details/{userId}
-    Step3 --> [*]
+sequenceDiagram
+    participant C as Client
+    participant US as User Service
+    participant KC as Auth Service
+    participant MG as MongoDB
+    participant KF as Kafka
 
-    state Step1 {
-        [*] --> SaveUser: Create User document (ACTIVE)
-        SaveUser --> FeignCall: POST /internal/api/auth/register/users
-        FeignCall --> Progress1: Save BASIC_DETAILS_ADDED progress
-        Progress1 --> Kafka1: Emit UserCreateEvent
-    }
+    C->>US: POST /api/users/register
+    US->>MG: Create User doc (ACTIVE)
+    US->>KC: POST /internal/api/auth/register/users
+    US->>MG: Save BASIC_DETAILS_ADDED progress
+    US->>KF: Emit UserCreateEvent
+    US-->>C: 201 Created
 
-    state Step2 {
-        [*] --> AddAddress: Update physical address
-        AddAddress --> DetectLevel2: UserValidator check
-        DetectLevel2 --> UpdateProgress2: Save ADDRESS_ADDED progress
-        UpdateProgress2 --> Kafka2: Emit UserCreateEvent
-    }
+    C->>US: PUT /api/users/{userId} (address)
+    US->>US: UserValidator check
+    US->>MG: Save ADDRESS_ADDED progress
+    US->>KF: Emit UserCreateEvent
+    US-->>C: 200 OK
 
-    state Step3 {
-        [*] --> SetSecurity: Merge security questions
-        SetSecurity --> DetectLevel3: UserValidator check
-        DetectLevel3 --> Finish: Save SECURITY_CREDENTIALS_ADDED
-        Finish --> Kafka3: Emit UserCreateEvent (REGISTRATION_COMPLETE)
-    }
+    C->>US: PUT /api/security-details/{userId}
+    US->>US: UserValidator check
+    US->>MG: Save SECURITY_CREDENTIALS_ADDED
+    US->>KF: Emit UserCreateEvent (REGISTRATION_COMPLETE)
+    US-->>C: 200 OK
 ```
 
 ---

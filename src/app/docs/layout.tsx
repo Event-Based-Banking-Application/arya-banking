@@ -9,9 +9,13 @@ export default function DocsLayout({
   const tree = getDocsTree();
 
   return (
-    <div className="flex max-w-7xl mx-auto">
+    <>
       <Sidebar tree={tree} />
-      <div className="flex-1 min-w-0">{children}</div>
-    </div>
+      <div className="lg:pl-64 xl:pr-56">
+        <div className="max-w-7xl mx-auto">
+          {children}
+        </div>
+      </div>
+    </>
   );
 }

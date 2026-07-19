@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -17,12 +17,26 @@ export default function Shell({
 }) {
   const [searchOpen, setSearchOpen] = useState(false);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+      if (e.key === "Escape" && searchOpen) {
+        setSearchOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [searchOpen]);
+
   return (
     <>
       <ScrollProgress />
       <Navbar onSearch={() => setSearchOpen(true)} />
       <div className="m-stripe" />
-      <main className="relative z-10 min-h-screen">{children}</main>
+      <main className="relative z-10 min-h-screen pt-16">{children}</main>
       <Footer />
       <SearchDialog
         open={searchOpen}

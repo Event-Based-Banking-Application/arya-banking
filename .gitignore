@@ -2,10 +2,6 @@
 .next/
 out/
 
-# Hugo
-public/
-resources/
-
 # IDE
 .agents/
 .idea/

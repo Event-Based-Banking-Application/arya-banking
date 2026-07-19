@@ -32,7 +32,7 @@ export default function Toc({ items }: { items: TocItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <aside className="hidden xl:block w-56 shrink-0 pl-6 overflow-y-auto h-[calc(100vh-4rem)] sticky top-16">
+    <aside className="hidden xl:block fixed top-16 right-0 w-56 h-[calc(100vh-4rem)] overflow-y-auto pl-6 z-40 bg-canvas">
       <div className="py-4">
         <div className="text-[0.65rem] uppercase tracking-[0.12em] text-muted font-semibold mb-3">
           On This Page

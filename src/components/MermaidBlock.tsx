@@ -1,85 +1,76 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { X, Maximize2 } from "lucide-react";
 
-function createStyledSvg(svgString: string, style: string): string {
-  try {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svgString, "text/html");
-    const svgElement = doc.querySelector("svg");
-    if (!svgElement) throw new Error("No <svg> element found");
+const THEME = "dark" as const;
 
-    svgElement.removeAttribute("width");
-    svgElement.removeAttribute("height");
-    svgElement.removeAttribute("style");
-    svgElement.setAttribute("style", style);
-
-    return svgElement.outerHTML;
-  } catch (e) {
-    console.error("createStyledSvg error:", e);
-    return svgString;
-  }
+function getConfig() {
+  return {
+    startOnLoad: false,
+    theme: THEME,
+    themeVariables: {
+      primaryColor: "#0066b1",
+      primaryBorderColor: "#1c69d4",
+      primaryTextColor: "#ffffff",
+      lineColor: "#3c3c3c",
+      secondaryColor: "#1a1a1a",
+      tertiaryColor: "#0d0d0d",
+      mainBkg: "#1a1a1a",
+      nodeBorder: "#0066b1",
+      clusterBkg: "#0d0d0d",
+      clusterBorder: "#262626",
+      edgeLabelBackground: "#1a1a1a",
+      nodeTextColor: "#ffffff",
+    },
+  };
 }
 
-function svgToBlobUrl(svgHtml: string): string {
-  const blob = new Blob([svgHtml], { type: "image/svg+xml" });
-  return URL.createObjectURL(blob);
+function cleanInlineSvg(svg: SVGSVGElement): void {
+  svg.removeAttribute("width");
+  svg.removeAttribute("height");
+  svg.removeAttribute("style");
+  svg.setAttribute("style", "max-width:100%;width:100%;height:auto");
+}
+
+function prepareModalSvg(svg: SVGSVGElement): SVGSVGElement {
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  clone.removeAttribute("width");
+  clone.removeAttribute("height");
+  clone.removeAttribute("style");
+  clone.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  clone.setAttribute("style", "max-width:100%;max-height:100%;width:auto;height:auto");
+  return clone;
 }
 
 export default function MermaidBlock({ chart }: { chart: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [inlineBlobUrl, setInlineBlobUrl] = useState<string | null>(null);
-  const [modalBlobUrl, setModalBlobUrl] = useState<string | null>(null);
+  const [svgElement, setSvgElement] = useState<SVGSVGElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    let inlineUrl: string | null = null;
-    let modalUrl: string | null = null;
 
     async function render() {
       try {
         const { default: mermaid } = await import("mermaid");
         if (cancelled) return;
 
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: "base",
-          themeVariables: {
-            primaryColor: "#0066b1",
-            primaryBorderColor: "#1c69d4",
-            primaryTextColor: "#ffffff",
-            lineColor: "#3c3c3c",
-            secondaryColor: "#1a1a1a",
-            tertiaryColor: "#0d0d0d",
-            mainBkg: "#1a1a1a",
-            nodeBorder: "#0066b1",
-            nodeTextColor: "#ffffff",
-            nodeFill: "#1a1a1a",
-            clusterBkg: "#0d0d0d",
-            clusterBorder: "#262626",
-            edgeLabelBackground: "#1a1a1a",
-            edgeLabelColor: "#ffffff",
-            fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
-            fontSize: "16px",
-          },
-        });
+        mermaid.initialize(getConfig());
 
-        const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
-        const { svg } = await mermaid.render(id, chart);
+        if (!containerRef.current) return;
+        containerRef.current.textContent = chart;
+
+        await mermaid.run({ nodes: [containerRef.current] });
         if (cancelled) return;
 
-        const inlineStyled = createStyledSvg(svg, "max-width:100%;width:100%;height:auto");
-        const modalStyled = createStyledSvg(svg, "max-width:85vw;max-height:80vh;width:auto;height:auto");
+        const svg = containerRef.current.querySelector("svg");
+        if (!svg) throw new Error("No SVG rendered");
 
-        inlineUrl = svgToBlobUrl(inlineStyled);
-        modalUrl = svgToBlobUrl(modalStyled);
-
-        if (!cancelled) {
-          setInlineBlobUrl(inlineUrl);
-          setModalBlobUrl(modalUrl);
-        }
+        cleanInlineSvg(svg);
+        setSvgElement(prepareModalSvg(svg));
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Failed to render diagram");
@@ -88,12 +79,14 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     }
 
     render();
-    return () => {
-      cancelled = true;
-      if (inlineUrl) URL.revokeObjectURL(inlineUrl);
-      if (modalUrl) URL.revokeObjectURL(modalUrl);
-    };
+    return () => { cancelled = true; };
   }, [chart]);
+
+  useEffect(() => {
+    if (!open || !svgElement || !modalRef.current) return;
+    modalRef.current.innerHTML = "";
+    modalRef.current.appendChild(svgElement.cloneNode(true));
+  }, [open, svgElement]);
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -101,14 +94,14 @@ export default function MermaidBlock({ chart }: { chart: string }) {
     if (!open) return;
     document.body.style.overflow = "hidden";
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     };
     window.addEventListener("keydown", handler);
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handler);
     };
-  }, [open]);
+  }, [open, close]);
 
   if (error) {
     return (
@@ -129,23 +122,17 @@ export default function MermaidBlock({ chart }: { chart: string }) {
         onClick={() => setOpen(true)}
         className="my-8 flex justify-center overflow-x-auto py-6 px-4 border border-hairline-strong bg-surface-soft min-h-[200px] cursor-pointer group relative"
       >
-        {inlineBlobUrl && (
-          <img
-            src={inlineBlobUrl}
-            alt="Mermaid diagram"
-            className="w-full max-w-full h-auto"
-          />
-        )}
+        <div ref={containerRef} className="mermaid w-full max-w-full pointer-events-none" />
         <div className="absolute top-2 right-2 text-muted opacity-0 group-hover:opacity-100 transition-opacity">
           <Maximize2 size={16} />
         </div>
       </div>
 
-      {open && modalBlobUrl && (
+      {open && (
         <div
           className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setOpen(false);
+            if (e.target === e.currentTarget) close();
           }}
         >
           <div
@@ -159,11 +146,7 @@ export default function MermaidBlock({ chart }: { chart: string }) {
             >
               <X size={24} />
             </button>
-            <img
-              src={modalBlobUrl}
-              alt="Mermaid diagram"
-              className="max-w-[85vw] max-h-[80vh] w-auto h-auto"
-            />
+            <div ref={modalRef} className="flex items-center justify-center w-full h-full" />
           </div>
         </div>
       )}

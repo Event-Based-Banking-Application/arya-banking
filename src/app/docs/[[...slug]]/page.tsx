@@ -183,8 +183,8 @@ function PageContent({
   const { prev, next } = getPrevNext(slug);
 
   return (
-    <div className="flex">
-      <div className="flex-1 min-w-0 px-6 py-8 min-h-screen">
+    <>
+      <div className="px-6 py-8 min-h-screen">
         <Breadcrumbs slug={slug} />
         <h1 className="text-2xl font-bold text-ink uppercase tracking-tight mb-2">
           {page.title}
@@ -194,7 +194,7 @@ function PageContent({
             {page.description}
           </p>
         )}
-        <div className="docs-content">
+        <div className="docs-content max-w-none">
           <MarkdownRenderer content={page.content} />
         </div>
 
@@ -250,7 +250,7 @@ function PageContent({
       {tocItems.length > 0 && (
         <Toc items={tocItems} />
       )}
-    </div>
+    </>
   );
 }
 
