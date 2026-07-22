@@ -39,11 +39,31 @@ To include the library in a microservice, add the following to your `pom.xml`:
 <dependency>
     <groupId>org.arya.banking</groupId>
     <artifactId>arya-banking-common</artifactId>
-    <version>1.1.9</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
 {{< alert context="info" text="Ensure your `settings.xml` is configured with a GitHub PAT to authenticate against our private package registry." />}}
+
+### Swagger Compatibility
+
+The common library transitively depends on `kafka-avro-serializer` which pulls in an older `swagger-annotations:2.1.10`. If your service uses `springdoc-openapi` version 2.8.9+, this causes a `NoSuchMethodError` at startup because `Schema.requiredMode()` is missing.
+
+**Fix**: Exclude the old swagger from the common dependency in your service's `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.arya.banking</groupId>
+    <artifactId>arya-banking-common</artifactId>
+    <version>1.2.0</version>
+    <exclusions>
+        <exclusion>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
 
 ---
 
@@ -53,3 +73,19 @@ To include the library in a microservice, add the following to your `pom.xml`:
 * **Artifact ID**: `arya-banking-common`
 * **Java Version**: 17
 * **Parent**: `spring-boot-starter-parent:3.5.3`
+
+---
+
+## CI Build
+
+The GitHub Actions workflow builds and deploys the library. The metadata loader (exec-maven-plugin) is **skipped in CI** via `-P!metadata-loader` since it requires a running Vault and MongoDB. To run it locally:
+
+```bash
+mvn clean install    # metadata-loader runs automatically (activeByDefault)
+```
+
+To skip it locally:
+
+```bash
+mvn clean install -P!metadata-loader
+```

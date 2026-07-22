@@ -28,12 +28,28 @@ The platform uses consistent port mapping (Host → Container) to maintain predi
 | `user-service` | 8086 | 8086 | HTTP | Microservice |
 | `auth-service` | 8087 | 8087 | HTTP | Microservice |
 | `admin-service` | 8089 | 8089 | HTTP | Microservice |
-| `config-server` | 8090 | 8080 | HTTP | Property Server |
+| `config-server` | 8090 | 8090 | HTTP | Property Server |
 | `service-registry`| 8761 | 8761 | HTTP | Eureka Dashboard |
 | `keycloak` | 5433 | 8080 | HTTP | IAM console |
 | `vault` | 8091 | 8200 | HTTP | Secrets Engine |
 | `kafka` | 9092 | 9092 | PLAINTEXT | Event Broker |
 {{< /table >}}
+
+---
+
+## Mixed Docker + Local Connectivity
+
+When the platform stack (Service Registry, Config Server, API Gateway) runs in Docker but business services (User, Auth, Admin) run **locally** via Maven, the business services must register with Eureka using an address reachable from Docker containers. The shared config in `arya-banking-configs` sets:
+
+```yaml
+eureka:
+  instance:
+    hostname: host.docker.internal
+```
+
+This ensures locally-run services advertise themselves as `host.docker.internal:<port>`, which the Docker gateway container can reach.
+
+{{< alert context="info" text="<code>host.docker.internal</code> resolves to the host machine from inside Docker containers. On Linux, add <code>--add-host host.docker.internal:host-gateway</code> to your Docker run command." />}}
 
 ---
 

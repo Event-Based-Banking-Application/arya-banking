@@ -14,6 +14,18 @@ The `arya-banking-user-service` exposes a set of RESTful APIs for managing user 
 
 ---
 
+## Swagger UI
+
+Interactive API documentation is available directly on the service:
+
+```text
+http://localhost:8086/swagger-ui/index.html
+```
+
+Or aggregated via the **API Gateway** at `http://localhost:8085/swagger-ui.html` (select "User Service" from the dropdown).
+
+---
+
 ## User Registration (`/api/users`)
 
 ### Register User (Step 1)

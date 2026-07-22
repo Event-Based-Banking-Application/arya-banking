@@ -14,6 +14,18 @@ The `arya-banking-auth-service` exposes public and internal endpoints for user a
 
 ---
 
+## Swagger UI
+
+Interactive API documentation is available directly on the service:
+
+```text
+http://localhost:8087/swagger-ui/index.html
+```
+
+Or aggregated via the **API Gateway** at `http://localhost:8085/swagger-ui.html` (select "Auth Service" from the dropdown).
+
+---
+
 ## Authentication API (`/api/auth`)
 
 ### Authenticate User

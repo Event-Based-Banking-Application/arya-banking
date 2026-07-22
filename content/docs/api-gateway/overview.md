@@ -14,15 +14,40 @@ The `arya-banking-api-gateway` is the **single entry point** for all external an
 
 ## Core Responsibilities
 
-The gateway performs three critical functions:
+The gateway performs four critical functions:
 
 {{< table "table-striped" >}}
 | Function | Mechanism |
 |---|---|
-| **Request Routing** | Path-predicate-based routing to downstream microservices. |
+| **Request Routing** | Path-predicate-based routing to downstream microservices via Config Server + Eureka `lb://` |
 | **JWT Authentication** | Resource server validation for tokens issued by Keycloak. |
 | **Access Control** | Route-level authorization (public vs. authenticated vs. internal). |
+| **API Docs Aggregation** | Swagger UI at `/swagger-ui.html` proxies `/admin-service/v3/api-docs`, `/auth-service/v3/api-docs`, `/user-service/v3/api-docs` via `lb://` routes. |
 {{< /table >}}
+
+---
+
+## Swagger UI
+
+The gateway aggregates OpenAPI docs from all downstream services. Access the unified Swagger UI at:
+
+```text
+http://localhost:8085/swagger-ui.html
+```
+
+The gateway proxies API doc requests to each service via Eureka service discovery (`lb://`):
+
+```yaml
+# Routes defined in arya-banking-configs/application.yml
+- id: admin-service-api-docs
+  uri: lb://arya-banking-admin-service
+  predicates:
+    - Path=/admin-service/v3/api-docs
+  filters:
+    - RewritePath=/admin-service/v3/api-docs, /v3/api-docs
+```
+
+{{< alert context="info" text="Each service exposes its own Swagger UI directly as well — see the individual service API reference pages." />}}
 
 ---
 
