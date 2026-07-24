@@ -532,6 +532,28 @@ spring:
 
 ---
 
+### 28. Centralize dependency management via a company BOM
+
+**Files:** All service `pom.xml` files, `arya-banking-common/pom.xml`
+
+**Current approach:** `arya-banking-common` bundles ~15 dependencies at `compile` scope (web, MongoDB, Kafka, OAuth2, springdoc, etc.) and every service consumes it as a single dependency, relying on Maven transitive resolution to get everything it needs.
+
+**Problems:**
+1. **No classpath isolation** — auth-service doesn't use MongoDB or Avro, but gets them transitively from common anyway. Larger artifacts, slower startup, more surface area.
+2. **Tight coupling** — Bumping `kafka-avro-serializer` in common forces a rebuild of every service, even auth-service which has no Kafka usage.
+3. **Implicit contracts** — Services don't declare their actual dependencies. A new developer can't tell what user-service needs just by reading its POM. If common is later trimmed, services break silently.
+4. **Version drift** — common runs on SB `3.5.3` while services run on `3.5.4`. Maven's nearest-wins resolution can produce unpredictable classpath mixes.
+5. **Hidden runtime risks** — `commons-io` and `commons-codec` are imported in common's Java source but not declared in its POM. They arrive transitively today via `kafka-avro-serializer`/`spring-kafka`; if that chain ever changes, common breaks at runtime with no compile-time warning.
+6. **Lombok at wrong scope** — Lombok is at `compile` scope in common (line 96-99), leaking into all service runtime classpaths when it should be `provided`.
+
+**Recommended approach:** Introduce a `arya-banking-bom` artifact — a standalone POM that centrally manages all third-party versions. Each service imports the BOM in `<dependencyManagement>` and declares only what it actually needs. Common is slimmed down to shared domain models, utilities, and event abstractions only, with infrastructure concerns moved to the services that use them.
+
+| Affected Repos | Severity |
+|---|---|
+| All repos | 🟡 Medium |
+
+---
+
 ## Quick Stats
 
 {{< table "table-striped" >}}
@@ -539,7 +561,7 @@ spring:
 |----------|-------|------------------|
 | 🔴 Critical | 5 | Milestone 1 |
 | 🟠 High | 8 | Milestone 2 |
-| 🟡 Medium | 10 | Milestone 3 |
+| 🟡 Medium | 11 | Milestone 3 |
 | 🔵 Low | 4 | Milestone 3 |
-| **Total** | **27** | |
+| **Total** | **28** | |
 {{< /table >}}
