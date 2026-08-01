@@ -11,7 +11,7 @@ tags: ["roadmap", "issues", "technical-debt"]
 
 ## Planned Features
 
-The following items are defined in `.github/issues.json` and will be auto-created as GitHub Issues via the `auto-create-issues` workflow.
+The following items are tracked as GitHub Issues.
 
 {{< table "table-striped table-sm" >}}
 | # | Feature | Description | Labels |

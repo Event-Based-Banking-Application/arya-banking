@@ -34,22 +34,3 @@ The following tasks are planned for upcoming sprints:
 | **Hard Deletion** | Complete removal of user data after a grace period. | Low |
 | **Audit Log Consumer** | Consuming audit events to provide a user activity dashboard. | Medium |
 | **User Profile UI** | A dedicated frontend page for managing the profile. | Medium |
-
----
-
-## issue-creation.json
-
-The backlog is managed via a JSON file in the `.github` directory, which can be automatically converted into GitHub Issues.
-
-```json {linenos=table, anchorlinenos=true}
-[
-  {
-    "title": "Register user (Step 1)",
-    "body": "Implement basic user registration...",
-    "labels": ["user-management", "registration"]
-  },
-  ...
-]
-```
-
-{{< alert context="info" text="Use the <code>auto-create-issues.yaml</code> workflow to sync this backlog with the GitHub Issues tab." />}}

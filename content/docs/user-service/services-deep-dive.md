@@ -2,7 +2,7 @@
 title: "Services Deep Dive"
 description: "In-depth look at the business logic layer: UserService and SecurityDetailsService."
 icon: "deployed_code"
-weight: 16011
+weight: 900
 toc: true
 ---
 

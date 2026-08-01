@@ -2,7 +2,7 @@
 title: "Security"
 description: "Implementation details for JWT authentication, role extraction, and internal path security."
 icon: "security"
-weight: 5300
+weight: 520
 toc: true
 ---
 

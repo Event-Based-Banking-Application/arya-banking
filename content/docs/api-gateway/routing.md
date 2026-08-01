@@ -2,7 +2,7 @@
 title: "Routing & Path Mapping"
 description: "Detailed documentation of the gateway's routing rules, Config Server integration, and service discovery."
 icon: "api"
-weight: 200
+weight: 210
 toc: true
 ---
 

@@ -83,12 +83,8 @@ flowchart LR
 ```text {linenos=table, anchorlinenos=true}
 arya-banking-admin-service/
 ├── .github/
-│   ├── issues.json
 │   └── workflows/
-│       ├── auto-create-issues.yaml
-│       ├── deploy.yml
-│       ├── sonar-report.yaml
-│       └── sonar-report.yml
+│       └── deploy.yml
 ├── src/
 │   └── main/
 │       ├── java/org/arya/banking/admin/

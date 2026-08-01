@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "How to set up and run the arya-banking-user-service locally."
 icon: "rocket_launch"
-weight: 100
+weight: 200
 toc: true
 ---
 

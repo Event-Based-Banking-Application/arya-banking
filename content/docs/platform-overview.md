@@ -29,6 +29,8 @@ Explore the foundational principles and technical guides that power the Arya Ban
 | **[Security Model]({{< ref "/docs/system/security-model" >}})** | Comprehensive overview of Keycloak, Vault, and JWT processing. |
 | **[Infrastructure Stack]({{< ref "/docs/infra/overview" >}})** | Docker orchestration, networking, and platform setup. |
 | **[Local Development Setup]({{< ref "/docs/local-development/overview" >}})** | Step-by-step guide to running the full platform locally. |
+| **[Outbox Pattern]({{< ref "/docs/outbox-service/overview" >}})** | Transactional outbox library for reliable Kafka publishing. |
+| **[Maven Registry]({{< ref "/docs/maven-registry/overview" >}})** | Publishing and consuming internal artifacts via GitHub Packages. |
 {{< /table >}}
 
 ---
@@ -47,21 +49,25 @@ Each service has its own dedicated documentation covering its specific logic, AP
 | **Admin Service** | Infrastructure administration and secret provisioning | [View Docs →]({{< ref "/docs/admin-service" >}}) |
 | **Config Server** | Centralized Spring Cloud configuration layer | [View Docs →]({{< ref "/docs/config-server" >}}) |
 | **Service Registry** | Eureka service discovery server | [View Docs →]({{< ref "/docs/service-registry" >}}) |
+| **Outbox Service** | Transactional outbox pattern starter library | [View Docs →]({{< ref "/docs/outbox-service" >}}) |
+| **Maven Registry** | GitHub Packages artifact registry | [View Docs →]({{< ref "/docs/maven-registry" >}}) |
 {{< /table >}}
 
 ---
 
 ## Repository Map
 
-The platform is distributed across **9 interconnected repositories**:
+The platform is distributed across **10 interconnected repositories**:
 
 ```text
 Event-Based-Banking-Application/
 │
-├── arya-banking/                        ← Documentation site (Hugo)
+├── arya-banking/                        ← Documentation site (Next.js)
 ├── arya-banking-infra/                  ← Docker Compose infra (Kafka, Keycloak, Vault)
 ├── arya-banking-configs/                ← Centralized Git-backed configuration
 ├── arya-banking-common/                 ← Shared Maven library (GitHub Packages)
+├── arya-banking-outbox-service/         ← Outbox pattern starter library
+├── arya-banking-maven-registry/         ← GitHub Packages Maven registry anchor
 │
 ├── arya-banking-service-registry/       ← Eureka Server (Discovery)
 ├── arya-banking-config-server/          ← Spring Cloud Config Server
@@ -87,10 +93,16 @@ Event-Based-Banking-Application/
 | **Vault** | `8091` | Secrets management + UI (Docker) |
 | **Eureka** | `8761` | Service discovery dashboard (Docker) |
 | **Kafka** | `9092` / `29092` | Messaging — external / internal (Docker) |
+| **Schema Registry** | `8081` | Confluent Avro schema registry (Docker) |
+| **Kafka Connect** | `8083` | Kafka Connect REST API (Docker) |
+| **Kafka UI (Kafbat)** | `8080` | Kafka web UI (Docker) |
 | **Keycloak** | `5433` | IAM admin + auth (Docker) |
+| **PostgreSQL** | `5432` | Keycloak database (Docker) |
 {{< /table >}}
 
 - **Shared Network**: `arya-banking-net`
 - **Infrastructure Runs In**: Docker containers via `arya-banking-infra`
 - **Business Services Run On**: Host via `mvn spring-boot:run`
 - **Secrets**: HashiCorp Vault with AppRole authentication (local `vault-credentials.yml`)
+- **Docs Site**: <https://event-based-banking-application.github.io/arya-banking/>
+- **Maven Registry**: `https://maven.pkg.github.com/Event-Based-Banking-Application/arya-banking-maven-registry`

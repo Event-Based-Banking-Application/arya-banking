@@ -2,7 +2,7 @@
 title: "Vault Integration"
 description: "How the user service manages secrets and authentication with HashiCorp Vault."
 icon: "security"
-weight: 7611
+weight: 700
 toc: true
 ---
 

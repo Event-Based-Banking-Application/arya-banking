@@ -2,7 +2,7 @@
 title: "Architecture"
 description: "High-level system architecture and authentication process flow."
 icon: "account_tree"
-weight: 300
+weight: 310
 toc: true
 ---
 

@@ -2,7 +2,7 @@
 title: "Mappers"
 description: "Implementation details for MapStruct entity-DTO conversions."
 icon: "schema"
-weight: 8906
+weight: 850
 toc: true
 ---
 

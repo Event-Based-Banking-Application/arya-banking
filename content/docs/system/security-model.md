@@ -23,12 +23,20 @@ The platform uses a dedicated realm to segregate banking users and services.
 {{< table "table-striped table-hover table-sm" >}}
 | Client ID | Grant Type | Role |
 |---|---|---|
-| `banking-service-client` | `authorization_code` | Browser/Mobile Login |
-| `auth-service-client` | `client_credentials` | Auth Service M2M |
-| `user-service-client` | `client_credentials` | User Service M2M |
-| `admin-service-client` | `client_credentials` | Admin Service (Keycloak API) |
-| `arya-banking-auth-client` | `password` (ROPC) | Direct internal authentication |
+| `banking-service-client` | `authorization_code` | Browser/Mobile Login (public web client) |
+| `auth-service-client` | `client_credentials` | Auth Service M2M (Feign) |
+| `user-service-client` | `client_credentials` | User Service M2M (Feign) |
+| `admin-service-client` | `client_credentials` | Admin Service (Keycloak Admin API) |
+| `arya-banking-auth-client` | `client_credentials` | Auth Service Keycloak Admin client |
 {{< /table >}}
+
+{{< alert context="danger" text="The gateway's <code>banking-service-client</code> secret is currently hardcoded in its <code>application.yaml</code>. This is a development convenience and should be externalized to Vault before production." />}}
+
+#### Inter-Service Client Provisioning
+The admin-service exposes `POST /api/admin/inter-service-clients?clientName=` which creates a new confidential Keycloak client (service-accounts enabled, `client-secret` authenticator) and assigns the **`INTERNAL_SERVICE`** realm role to its service account — this is the pattern used to onboard new M2M services.
+
+#### Realm Role
+* `INTERNAL_SERVICE` — required for `/internal/**` endpoints (assigned to service accounts).
 
 ### RBAC Authorities
 The standard `realm_access.roles` claim in the Keycloak JWT is extracted and converted into Spring Security authorities:
@@ -52,6 +60,36 @@ Secrets are organized by service and environment:
 - `secret/data/arya-banking/user-service/dev`
 - `secret/data/arya-banking/auth-service/dev`
 - `secret/data/arya-banking/admin-service/dev`
+
+### Vault Path Map (Consolidated)
+
+{{< table "table-striped table-hover table-sm" >}}
+| Path | Purpose |
+|---|---|
+| `auth/approle/role/{role}` | AppRole role definition (CRUD via admin-service) |
+| `auth/approle/role/{role}/role-id` | Role ID retrieval |
+| `auth/approle/role/{role}/secret-id` | Secret ID generation (create/read) |
+| `secret/data/arya-banking/{service}` | KV v2 secrets per service (e.g. `user-service`, `auth-service`, `admin-service`) |
+| `secret/metadata/arya-banking/{service}` | KV v2 metadata (version history, timestamps) |
+| `sys/auth/*` | Auth method administration (admin-service policy) |
+| `sys/policies/acl/*` | ACL policy management (admin-service policy) |
+{{< /table >}}
+
+### AppRole Roles & ACL Policies
+
+The Vault server (from `arya-banking-infra` runtime state) defines one AppRole per consuming component:
+
+{{< table "table-striped table-hover table-sm" >}}
+| AppRole | Associated ACL Policy | Capability |
+|---|---|---|
+| `_user-service` | `user-service-policy` | Read-only on `secret/data|metadata/arya-banking/user-service/*` |
+| `_auth-service` | `auth-service-policy` | Read-only on `secret/data|metadata/arya-banking/auth-service/*` |
+| `_admin-service` | `admin-service-policy` | Full CRUD on `secret/*`, AppRole paths, ACL policies, `sys/auth/*` |
+| `_common-service` | `common-service-policy` | Read-only (common library bootstrap) |
+| `_outbox-service` | `outbox-service-policy` | Read-only (outbox library bootstrap) |
+{{< /table >}}
+
+{{< alert context="warning" text="Policies are uploaded to Vault via the admin-service API (<code>POST /api/admin/vault/policies?service=...</code>), which serves the HCL file from the service classpath (e.g. <code>admin-service-policy.hcl</code>)." />}}
 
 ### Configuration Flow
 ```mermaid

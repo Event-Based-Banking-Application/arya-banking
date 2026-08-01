@@ -2,7 +2,7 @@
 title: "Exception Framework"
 description: "Global error handling and exception hierarchy in Arya Banking."
 icon: "error"
-weight: 300
+weight: 310
 toc: true
 ---
 

@@ -1,17 +1,17 @@
 ---
 title: "CI/CD & Build"
-description: "GitHub Actions workflows, Maven build configuration, SonarCloud analysis, and Docker image generation."
+description: "GitHub Actions workflows, Maven build configuration, and Docker image generation."
 icon: "build"
 weight: 1000
 toc: true
 date: "2025-03-20T00:00:00Z"
 lastmod: "2025-03-20T00:00:00Z"
-tags: ["cicd", "github-actions", "maven", "sonar", "docker"]
+tags: ["cicd", "github-actions", "maven", "docker"]
 ---
 
 ## GitHub Actions Workflows
 
-Three workflows are defined under `.github/workflows/`.
+One workflow is defined under `.github/workflows/`.
 
 ---
 
@@ -33,48 +33,6 @@ flowchart LR
 - Publishes the JAR to **GitHub Packages** using the `GH_PAT` secret.
 - Automatically tags the commit with the version from `pom.xml` (e.g., `v1.0.0`).
 - The `settings.xml` at the repo root wires GitHub Packages authentication using `GITHUB_ACTOR` and `GH_PAT`.
-
----
-
-### sonar-report.yaml — Code Quality
-
-**Trigger:** Push to any branch, or pull request.
-
-```mermaid
-flowchart LR
-    T["Push / PR"] --> A["Checkout"]
-    A --> B["Setup Java 17"]
-    B --> C["Cache ~/.m2"]
-    C --> D["mvn clean verify\n(compiles + tests)"]
-    D --> E["mvn verify sonar:sonar\n(JaCoCo + SonarCloud)"]
-```
-
-**Secrets required:**
-
-{{< table "table-striped table-sm" >}}
-| Secret | Purpose |
-|---|---|
-| `SONAR_TOKEN` | SonarCloud authentication |
-| `SONAR_PROJECT_KEY` | Project identifier on SonarCloud |
-| `SONAR_ORG` | SonarCloud organisation name |
-| `GH_PAT` | GitHub Packages read access (for arya-banking-common) |
-{{< /table >}}
-
-Coverage reports are sourced from: `target/site/jacoco/jacoco.xml`
-
-A helper script `add-secrets.sh` is included to set these secrets via the GitHub CLI:
-```bash {linenos=table, anchorlinenos=true}
-./add-secrets.sh
-```
-
----
-
-### auto-create-issues.yaml — Issue Automation
-
-**Trigger:** Delegated to the shared reusable workflow:  
-`arya-banking-workflows/.github/workflows/issue-creation.yaml@main`
-
-Reads `.github/issues.json` and automatically creates GitHub Issues with labels and milestones. This allows planned tasks to be tracked as issues without manual creation.
 
 ---
 

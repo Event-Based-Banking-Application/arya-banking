@@ -2,7 +2,7 @@
 title: "Security"
 description: "Security configuration and JWT validation in the API Gateway."
 icon: "security"
-weight: 400
+weight: 410
 toc: true
 ---
 

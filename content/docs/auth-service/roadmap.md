@@ -29,14 +29,3 @@ The following enhancements are prioritized for upcoming development cycles:
 | **Multi-Factor Auth** | Integration of OTP verification during the authentication flow. | High |
 | **Token Introspection** | Implementing a localized token introspection cache for better performance. | Medium |
 | **Audit Integration** | Publishing authentication success/failure events to the platform's audit trail. | Medium |
-
----
-
-## Issue Backlog (`issues.json`)
-
-The development roadmap is maintained within the repository as a structured JSON file, which can be automatically converted into trackable GitHub Issues.
-
-- **Authentication Logic**: 15 planned tasks.
-- **Cross-Cutting Concerns**: 9 integration and infrastructure tasks.
-
-{{< alert context="info" text="Refer to the <code>auto-create-issues.yaml</code> workflow documentation to sync the backlog with GitHub Issues." />}}
