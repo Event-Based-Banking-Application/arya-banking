@@ -37,6 +37,30 @@ export interface TocItem {
   level: number;
 }
 
+const ALERT_ICONS: Record<string, string> = {
+  key: "\uD83D\uDD11",
+  lock: "\uD83D\uDD12",
+  rocket: "\uD83D\uDE80",
+  warning: "\u26A0\uFE0F",
+  info: "\u2139\uFE0F",
+};
+
+function getAlertAttr(attrs: string, name: string): string | null {
+  const m = attrs.match(new RegExp(`\\b${name}="([^"]*)"`));
+  return m ? m[1] : null;
+}
+
+function renderAlert(attrs: string, contentHtml: string): string {
+  const context = getAlertAttr(attrs, "context") || "info";
+  const icon = getAlertAttr(attrs, "icon");
+  let iconHtml = "";
+  if (icon) {
+    const glyph = ALERT_ICONS[icon] || icon;
+    iconHtml = `<span class="alert-icon">${glyph}</span>`;
+  }
+  return `<div class="alert alert-${context}">${iconHtml}${contentHtml}</div>`;
+}
+
 function preprocessShortcodes(markdown: string, sectionSlug: string): string {
   const pageDir = sectionSlug ? `/docs/${sectionSlug}/` : "/docs/";
 
@@ -45,22 +69,42 @@ function preprocessShortcodes(markdown: string, sectionSlug: string): string {
   // Handle escaped quotes inside shortcodes
   result = result.replace(/\\(["'])/g, "$1");
 
-  // Convert alert shortcodes with text attribute (self-closing)
-  // {{< alert context="info" text="..." />}}
+  // Convert ref shortcodes with absolute paths
+  // {{< ref "/docs/path" >}}
   result = result.replace(
-    /\{\{<\s*alert\s+context="([^"]*)"\s+text="(.*?)"\s*\/>\}\}/g,
-    (_match, context: string, text: string) => {
-      text = text.replace(/\\/g, "");
-      return `<div class="alert alert-${context}">${text}</div>`;
+    /\{\{<\s*ref\s+"(\/docs\/[^"]+)"\s*>\}\}/g,
+    (_match: string, url: string) => {
+      return `${url}/`;
     }
   );
 
-  // Convert alert shortcodes with body content
-  // {{< alert context="info" >}}...{{< /alert >}}
+  // Convert ref shortcodes with relative paths
+  // {{< ref "relative-path" >}}
   result = result.replace(
-    /\{\{<\s*alert\s+context="([^"]*)"\s*>([\s\S]*?)\{\{<\s*\/alert\s*>\}\}/g,
-    (_match, context: string, text: string) => {
-      return `<div class="alert alert-${context}">${text.trim()}</div>`;
+    /\{\{<\s*ref\s+"([^"]+)"\s*>\}\}/g,
+    (_match: string, url: string) => {
+      return `${pageDir}${url}/`;
+    }
+  );
+
+  // Convert alert shortcodes with body content (opener and closer delimiters must match)
+  // {{< alert context="info" >}}...{{< /alert >}} / {{% alert ... %}}...{{% /alert %}}
+  result = result.replace(
+    /\{\{(<|%)\s*alert\s+([^}]*?)\s*(?<!\/)[>%]\}\}([\s\S]*?)\{\{\1\s*\/alert\s*[>%]\}\}/g,
+    (_match: string, _delim: string, attrs: string, body: string) => {
+      const html = marked.parse(body.trim(), { async: false }) as string;
+      return renderAlert(attrs, html);
+    }
+  );
+
+  // Convert self-closing alert shortcodes (attributes in any order)
+  // {{< alert icon="key" context="warning" text="..." />}} / {{% alert ... /%}}
+  result = result.replace(
+    /\{\{(<|%)\s*alert\s+([^}]*?)\s*\/[>%]\}\}/g,
+    (_match: string, _delim: string, attrs: string) => {
+      const text = getAlertAttr(attrs, "text") || "";
+      const html = marked.parse(text, { async: false }) as string;
+      return renderAlert(attrs, html);
     }
   );
 
@@ -281,26 +325,6 @@ export function getSectionBySlug(slug: string): DocSection | null {
   return findSection(tree, slug);
 }
 
-export function getParentSection(slug: string): DocSection | null {
-  const tree = getDocsTree();
-
-  function findParent(
-    node: DocSection,
-    targetSlug: string
-  ): DocSection | null {
-    for (const child of node.children) {
-      if (child.type === "section") {
-        if (child.slug === targetSlug) return node;
-        const found = findParent(child, targetSlug);
-        if (found) return found;
-      }
-    }
-    return null;
-  }
-
-  return findParent(tree, slug);
-}
-
 export function getPrevNext(
   currentSlug: string
 ): { prev: DocPage | null; next: DocPage | null } {
@@ -323,29 +347,6 @@ export function getSearchIndex(): SearchEntry[] {
       slug: p.slug,
       title: p.title,
       description: p.description,
-      content: p.rawContent,
+      content: p.rawContent.replace(/\{\{[<%][\s\S]*?[>%]\}\}/g, ""),
     }));
-}
-
-export function getBreadcrumbs(slug: string): { label: string; href: string }[] {
-  const parts = slug.split("/").filter(Boolean);
-  const crumbs: { label: string; href: string }[] = [
-    { label: "Docs", href: "/docs/" },
-  ];
-
-  let current = "";
-  for (const part of parts) {
-    current = current ? `${current}/${part}` : part;
-    const page = getPageBySlug(current) || getSectionBySlug(current);
-    if (page) {
-      crumbs.push({ label: page.title, href: `/docs/${current}/` });
-    } else {
-      crumbs.push({
-        label: part.replace(/-/g, " "),
-        href: `/docs/${current}/`,
-      });
-    }
-  }
-
-  return crumbs;
 }

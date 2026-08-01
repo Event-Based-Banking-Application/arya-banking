@@ -12,7 +12,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
   const parts = text.split(regex);
   return parts.map((part, i) =>
     regex.test(part)
-      ? <mark key={i} className="bg-m-blue-light/30 text-ink rounded-none">{part}</mark>
+      ? <mark key={i} className="bg-primary/30 text-foreground rounded-none">{part}</mark>
       : part
   );
 }
@@ -88,8 +88,8 @@ export default function SearchDialog({
       onKeyDown={handleKeyDown}
     >
       <div className="search-dialog">
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-hairline">
-          <Search size={16} className="text-muted shrink-0" />
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
+          <Search size={16} className="text-primary shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -98,7 +98,7 @@ export default function SearchDialog({
             onChange={(e) => setQuery(e.target.value)}
             className="search-input border-none p-0 text-sm"
           />
-          <kbd className="text-[10px] text-muted border border-hairline px-1.5 py-0.5 hidden sm:inline">
+          <kbd className="text-[10px] text-muted-foreground border border-border px-1.5 py-0.5 hidden sm:inline">
             ESC
           </kbd>
         </div>
@@ -106,8 +106,8 @@ export default function SearchDialog({
         {query && (
           <div ref={listRef} className="search-results">
             {results.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-muted">
-                No results found for &quot;{query}&quot;
+              <div className="px-5 py-8 text-center text-sm text-muted-foreground font-display uppercase tracking-widest">
+                // No results found
               </div>
             ) : (
               results.map((page, idx) => (
@@ -117,7 +117,7 @@ export default function SearchDialog({
                   onClick={onClose}
                   className={`search-result-item ${idx === selected ? "search-result-item--active" : ""}`}
                 >
-                  <div className="search-result-title">
+                  <div className="search-result-title font-display text-[11px] uppercase tracking-wider">
                     {highlightMatch(page.title, query)}
                   </div>
                   {page.description && (
@@ -125,7 +125,7 @@ export default function SearchDialog({
                       {highlightMatch(page.description, query)}
                     </div>
                   )}
-                  <div className="flex items-center gap-1 mt-1 text-[10px] uppercase tracking-wider text-m-blue-light font-semibold">
+                  <div className="flex items-center gap-1 mt-1 text-[10px] uppercase tracking-wider text-primary font-semibold">
                     <ArrowRight size={10} /> View page
                   </div>
                 </Link>

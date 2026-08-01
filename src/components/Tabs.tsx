@@ -14,23 +14,23 @@ export default function Tabs({ tabs: raw }: { tabs: string }) {
   if (tabs.length === 0) return null;
 
   return (
-    <div className="my-6 border border-hairline-strong rounded-md overflow-hidden">
-      <div className="flex border-b border-hairline-strong bg-surface-soft overflow-x-auto">
+    <div className="my-6 border border-border overflow-hidden">
+      <div className="flex border-b border-border bg-card overflow-x-auto">
         {tabs.map((tab, i) => (
           <button
             key={i}
             onClick={() => setActive(i)}
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
+            className={`px-4 py-2 font-display text-[11px] uppercase tracking-wider whitespace-nowrap transition-colors ${
               i === active
-                ? "text-ink border-b-2 border-m-blue bg-surface"
-                : "text-muted hover:text-ink hover:bg-surface/50"
+                ? "text-primary border-b-2 border-primary bg-background"
+                : "text-muted-foreground hover:text-foreground hover:bg-background/50"
             }`}
           >
             {tab.name}
           </button>
         ))}
       </div>
-      <div className="p-4 bg-surface">
+      <div className="p-4 bg-background">
         <div dangerouslySetInnerHTML={{ __html: tabs[active].content }} />
       </div>
     </div>

@@ -32,13 +32,13 @@ export default function Toc({ items }: { items: TocItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <aside className="hidden xl:block fixed top-16 right-0 w-56 h-[calc(100vh-4rem)] overflow-y-auto pl-6 z-40 bg-canvas">
+    <aside className="hidden xl:block fixed top-16 right-0 w-56 h-[calc(100vh-4rem)] overflow-y-auto pl-6 z-40 bg-background/95 backdrop-blur-sm">
       <div className="py-4">
-        <div className="text-[0.65rem] uppercase tracking-[0.12em] text-muted font-semibold mb-3">
-          On This Page
+        <div className="font-display text-[9px] uppercase tracking-[0.25em] text-muted-foreground mb-3">
+          // On_This_Page
         </div>
         <nav>
-          {items.map((item) => (
+          {items.map((item, i) => (
             <a
               key={item.id}
               href={`#${item.id}`}
@@ -55,6 +55,9 @@ export default function Toc({ items }: { items: TocItem[] }) {
                 }
               }}
             >
+              <span className="text-primary/50 text-[9px] mr-1">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               {item.text}
             </a>
           ))}

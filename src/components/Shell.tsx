@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
-import MStripe from "@/components/MStripe";
+import { GridOverlay } from "@/components/GridOverlay";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import SearchDialog from "@/components/SearchDialog";
 import type { SearchEntry } from "@/lib/content";
 
@@ -34,9 +35,10 @@ export default function Shell({
   return (
     <>
       <ScrollProgress />
+      <ScrollToTop />
+      <GridOverlay />
       <Navbar onSearch={() => setSearchOpen(true)} />
-      <div className="m-stripe" />
-      <main className="relative z-10 min-h-screen pt-16">{children}</main>
+      <main className="relative z-10">{children}</main>
       <Footer />
       <SearchDialog
         open={searchOpen}

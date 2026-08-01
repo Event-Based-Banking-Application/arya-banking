@@ -37,6 +37,7 @@ function SidebarNode({
         )}
         style={{ paddingLeft: `${0.75 + depth * 0.75}rem` }}
       >
+        <span className="text-primary/60 text-[9px]">{">"}</span>
         {node.title}
       </Link>
     );
@@ -63,7 +64,7 @@ function SidebarNode({
         <ChevronDown
           size={12}
           className={cn(
-            "transition-transform shrink-0",
+            "transition-transform shrink-0 text-primary",
             expanded ? "rotate-0" : "-rotate-90"
           )}
         />
@@ -72,7 +73,7 @@ function SidebarNode({
           onClick={(e) => e.stopPropagation()}
           className={cn(
             "flex-1 text-inherit no-underline",
-            isActive && "text-m-blue-light"
+            isActive && "text-primary"
           )}
         >
           {node.title}
@@ -103,9 +104,12 @@ export default function Sidebar({ tree }: { tree: DocSection }) {
     .replace(/\/$/, "");
 
   return (
-    <aside className="hidden lg:block fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] overflow-y-auto border-r border-hairline/50 z-40 bg-canvas">
+    <aside className="hidden lg:block fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] overflow-y-auto border-r border-border z-40 bg-background/95 backdrop-blur-sm">
       <div className="py-4">
-        <div className="px-3 pb-3 mb-2 border-b border-hairline/50">
+        <div className="px-3 pb-3 mb-2 border-b border-border">
+          <div className="font-display text-[9px] uppercase tracking-[0.25em] text-muted-foreground mb-2 px-3 pt-1">
+            // Docs.nav
+          </div>
           <Link
             href="/docs/"
             className={cn(
@@ -113,6 +117,7 @@ export default function Sidebar({ tree }: { tree: DocSection }) {
               pathname === "/docs/" && "sidebar-link--active"
             )}
           >
+            <span className="text-primary/60 text-[9px]">{">"}</span>
             Overview
           </Link>
         </div>

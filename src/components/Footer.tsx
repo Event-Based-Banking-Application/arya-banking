@@ -2,20 +2,17 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-hairline/50 lg:pl-64 xl:pr-56">
-      <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-xs text-muted uppercase tracking-[1px]">
-          &copy; {new Date().getFullYear()} Arya Banking Docs
-        </p>
-
-        <Link
-          href="https://github.com/Event-Based-Banking-Application"
-          target="_blank"
-          className="text-xs text-muted hover:text-ink transition-colors uppercase tracking-[1px]"
-        >
-          GitHub
-        </Link>
-      </div>
+    <footer className="px-4 md:px-8 py-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3 text-[9px] font-display text-muted-foreground opacity-60 uppercase tracking-[0.2em]">
+      <span>© {new Date().getFullYear()} Arya Banking Docs</span>
+      <Link
+        href="https://github.com/Event-Based-Banking-Application"
+        target="_blank"
+        rel="noreferrer"
+        className="hover:text-primary transition-colors"
+      >
+        GitHub
+      </Link>
+      <span>Spring · Kafka · Event_Driven</span>
     </footer>
   );
 }

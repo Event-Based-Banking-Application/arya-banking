@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Copy, Check } from "lucide-react";
 
 const LANG_LABELS: Record<string, string> = {
@@ -60,30 +60,38 @@ export default function CodeBlock({
   children?: React.ReactNode;
 }) {
   const [copied, setCopied] = useState(false);
+  const codeRef = useRef<HTMLElement>(null);
 
   const rawLang = className?.replace("language-", "") || "";
   const lang = formatLang(rawLang);
-  const code = String(children || "");
 
   async function handleCopy() {
+    const text = codeRef.current?.textContent ?? "";
     try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(text);
     } catch {
-      // fallback
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   return (
-    <div className="group relative my-5 border border-hairline-strong rounded-md overflow-hidden">
-      <div className="flex items-center justify-between bg-surface-card px-4 py-1.5 border-b border-hairline-strong">
-        <span className="text-xs font-medium text-muted uppercase tracking-wider">
-          {lang || "Code"}
+    <div className="group relative my-5 border border-border overflow-hidden">
+      <div className="flex items-center justify-between bg-card px-4 py-1.5 border-b border-border">
+        <span className="font-display text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+          <span className="text-primary">{">"}</span> {lang || "Code"}
         </span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-xs text-muted hover:text-ink transition-colors"
+          className="flex items-center gap-1.5 font-display text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
           aria-label={copied ? "Copied" : "Copy code"}
         >
           {copied ? (
@@ -99,8 +107,8 @@ export default function CodeBlock({
           )}
         </button>
       </div>
-      <pre className={`${className || ""} !my-0 !border-0 !rounded-none`}>
-        <code className={className}>{children}</code>
+      <pre className={`${className || ""} !my-0 !border-0`}>
+        <code ref={codeRef} className={className}>{children}</code>
       </pre>
     </div>
   );
