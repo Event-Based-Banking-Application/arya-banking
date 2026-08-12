@@ -40,4 +40,6 @@ The starter publishes Avro records, so it assumes the consuming service already 
 - `schema.registry.url` — the Confluent Schema Registry, because the producer uses the **Confluent `KafkaAvroSerializer`**.
 - `spring.data.mongodb.uri` — Mongo connection for the outbox collection.
 
+{{< alert context="warning" text="The producer factory is <b>not</b> created by the starter. It is reused from the application context — normally the one registered by <code>arya-banking-common</code>'s <code>KafkaConfiguration</code>, which only activates when <code>spring.kafka.bootstrap-servers</code> is set. If no <code>ProducerFactory</code> bean exists (library missing or property unset), the relay fails at startup with <code>NoSuchBeanDefinitionException</code>. See <a href=\"/docs/outbox-service/getting-started/\">Getting Started</a> for the manual fallback wiring." />}}
+
 {{< alert context="info" text="Only enable the outbox starter in services that actually publish events. For plain consumers, set arya.outbox.enabled=false to avoid a pointless scheduler loop and unused Kafka producer." />}}

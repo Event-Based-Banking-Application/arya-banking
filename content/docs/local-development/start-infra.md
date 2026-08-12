@@ -33,7 +33,7 @@ This starts all four infrastructure stacks:
 {{< table "table-striped table-sm" >}}
 | Stack | Compose File | Services |
 |-------|-------------|----------|
-| Event Streaming | `compose/kafka.yml` | Kafka, Schema Registry, Kafka Connect |
+| Event Streaming | `compose/kafka.yml` | Kafka, Schema Registry, Kafka Connect, Kafka UI (Kafbat) |
 | Identity & Access | `compose/keycloak.yml` | PostgreSQL, Keycloak |
 | Secrets Management | `compose/vault.yml` | HashiCorp Vault |
 | Platform Services | `compose/platform.yml` | Service Registry, Config Server, API Gateway |
@@ -56,7 +56,7 @@ Wait until all containers show a `Running` status. The platform services may tak
 Start only what you need:
 
 ```powershell
-make kafka       # Kafka + Schema Registry
+make kafka       # Kafka + Schema Registry + Kafka Connect + Kafka UI
 make keycloak    # PostgreSQL + Keycloak
 make vault       # HashiCorp Vault
 make platform    # Eureka + Config Server + API Gateway

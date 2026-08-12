@@ -49,7 +49,7 @@ The result is a simple, crash-safe guarantee: **at-least-once** event publishing
 
 ## Features
 
-- **Spring Boot auto-configuration** — zero wiring required; the starter registers everything on the classpath.
+- **Spring Boot auto-configuration** — the starter registers the `KafkaTemplate<String,OutboxKafkaEvent>` and `OutboxEventProducer` beans plus scheduling automatically.
 - **Generic `OutboxEventRepository<T>`** — works with any concrete outbox entity.
 - **`@Scheduled` relay** — polls pending records on a fixed interval and publishes to Kafka.
 - **Bounded retry** — failed publishes are retried up to `max-retries`, then marked `FAILED`.
@@ -57,4 +57,6 @@ The result is a simple, crash-safe guarantee: **at-least-once** event publishing
 - **Property-driven** — all knobs exposed via `arya.outbox.*` properties.
 - **Opt-out** — disable entirely with `arya.outbox.enabled=false`.
 
-{{< alert context="info" text="The library is published to GitHub Packages via the arya-banking-maven-registry, so services import it through the shared BOM and repositories block." />}}
+{{< alert context="warning" text="The generic <code>OutBoxPublisherService</code> bean is <b>not</b> auto-registered — each consuming service declares it as a <code>@Bean</code> with its concrete repository and entity, then enables the starter with <code>arya.outbox.enabled=true</code>. See the <a href=\"/docs/outbox-service/getting-started/\">Getting Started</a> page." />}}
+
+{{< alert context="info" text="The library is published to GitHub Packages via arya-banking-maven-registry and consumed through the GitHub Packages repositories block in each service's pom.xml." />}}

@@ -21,7 +21,18 @@ mvn clean install -DskipTests
 
 ---
 
-## 2. Build All Business Services
+## 2. Build the Outbox Starter Library
+
+```powershell
+cd ../arya-banking-outbox-service
+mvn clean install -DskipTests
+```
+
+The `user-service` depends on the outbox starter (`org.arya.banking:arya-banking-outbox-service`). Install it to your local `.m2` as well so the business services can resolve it. Publish it to GitHub Packages only when you need to release a new version.
+
+---
+
+## 3. Build All Business Services
 
 ```powershell
 cd ../arya-banking-user-service
@@ -34,11 +45,11 @@ cd ../arya-banking-admin-service
 mvn clean package -DskipTests
 ```
 
-These can be built in any order — they only need the `arya-banking-common` artifact in your local `.m2` cache.
+These can be built in any order — they only need the `arya-banking-common` and `arya-banking-outbox-service` artifacts in your local `.m2` cache.
 
 ---
 
-## 3. Start Services
+## 4. Start Services
 
 ### User Service (port 8086)
 
@@ -65,7 +76,7 @@ mvn spring-boot:run
 
 ---
 
-## 4. Expected Startup Behavior
+## 5. Expected Startup Behavior
 
 After starting each service, it will:
 

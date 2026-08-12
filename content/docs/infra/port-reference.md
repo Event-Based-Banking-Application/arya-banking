@@ -15,8 +15,9 @@ The following ports are mapped from the Docker containers to your host machine.
 |---|---|---|---|
 | **5432** | PostgreSQL | TCP | Keycloak Database |
 | **5433** | Keycloak | HTTP | IAM Admin & Auth API |
+| **8080** | Kafka UI (Kafbat) | HTTP | Kafka cluster web UI |
 | **8081** | Schema Registry | HTTP | Avro Schema Management |
-| **8082** | Kafka Connect | HTTP | Connector REST API |
+| **8083** | Kafka Connect | HTTP | Connector REST API |
 | **8090** | Config Server | HTTP | Centralized Configuration |
 | **8091** | Vault | HTTP | Secrets Management & UI |
 | **8761** | Eureka | HTTP | Service Discovery Dashboard |
@@ -33,6 +34,8 @@ When services communicate **inside** the Docker network (`arya-banking-net`), th
 | Destination Service | Hostname | Port |
 |---|---|---|
 | **Kafka** | `kafka` | `29092` |
+| **Schema Registry** | `schema-registry` | `8081` |
+| **Kafka Connect** | `kafka-connect` | `8083` |
 | **Keycloak** | `keycloak` | `8080` |
 | **Vault** | `vault` | `8200` |
 | **Eureka** | `service-registry` | `8761` |
