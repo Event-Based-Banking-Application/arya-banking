@@ -19,6 +19,7 @@ The service entry point is `AryaBankingUserServiceApplication.java`. It uses sev
 @ComponentScan(basePackages = {"org.arya.banking.user", "org.arya.banking.common"})
 @EnableMongoAuditing
 @EnableDiscoveryClient
+@EnableAspectJAutoProxy
 @EnableFeignClients(defaultConfiguration = OAuth2FeignConfig.class)
 public class AryaBankingUserServiceApplication {
     public static void main(String[] args) {
@@ -35,12 +36,15 @@ public class AryaBankingUserServiceApplication {
 Since this service uses **MongoDB exclusively**, all JDBC/Hibernate auto-configurations are disabled to prevent startup failures.
 
 ### 2. Component Scanning
-The application scans both its own package and `org.arya.banking.common`. This ensures that shared beans like the `GlobalExceptionHandler`, `KafkaConfiguration`, and `MongoConfig` are correctly registered.
+The application scans both its own package and `org.arya.banking.common`. This ensures that shared beans like the `GlobalExceptionHandler`, `KafkaConfiguration`, `MongoConfig`, and `EventContextAop` (AOP aspect for ThreadLocal cleanup) are correctly registered.
 
 ### 3. MongoDB Auditing
 `@EnableMongoAuditing` activates Spring Data's auditing features, automatically populating `@CreatedDate` and `@LastModifiedDate` fields in entities like `User` and `SecurityDetails`.
 
-### 4. Feign & OAuth2
+### 4. AOP Proxy
+`@EnableAspectJAutoProxy` enables Spring AOP proxy creation, allowing aspects like `EventContextAop` to intercept `@KafkaListener` methods and automatically clear `EventContext` ThreadLocal values after execution.
+
+### 5. Feign & OAuth2
 `@EnableFeignClients` is configured with `OAuth2FeignConfig` as the default, ensuring all inter-service communication (e.g., to the Auth Service) is automatically authenticated.
 
 ---

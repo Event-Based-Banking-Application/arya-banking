@@ -16,7 +16,7 @@ Every platform component (`user-service`, `auth-service`, `api-gateway`, etc.) i
 
 ## Shared Capabilities
 
-The library provides eight core modules used by all services:
+The library provides nine core modules used by all services:
 
 {{< table "table-striped" >}}
 | Module | Description |
@@ -29,6 +29,7 @@ The library provides eight core modules used by all services:
 | **Inter-service Auth** | Feign client error decoding and OAuth2 client credentials management. |
 | **Outbox Support** | Abstract `OutboxEvent` model, `OutboxStatus` enum, and `OutboxKafkaEvent` Avro schema consumed by `arya-banking-outbox-service`. |
 | **Correlation & Event Context** | Thread-local correlation ID propagation (`CorrelationIdContext`, `EventContext`), standardized `EventMetadata` creation (`EventMetadataFactory`), and JSON-Avro parsing helper (`GsonParser`). |
+| **AOP Aspects** | Cross-cutting concern management via Spring AOP — `EventContextAop` for automatic ThreadLocal cleanup after `@KafkaListener` methods (see [Kafka & Avro]({{< ref "/docs/common/kafka-avro#aop-aspects" >}})). |
 {{< /table >}}
 
 ---
@@ -41,7 +42,7 @@ To include the library in a microservice, add the following to your `pom.xml`:
 <dependency>
     <groupId>org.arya.banking</groupId>
     <artifactId>arya-banking-common</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.5</version>
 </dependency>
 ```
 
@@ -57,7 +58,7 @@ The common library transitively depends on `kafka-avro-serializer` which pulls i
 <dependency>
     <groupId>org.arya.banking</groupId>
     <artifactId>arya-banking-common</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.5</version>
     <exclusions>
         <exclusion>
             <groupId>io.swagger.core.v3</groupId>
@@ -73,7 +74,7 @@ The common library transitively depends on `kafka-avro-serializer` which pulls i
 
 * **Group ID**: `org.arya.banking`
 * **Artifact ID**: `arya-banking-common`
-* **Latest Version**: `1.2.3`
+* **Latest Version**: `1.2.5`
 * **Java Version**: 17
 * **Parent**: `spring-boot-starter-parent:3.5.x`
 * **Registry**: [arya-banking-maven-registry]({{< ref "/docs/maven-registry" >}}) — `https://maven.pkg.github.com/Event-Based-Banking-Application/arya-banking-maven-registry`

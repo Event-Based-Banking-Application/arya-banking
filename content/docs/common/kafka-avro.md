@@ -212,6 +212,39 @@ List<UserCreateEvent> events = GsonParser.fromJson(json, new TypeToken<List<User
 
 ---
 
+## AOP Aspects
+
+Starting from `arya-banking-common` v1.2.5, the library includes Spring AOP aspects for cross-cutting concerns in Kafka consumer methods.
+
+### `EventContextAop` — Automatic ThreadLocal Cleanup
+
+**Problem**: `EventContext` uses `ThreadLocal<String>` for `CORRELATION_ID` and `CAUSED_EVENT_ID`. Spring Kafka uses a thread pool — when a `@KafkaListener` method completes, the thread returns to the pool with stale `ThreadLocal` values. This causes **cross-message context pollution**: the next message processed by the same thread inherits the previous message's correlation ID and event ID.
+
+**Solution**: An `@After` aspect that automatically clears `EventContext.remove()` after every `@KafkaListener` method execution:
+
+```java
+@Aspect
+@Component
+public class EventContextAop {
+
+    @After("@annotation(org.springframework.kafka.annotation.KafkaListener)")
+    public void clearEventContext() {
+        EventContext.remove();
+    }
+}
+```
+
+**Configuration requirements**:
+1. `spring-boot-starter-aop` dependency in your service's `pom.xml`
+2. `@EnableAspectJAutoProxy` on your Spring Boot application class
+3. `@ComponentScan` covering `org.arya.banking.common.aop` (already included if you scan `org.arya.banking.common`)
+
+**Impact**: All `@KafkaListener` methods across every service get automatic ThreadLocal cleanup — no manual `try-finally` blocks needed. This eliminates the root cause of context pollution in pooled-thread Kafka consumers.
+
+{{< alert context="info" text="The <code>EventContextAop</code> is the first production AOP aspect shipped in the platform. Future aspects (audit logging, authorization, metrics) will follow the same pattern in <code>org.arya.banking.common.aop</code>." />}}
+
+---
+
 ## Topic Constants
 
 Always use `KafkaConstants` for topic names to avoid typos:

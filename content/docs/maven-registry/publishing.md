@@ -37,7 +37,7 @@ Then declare the dependency normally:
 <dependency>
     <groupId>org.arya.banking</groupId>
     <artifactId>arya-banking-common</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.5</version>
 </dependency>
 ```
 

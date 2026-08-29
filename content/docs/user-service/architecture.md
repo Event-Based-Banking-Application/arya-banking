@@ -99,6 +99,8 @@ public void onUserUpdateEvent(LoginFailedEvent event) {
 }
 ```
 
+{{< alert context="success" text="ThreadLocal cleanup is handled automatically by <code>EventContextAop</code> (from <code>arya-banking-common</code>) — no manual <code>try-finally</code> or <code>EventContext.remove()</code> call needed in listener methods." />}}
+
 ---
 
 ## Security Model

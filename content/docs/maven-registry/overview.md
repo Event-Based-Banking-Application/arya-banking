@@ -23,6 +23,6 @@ It contains **no source code** — it exists solely to satisfy the GitHub Packag
 {{< table "table-striped table-sm" >}}
 | Artifact | Version | Source Repository |
 |---|---|---|
-| `org.arya.banking:arya-banking-common` | `1.2.3` | `arya-banking-common` |
+| `org.arya.banking:arya-banking-common` | `1.2.5` | `arya-banking-common` |
 | `org.arya.banking:arya-banking-outbox-service` | `1.0.0` | `arya-banking-outbox-service` |
 {{< /table >}}

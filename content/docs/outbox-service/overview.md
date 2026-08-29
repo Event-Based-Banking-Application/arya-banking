@@ -41,7 +41,7 @@ The result is a simple, crash-safe guarantee: **at-least-once** event publishing
 | **Version** | `1.0.0` |
 | **Java** | `17` |
 | **Spring Boot** | `3.5.4` |
-| **Common Library** | `arya-banking-common:1.2.3` |
+| **Common Library** | `arya-banking-common:1.2.5` |
 | **Distribution** | `arya-banking-maven-registry` (GitHub Packages) |
 {{< /table >}}
 
