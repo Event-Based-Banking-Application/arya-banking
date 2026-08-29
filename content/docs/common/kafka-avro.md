@@ -21,12 +21,14 @@ Topic names are centralized in `KafkaConstants` (`org.arya.banking.common.consta
 {{< table "table-striped table-sm" >}}
 | Constant | Topic | Schema | Current Producer | Consumers |
 |---|---|---|---|---|
-| `USER_CREATE_EVENT` | `user.create.event` | `UserCreateEvent` | — (defined, not yet sent) | None yet |
+| `USER_CREATE_EVENT` | `user.create.event` | `UserCreateEvent` | **auth-service** (UserEventProducer) | **auth-service** (UserUpdateEventListener) |
 | `AUDIT_EVENT` | `audit.event` | `AuditEvent` | — (defined, not yet sent) | None yet |
-| *(per-event)* | `arya-user-svc-usr-update` | `OutboxKafkaEvent` | **user-service** (outbox relay) | None yet |
+| `USER_UPDATE_EVENT` | `user.update.event` | `OutboxKafkaEvent` (wrapping `UserCreateEvent`) | **user-service** (outbox relay) | **auth-service** (UserUpdateEventListener) |
+| `AUTH_FAILED_EVENT` | `auth.failed.event` | `LoginFailedEvent` | **auth-service** (UserEventProducer) | **user-service** (UserEventListeners) |
+| *(per-event)* | `arya-user-svc-usr-update` | `OutboxKafkaEvent` | **user-service** (outbox relay) | **auth-service** |
 {{< /table >}}
 
-{{< alert context="warning" text="The platform is currently <b>producer/outbox-only</b>. No <code>@KafkaListener</code> consumers exist yet, and <code>user.create.event</code>/<code>audit.event</code> are reserved constants. The only topic actually written today is the user-service outbox topic <code>arya-user-svc-usr-update</code>. Note the outbox topic name is stored <b>per event</b> on the outbox record (<code>event.topic</code>), not in <code>KafkaConstants</code>." />}}
+{{< alert context="success" text="The platform now has <b>active producers and consumers</b>. Auth Service produces `UserCreateEvent` and `LoginFailedEvent`, and consumes `UserCreateEvent` from the User Service outbox topic. User Service consumes `LoginFailedEvent` for account locking logic." />}}
 
 ---
 
@@ -39,10 +41,24 @@ Tracks system-wide actions for auditing purposes.
 
 ### 2. User Create Event (`UserCreateEvent.avsc`)
 Triggered when a new user finishes the registration flow.
-* **Topic**: `user.create.event`
-* **Fields**: `userId` (string), `status` (string), `isEmailVerified` (boolean, default `false`), `isContactVerified` (boolean, default `false`)
+* **Topic**: `user.create.event` / `user.update.event` (via outbox envelope)
+* **Fields**: `userId` (string), `status` (string), `isEmailVerified` (boolean, default `false`), `isContactVerified` (boolean, default `false`), `metadata` (`EventMetadata`)
 
-### 3. Outbox Kafka Event (`OutboxKafkaEvent.avsc`)
+### 3. Login Failed Event (`LoginFailedEvent.avsc`)
+Published when authentication fails, enabling downstream services to track and act on failed login attempts.
+* **Topic**: `auth.failed.event`
+* **Fields**: `userId` (string), `isLockUser` (boolean), `metadata` (`EventMetadata`)
+
+### 4. User Lock Event (`UserLockEvent.avsc`)
+Published when a user account is locked/unlocked.
+* **Topic**: `user.lock.event`
+* **Fields**: `userId` (string), `isLocked` (boolean), `metadata` (`EventMetadata`)
+
+### 5. Event Metadata (`EventMetadata.avsc`)
+Standardized metadata attached to all events for tracing and causality.
+* **Fields**: `correlationId` (string — tracks request across services), `eventId` (string — unique event identifier), `causationId` (string, optional — ID of the event that caused this one)
+
+### 6. Outbox Kafka Event (`OutboxKafkaEvent.avsc`)
 Envelope used by the **outbox pattern** relay (`arya-banking-outbox-service`) to publish pending events to Kafka.
 * **Topic**: per-event (`event.topic` — e.g. `arya-user-svc-usr-update`)
 * **Fields**: `aggregateId` (string), `eventType` (string), `payload` (string — serialized payload, e.g. JSON of `UserCreateEvent`)
@@ -132,10 +148,76 @@ public class KafkaFallbackConfig {
 
 ---
 
+## Correlation ID & Event Context Utilities
+
+The common library provides thread-local utilities for distributed tracing and event causality tracking across the microservice ecosystem.
+
+### `CorrelationIdContext`
+Thread-local holder for the correlation ID that flows through the entire request chain (gateway → services → Kafka).
+
+```java
+// Set at entry point (e.g., Gateway filter or Feign interceptor)
+CorrelationIdContext.set(correlationId);
+
+// Retrieve anywhere in the call stack
+String correlationId = CorrelationIdContext.get();
+```
+
+**Integration**: The API Gateway's `CorrelationIdGlobalFilter` extracts/generates `X-Correlation-ID` and sets it in MDC and thread-local context.
+
+### `EventContext`
+Holds both the correlation ID and the current event ID during event processing (consumer side).
+
+```java
+// In @KafkaListener, before processing
+EventContext.setEventContext(
+    event.getMetadata().getCorrelationId().toString(),
+    event.getMetadata().getEventId().toString()
+);
+
+// Later in the call chain
+String correlationId = EventContext.getCorrelationId();
+String causedEventId = EventContext.getCausedEventId();
+
+// Cleanup after processing
+EventContext.remove();
+```
+
+### `EventMetadataFactory`
+Standardized factory for creating `EventMetadata` Avro records with proper correlation/causation linkage.
+
+```java
+// For new events (no parent cause)
+EventMetadata metadata = EventMetadataFactory.newEventMetadata();
+// -> correlationId from EventContext, new eventId, causationId = null
+
+// For events caused by another event (e.g., in saga/compensation)
+EventMetadata metadata = EventMetadataFactory.causedByMetadata();
+// -> correlationId from EventContext, new eventId, causationId = current event's eventId
+```
+
+### `GsonParser`
+Thread-safe JSON-Avro parsing helper that handles `CharSequence` (Avro's string type) correctly, avoiding "Interfaces can't be instantiated!" errors from Gson.
+
+```java
+// Avro SpecificRecord -> JSON
+String json = GsonParser.toJson(userCreateEvent);
+
+// JSON -> Avro SpecificRecord
+UserCreateEvent event = GsonParser.fromJson(json, UserCreateEvent.class);
+
+// For generic types
+List<UserCreateEvent> events = GsonParser.fromJson(json, new TypeToken<List<UserCreateEvent>>(){}.getType());
+```
+
+---
+
 ## Topic Constants
 
 Always use `KafkaConstants` for topic names to avoid typos:
 * `KafkaConstants.AUDIT_EVENT` -> `"audit.event"`
 * `KafkaConstants.USER_CREATE_EVENT` -> `"user.create.event"`
+* `KafkaConstants.USER_UPDATE_EVENT` -> `"user.update.event"`
+* `KafkaConstants.AUTH_FAILED_EVENT` -> `"auth.failed.event"`
 
 {{< alert context="warning" text="Ensure the Confluent Schema Registry URL is correctly configured in your `application.yaml` for Avro serialisation to work." />}}

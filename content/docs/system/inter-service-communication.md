@@ -79,33 +79,79 @@ sequenceDiagram
 
 ---
 
-## 3. Asynchronous Events (Kafka)
+## 3. Asynchronous Events (Kafka) — UPDATED
 
 State changes are propagated asynchronously using **Apache Kafka** and **Avro Schemas**.
 
-### Primary Topic: `user.create.event`
-Published by: `user-service`.
+### Event Topics & Producers/Consumers
 
-{{< table "table-striped table-hover table-sm" >}}
-| Event Phase | Status Payload |
-|---|---|
-| **Step 1 Complete** | `BASIC_DETAILS_ADDITION_COMPLETED` |
-| **Step 2 Complete** | `ADDRESS_ADDED` |
-| **Step 3 Complete** | `SECURITY_CREDENTIALS_ADDED` |
-| **Account Locked** | `BLOCKED` |
-{{< /table >}}
+| Topic | Schema | Producer | Consumers |
+|---|---|---|---|
+| `user.create.event` | `UserCreateEvent` | **Auth Service** (`UserEventProducer`) | Auth Service (`UserUpdateEventListener`) |
+| `user.update.event` | `OutboxKafkaEvent` (wrapping `UserCreateEvent`) | **User Service** (outbox relay) | Auth Service |
+| `auth.failed.event` | `LoginFailedEvent` | **Auth Service** (`UserEventProducer`) | **User Service** (`UserEventListeners`) |
 
-### Producer Logic (`UserCreateProducer`)
-The `UserCreateProducer` in the User Service uses a typed `KafkaTemplate` to send Avro-encoded records. These records ensure schema compatibility across the platform.
+### Producer: Auth Service User Registration
+```mermaid
+sequenceDiagram
+    participant US as User Service
+    participant AU as Auth Service
+    participant KF as Kafka
+
+    US->>AU: Feign POST /internal/api/auth/register/users
+    AU->>KC: Create User via Admin SDK
+    AU->>KF: UserCreateEvent (user.create.event)
+    KF-->>AU: Consumed by UserUpdateEventListener
+    AU->>AU: KeyCloakService.onUserUpdateEvent()
+```
+
+### Producer: Auth Service Login Failure
+```mermaid
+sequenceDiagram
+    participant AU as Auth Service
+    participant KC as Keycloak
+    participant KF as Kafka
+    participant US as User Service
+
+    AU->>KC: Validate Credentials
+    KC-->>AU: 401 Unauthorized
+    AU->>KF: LoginFailedEvent (auth.failed.event)
+    KF-->>US: UserEventListeners consumes
+    US->>US: Increment failedAttempts, lock if >= 5
+```
+
+### Producer Logic (`UserEventProducer` in Auth Service)
+The `UserEventProducer` in the Auth Service uses a typed `KafkaTemplate<String, LoginFailedEvent>` to send Avro-encoded records:
 
 ```java
-// Example usage in UserServiceImpl
-userCreateProducer.sendUserCreateEvent(
-    UserCreateEvent.newBuilder()
-        .setUserId(user.getUserId())
-        .setStatus(RegistrationConstants.BASIC_DETAILS_ADDED.getSubStatus())
-        .build()
-);
+// Auth Service - UserEventProducer
+kafkaTemplate.send(AUTH_FAILED_TOPIC, event.getUserId().toString(), event);
+```
+
+### Consumer Logic (`UserUpdateEventListener` in Auth Service)
+```java
+// Auth Service - UserUpdateEventListener
+@KafkaListener(id = "user-update-event", topics = USER_UPDATE_TOPIC)
+public void onUserUpdateEvent(OutboxKafkaEvent event) {
+    UserCreateEvent userCreateEvent = GsonParser.fromJson(
+        event.getPayload().toString(), UserCreateEvent.class);
+    keyCloakService.onUserUpdateEvent(userCreateEvent);
+}
+```
+
+### Consumer Logic (`UserEventListeners` in User Service)
+```java
+// User Service - UserEventListeners
+@KafkaListener(id = "login-failed-event", topics = AUTH_FAILED_TOPIC)
+public void onUserUpdateEvent(LoginFailedEvent event) {
+    EventContext.setEventContext(
+        event.getMetadata().getCorrelationId().toString(),
+        event.getMetadata().getEventId().toString()
+    );
+    UpdateSecurityDetailsDto dto = new UpdateSecurityDetailsDto(null, event.getIsLockUser());
+    securityDetailsService.updateSecurityCredentials(
+        event.getUserId().toString().toUpperCase(), dto);
+}
 ```
 
 ---
@@ -116,7 +162,10 @@ userCreateProducer.sendUserCreateEvent(
 | Source | Destination | Path | Purpose |
 |---|---|---|---|
 | User Service | Auth Service | `/internal/api/auth/register/users` | Sync registration to Keycloak |
-| Auth Service | User Service | `/internal/api/security-details/{id}` | Track login failures |
+| Auth Service | User Service | `/internal/api/security-details/{id}` | Track login failures (legacy Feign) |
+| Auth Service | User Service | Kafka `auth.failed.event` | Track login failures (event-driven) |
+| User Service | Auth Service | Kafka `user.update.event` | User lifecycle events (outbox) |
+| Auth Service | Keycloak | `/admin/realms/{realm}/roles` | Provision RBAC roles |
 | Admin Service | Keycloak | `/admin/realms/{realm}/roles` | Provision RBAC roles |
 | Admin Service | Vault | `/v1/auth/approle/role` | Provision service secrets |
 {{< /table >}}

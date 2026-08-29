@@ -46,12 +46,43 @@ The admin-service is the **only service** in the platform that has elevated Vaul
 ### Vault Management
 - Create, read, update, and delete KV v2 secrets scoped to individual services under `secret/arya-banking/{service}/dev`
 - Full CRUD over Vault AppRoles — including generating fresh `roleId` / `secretId` credential pairs
-- Upload and delete HCL policy files (stored as classpath resources, versioned in Git)
+- **Full CRUD over Vault ACL policies** (create, read, update, delete, list) — policies stored as HCL files in classpath resources (`admin-service-policy.hcl`, `auth-service-policy.hcl`, `user-service-policy.hcl`)
 
 ### Keycloak Management
 - Create confidential OAuth2 clients for inter-service communication (service accounts flow)
 - Create, list, and query realm-level roles
 - Assign the `INTERNAL_SERVICE` realm role to the service account of newly-created clients
+
+---
+
+## Security Enhancements
+
+### Method-Level Security (`MethodSecurityConfig`)
+The admin-service now enables annotation-based access control via `@EnableMethodSecurity(prePostEnabled = true)`:
+
+```java
+@Configuration
+@EnableMethodSecurity(prePostEnabled = true)
+public class MethodSecurityConfig {
+    @Bean
+    static AnnotationTemplateExpressionDefaults annotationTemplateExpressionDefaults() {
+        return new AnnotationTemplateExpressionDefaults();
+    }
+}
+```
+
+This allows using `@PreAuthorize`, `@PostAuthorize`, `@Secured`, and `@RolesAllowed` on service methods and controllers for fine-grained RBAC.
+
+### Vault Policy Service (`VaultPolicyServiceImpl`)
+Programmatic management of Vault ACL policies:
+
+| Method | Description |
+|---|---|
+| `getPolicies()` | Lists all ACL policies in Vault (`sys/policies/acl/`) |
+| `uploadPolicy(service)` | Uploads HCL policy from classpath (`{service}-policy.hcl`) to Vault |
+| `deletePolicy(service)` | Deletes policy from Vault by service name |
+
+Policies are version-controlled in Git and loaded via `CommonUtils.loadConfig()` at runtime.
 
 ---
 

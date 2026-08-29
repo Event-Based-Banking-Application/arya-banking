@@ -16,7 +16,7 @@ Every platform component (`user-service`, `auth-service`, `api-gateway`, etc.) i
 
 ## Shared Capabilities
 
-The library provides seven core modules used by all services:
+The library provides eight core modules used by all services:
 
 {{< table "table-striped" >}}
 | Module | Description |
@@ -28,6 +28,7 @@ The library provides seven core modules used by all services:
 | **Metadata Tracking** | Auto-versioning of database schemas via reflection. |
 | **Inter-service Auth** | Feign client error decoding and OAuth2 client credentials management. |
 | **Outbox Support** | Abstract `OutboxEvent` model, `OutboxStatus` enum, and `OutboxKafkaEvent` Avro schema consumed by `arya-banking-outbox-service`. |
+| **Correlation & Event Context** | Thread-local correlation ID propagation (`CorrelationIdContext`, `EventContext`), standardized `EventMetadata` creation (`EventMetadataFactory`), and JSON-Avro parsing helper (`GsonParser`). |
 {{< /table >}}
 
 ---

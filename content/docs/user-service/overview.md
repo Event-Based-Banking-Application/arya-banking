@@ -25,7 +25,8 @@ The service is built with **Spring Boot 3.5.4** and uses **MongoDB** as its prim
 | **Profile Management** | Updates for user contact information and physical addresses. |
 | **Security Management** | Tracks failed login attempts and manages account locking/blocking. |
 | **Identity Sync** | Synchronizes user credentials with Keycloak via the Auth Service. |
-| **Event Publishing** | Emits `user-create-event` to Kafka for downstream consumption. |
+| **Event Publishing** | Emits `user-create-event` to Kafka for downstream consumption via transactional outbox. |
+| **Event Consumption** | Consumes `LoginFailedEvent` from Auth Service to track failed login attempts and enforce account locking. |
 {{< /table >}}
 
 ---
