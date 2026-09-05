@@ -36,15 +36,28 @@ The system automatically classifies changes to determine the version bump:
 
 ---
 
-## The Metadata Loader
+## Metadata Loader (Separate Repo)
 
-To trigger a schema snapshot, run the library with the `metadata-loader` profile:
+The metadata loader is a standalone Spring Boot application hosted in its own repository:
+
+**Repository**: `arya-banking-common-metadata-loader`
+**Group ID**: `org.arya.banking.common.loader`
+**Artifact ID**: `arya-banking-common-metadata-loader`
+
+It depends on the `core` module and runs as an independent process — it is **not** part of the `arya-banking-common` reactor build.
+
+### Running Locally
 
 ```bash
-mvn install -Pmetadata-loader
+cd arya-banking-common-metadata-loader
+mvn spring-boot:run
 ```
 
-{{< alert context="info" text="This is typically run during the CI/CD pipeline after a successful build to ensure the metadata database stays in sync with the codebase." />}}
+Requires a running **Vault** and **MongoDB** instance.
+
+### CI/CD
+
+The loader has its own deployment pipeline and runs after the common library modules are published, ensuring the metadata database stays in sync with the codebase.
 
 ---
 

@@ -8,7 +8,7 @@ toc: true
 
 ## Shared Entity Models
 
-The `arya-banking-common` library defines the foundational domain models used across the microservices ecosystem. These are persisted in **MongoDB Atlas**.
+The `core` module of `arya-banking-common` defines the foundational domain models used across the microservices ecosystem. These are persisted in **MongoDB Atlas**.
 
 ---
 

@@ -5,7 +5,7 @@ icon: "info"
 weight: 10
 toc: true
 date: "2025-03-01T00:00:00Z"
-lastmod: "2026-07-11T00:00:00Z"
+lastmod: "2026-09-06T00:00:00Z"
 tags: ["overview", "architecture", "microservices"]
 ---
 
@@ -42,7 +42,9 @@ Each service has its own dedicated documentation covering its specific logic, AP
 {{< table "table-striped table-hover" >}}
 | Service | Description | Docs |
 |---|---|---|
-| **Common Library** | Shared domain models, Kafka/Avro schemas, and exceptions | [View Docs →]({{< ref "/docs/common" >}}) |
+| **Common Library** | Shared domain models, Kafka/Avro schemas, and exceptions (5 modules: core, mongo, kafka, feign, oauth2) | [View Docs →]({{< ref "/docs/common" >}}) |
+| **BOM** | Centralized dependency version management for all common modules | [View Docs →]({{< ref "/docs/maven-registry/overview" >}}) |
+| **Metadata Loader** | Standalone schema versioning tool | [View Docs →]({{< ref "/docs/common/metadata-versioning" >}}) |
 | **API Gateway** | Reactive entry point, JWT validation, and request routing | [View Docs →]({{< ref "/docs/api-gateway" >}}) |
 | **User Service** | Multi-step registration and profile management | [View Docs →]({{< ref "/docs/user-service" >}}) |
 | **Auth Service** | Identity bridge and Keycloak user management | [View Docs →]({{< ref "/docs/auth-service" >}}) |
@@ -57,7 +59,7 @@ Each service has its own dedicated documentation covering its specific logic, AP
 
 ## Repository Map
 
-The platform is distributed across **10 interconnected repositories**:
+The platform is distributed across **11 interconnected repositories**:
 
 ```text
 Event-Based-Banking-Application/
@@ -65,7 +67,10 @@ Event-Based-Banking-Application/
 ├── arya-banking/                        ← Documentation site (Next.js)
 ├── arya-banking-infra/                  ← Docker Compose infra (Kafka, Keycloak, Vault)
 ├── arya-banking-configs/                ← Centralized Git-backed configuration
-├── arya-banking-common/                 ← Shared Maven library (GitHub Packages)
+│
+├── arya-banking-common/                 ← Shared Maven library (5 modules: core, mongo, kafka, feign, oauth2)
+├── arya-banking-bom/                    ← Bill of Materials (centralized dependency versions)
+├── arya-banking-common-metadata-loader/ ← Standalone metadata schema versioning tool
 ├── arya-banking-outbox-service/         ← Outbox pattern starter library
 ├── arya-banking-maven-registry/         ← GitHub Packages Maven registry anchor
 │

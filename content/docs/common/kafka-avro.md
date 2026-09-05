@@ -10,7 +10,7 @@ toc: true
 
 The Arya Banking platform uses **Apache Kafka** with **Confluent Avro** for all asynchronous inter-service communication. This ensures type safety and schema compatibility across the ecosystem via the **Confluent Schema Registry**.
 
-All schemas are defined in `arya-banking-common` (`src/main/avro`, namespace `org.arya.banking.common.avro`) and auto-compiled into Java classes by the `avro-maven-plugin` during `generate-sources`.
+All schemas are defined in the `kafka` module of `arya-banking-common` (`src/main/avro`, namespace `org.arya.banking.common.avro`) and auto-compiled into Java classes by the `avro-maven-plugin` during `generate-sources`.
 
 ---
 
@@ -67,7 +67,7 @@ Envelope used by the **outbox pattern** relay (`arya-banking-outbox-service`) to
 
 ## Kafka Configuration
 
-The library provides a pre-configured `KafkaConfiguration` class (`@ConditionalOnProperty("spring.kafka.bootstrap-servers")`) that wires producers and consumers:
+The `kafka` module provides a pre-configured `KafkaConfiguration` class (`@ConditionalOnProperty("spring.kafka.bootstrap-servers")`) that wires producers and consumers:
 
 * **Producer**: `StringSerializer` key + Confluent `KafkaAvroSerializer` value; reads `spring.kafka.bootstrap-servers` and `spring.kafka.properties.schema.registry.url`.
 * **Consumer factory**: `kafkaListerFactory(groupId)` helper returning a `ConcurrentKafkaListenerContainerFactory` with `StringDeserializer` + `KafkaAvroDeserializer`, `AUTO_OFFSET_RESET=earliest`, `SPECIFIC_AVRO_READER=true`, and the given consumer group.
@@ -92,14 +92,14 @@ public ConcurrentKafkaListenerContainerFactory<String, UserCreateEvent> userEven
 
 ### Reusing the Shared Producer & Consumer
 
-The `KafkaConfiguration` beans are registered for **every** service that has `arya-banking-common` on the classpath and sets `spring.kafka.bootstrap-servers` — do not define a second producer or consumer stack in that case:
+The `kafka` module's `KafkaConfiguration` beans are registered for **every** service that has the `kafka` module on the classpath and sets `spring.kafka.bootstrap-servers` — do not define a second producer or consumer stack in that case:
 
 - **Producer**: inject the pre-wired `KafkaTemplate<String, Object>` (or the outbox starter's `OutboxEventProducer`) directly. One `ProducerFactory` per JVM is enough; the [outbox starter]({{< ref "/docs/outbox-service/getting-started" >}}) reuses this same factory to build its typed `KafkaTemplate<String,OutboxKafkaEvent>`.
 - **Consumer**: create one `ConcurrentKafkaListenerContainerFactory` per consumer group via `kafkaListerFactory("<groupId>")` — this is a cheap factory wrapper, not a second connection.
 
 ### If the Beans Are Not Present
 
-The library's `KafkaConfiguration` is inactive when `spring.kafka.bootstrap-servers` is not set, and services that intentionally exclude `arya-banking-common` have no beans at all. In that case, wire the serializer classes manually (`KafkaConstants` provides the fully-qualified names):
+The `kafka` module's `KafkaConfiguration` is inactive when `spring.kafka.bootstrap-servers` is not set. In that case, wire the serializer classes manually (`KafkaConstants` provides the fully-qualified names):
 
 ```java
 @Configuration
@@ -150,7 +150,7 @@ public class KafkaFallbackConfig {
 
 ## Correlation ID & Event Context Utilities
 
-The common library provides thread-local utilities for distributed tracing and event causality tracking across the microservice ecosystem.
+The `kafka` module provides thread-local utilities for distributed tracing and event causality tracking across the microservice ecosystem.
 
 ### `CorrelationIdContext`
 Thread-local holder for the correlation ID that flows through the entire request chain (gateway → services → Kafka).
@@ -214,7 +214,7 @@ List<UserCreateEvent> events = GsonParser.fromJson(json, new TypeToken<List<User
 
 ## AOP Aspects
 
-Starting from `arya-banking-common` v1.2.5, the library includes Spring AOP aspects for cross-cutting concerns in Kafka consumer methods.
+The `kafka` module also includes Spring AOP aspects for cross-cutting concerns in Kafka consumer methods.
 
 ### `EventContextAop` — Automatic ThreadLocal Cleanup
 

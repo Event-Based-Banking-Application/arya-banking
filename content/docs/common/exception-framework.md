@@ -8,7 +8,7 @@ toc: true
 
 ## Centralized Error Handling
 
-Arya Banking uses a unified exception hierarchy defined in the `common` library and applied via `@RestControllerAdvice` in every microservice.
+Arya Banking uses a unified exception hierarchy defined in the `core` module of `arya-banking-common` and applied via `@RestControllerAdvice` in every microservice.
 
 ---
 
@@ -37,7 +37,7 @@ The `GlobalException` class is the root of all domain-specific errors. It carrie
 
 ## 3. Global Exception Handler
 
-The `GlobalExceptionHandler` is automatically picked up via `@ComponentScan("org.arya.banking.common")`. It intercepts all thrown `GlobalException` subclasses and returns a consistent JSON payload:
+The `GlobalExceptionHandler` is automatically picked up via `@ComponentScan("org.arya.banking.common.core")`. It intercepts all thrown `GlobalException` subclasses and returns a consistent JSON payload:
 
 ```json {linenos=table, anchorlinenos=true}
 {
@@ -50,6 +50,6 @@ The `GlobalExceptionHandler` is automatically picked up via `@ComponentScan("org
 
 ## 4. Feign Error Decoding
 
-Inter-service communication errors are deserialized back into their original exception types via the `FeignClientErrorDecoder`. This ensures that a 404 from the `auth-service` is correctly re-thrown as a `UserNotFoundException` in the `user-service`.
+Inter-service communication errors are deserialized back into their original exception types via the `FeignClientErrorDecoder` (in the `feign` module). This ensures that a 404 from the `auth-service` is correctly re-thrown as a `UserNotFoundException` in the `user-service`.
 
 {{< alert context="tip" text="This pattern maintains a clean, uniform error experience across the entire distributed system." />}}

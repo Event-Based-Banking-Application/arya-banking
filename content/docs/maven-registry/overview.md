@@ -23,6 +23,11 @@ It contains **no source code** — it exists solely to satisfy the GitHub Packag
 {{< table "table-striped table-sm" >}}
 | Artifact | Version | Source Repository |
 |---|---|---|
-| `org.arya.banking:arya-banking-common` | `1.2.5` | `arya-banking-common` |
-| `org.arya.banking:arya-banking-outbox-service` | `1.0.0` | `arya-banking-outbox-service` |
+| `org.arya.banking:arya-banking-bom` | `2.0.0` | `arya-banking-bom` |
+| `org.arya.banking:core` | `2.0.0` | `arya-banking-common` |
+| `org.arya.banking:mongo` | `2.0.0` | `arya-banking-common` |
+| `org.arya.banking:kafka` | `2.0.0` | `arya-banking-common` |
+| `org.arya.banking:feign` | `2.0.0` | `arya-banking-common` |
+| `org.arya.banking:oauth2` | `2.0.0` | `arya-banking-common` |
+| `org.arya.banking:arya-banking-outbox-service` | `2.0.0` | `arya-banking-outbox-service` |
 {{< /table >}}
