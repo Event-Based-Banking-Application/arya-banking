@@ -1,51 +1,63 @@
-# Event Based Banking Application - Documentation
+# Event-Based Banking Application
 
-This repository contains the documentation for the **Event Based Banking Application**, a highly scalable event-driven microservices platform modeling the core backend of a digital banking application.
+Event-driven microservices platform modelling the core backend of a digital banking application.
 
-## 🚀 Overview
+**Stack**: Spring Boot 3.5.4 · Spring Cloud 2025.0.0 · Java 17 · MongoDB · Kafka · Keycloak · HashiCorp Vault · Eureka
 
-The documentation site is built using **[Hugo](https://gohugo.io/)** and the beautiful **[Lotus Docs](https://lotusdocs.dev/)** theme. It provides comprehensive details on the platform's architecture, services, API references, getting started guides, and more.
+## Repositories
 
-## 💻 Local Development
+| Repository | Description |
+|---|---|
+| [arya-banking-common](https://github.com/Event-Based-Banking-Application/arya-banking-common) | Multi-module shared library (core, mongo, kafka, feign, oauth2) |
+| [arya-banking-bom](https://github.com/Event-Based-Banking-Application/arya-banking-bom) | Bill of Materials — centralized dependency versions |
+| [arya-banking-common-metadata-loader](https://github.com/Event-Based-Banking-Application/arya-banking-common-metadata-loader) | Standalone schema versioning tool |
+| [arya-banking-outbox-service](https://github.com/Event-Based-Banking-Application/arya-banking-outbox-service) | Transactional outbox pattern starter library |
+| [arya-banking-maven-registry](https://github.com/Event-Based-Banking-Application/arya-banking-maven-registry) | GitHub Packages Maven endpoint |
+| [arya-banking-service-registry](https://github.com/Event-Based-Banking-Application/arya-banking-service-registry) | Eureka service discovery |
+| [arya-banking-config-server](https://github.com/Event-Based-Banking-Application/arya-banking-config-server) | Spring Cloud Config Server |
+| [arya-banking-api-gateway](https://github.com/Event-Based-Banking-Application/arya-banking-api-gateway) | Reactive API gateway |
+| [arya-banking-user-service](https://github.com/Event-Based-Banking-Application/arya-banking-user-service) | User domain service |
+| [arya-banking-auth-service](https://github.com/Event-Based-Banking-Application/arya-banking-auth-service) | Identity bridge (Keycloak) |
+| [arya-banking-admin-service](https://github.com/Event-Based-Banking-Application/arya-banking-admin-service) | Infrastructure administration |
+| [arya-banking-infra](https://github.com/Event-Based-Banking-Application/arya-banking-infra) | Docker Compose infrastructure |
+| [arya-banking-configs](https://github.com/Event-Based-Banking-Application/arya-banking-configs) | Centralized Git-backed configuration |
+| [arya-banking](https://github.com/Event-Based-Banking-Application/arya-banking) | Documentation site (Hugo) |
 
-To run the documentation site locally, you'll need to have [Hugo Extended](https://gohugo.io/installation/) installed.
+## Architecture
 
-### Steps:
+```text
+                    ┌─────────────┐
+                    │ API Gateway │ :8085
+                    └──────┬──────┘
+           ┌───────────────┼───────────────┐
+           │               │               │
+    ┌──────┴──────┐ ┌──────┴──────┐ ┌──────┴──────┐
+    │ User Service│ │ Auth Service│ │Admin Service│
+    │    :8086    │ │    :8087    │ │    :8089    │
+    └──────┬──────┘ └──────┬──────┘ └──────┬──────┘
+           │               │               │
+           └───────┬───────┴───────┬───────┘
+                   │               │
+            ┌──────┴──────┐ ┌──────┴──────┐
+            │    Kafka    │ │   MongoDB   │
+            │   :9092     │ │   :27017    │
+            └─────────────┘ └─────────────┘
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Event-Based-Banking-Application/docs.git
-   cd docs
-   ```
+## Getting Started
 
-2. **Run the local server:**
-   ```bash
-   hugo server
-   ```
+See the [Local Development Guide](https://event-based-banking-application.github.io/arya-banking/docs/local-development/) for full setup instructions.
 
-3. **View the site:**
-   Open your browser and navigate to `http://localhost:1313/` (or whichever port Hugo provides).
+```sh
+# Clone infrastructure
+git clone https://github.com/Event-Based-Banking-Application/arya-banking-infra.git
+cd arya-banking-infra
+make up
 
-## 📁 Repository Structure
+# Clone configs
+git clone https://github.com/Event-Based-Banking-Application/arya-banking-configs.git
+```
 
-- `content/`: Contains the actual Markdown documentation pages. 
-  - `docs/`: The main documentation section (e.g., Platform Overview, Service details).
-- `hugo.toml`: The main configuration file for the site.
-- `layouts/`: Custom overrides for the Lotus Docs HTML templates.
-- `assets/`: Custom assets such as SCSS customizations and SVG logos.
-- `static/`: Static files served directly (images, diagrams, scripts).
+## Documentation
 
-## 🤝 Contributing
-
-When contributing to the documentation, simply add your Markdown files to the `content/docs/` directory.
-
-- Use appropriate front matter (e.g., `title`, `weight`) for ordering.
-- You can utilize [Lotus Docs Shortcodes](https://lotusdocs.dev/docs/shortcodes/) like tabs, alerts, and Mermaid diagrams to present your content.
-
-## 🤖 Autonomous AI Integration (`.agents`)
-
-This documentation repository is uniquely designed to be co-maintained by AI agents. It features a proactive, self-managing `.agents` ecosystem that allows the AI to iteratively learn, remember, and independently optimize its own behavior across sessions:
-
-- **Iterative Skill Building (`.agents/skills/skill-creator`)**: A structured workflow that enables the AI to cooperatively interview the user, draft new custom skills, write evaluation prompts, and run internal benchmarks to iteratively improve itself autonomously.
-- **Theme & Knowledge Skills (`.agents/skills/`)**: Contains mandatory, aggressive behavioral rules. For example, the `lotusdocs` skill natively intercepts all markdown generation to enforce Hugo/Bootstrap shortcodes (tabs, mermaid, alerts), while the `github-codebase-knowledge` skill acts as an intelligence cache of the application's microservice structures.
-- **Proactive Memory (`.agents/workctx/`)**: A continuous-learning engine comprised of two heavily integrated, auto-triggering skills (`save-workctx` and `learn-workctx`). When debugging stubborn errors or finalizing large documentation features, the agent automatically captures the work using structured Component/Fix breakdowns without being explicitly asked. When starting a fresh session, it silently executes aggressive `grep_search` sweeps across this folder to internalize past architectural decisions—acting as a perpetual project memory layer.
+Full docs: [https://event-based-banking-application.github.io/arya-banking/](https://event-based-banking-application.github.io/arya-banking/)
